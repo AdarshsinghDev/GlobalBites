@@ -1,0 +1,13 @@
+.category-btn{
+    background: var(--white-color);
+    border: 1px solid var(--green-primary);
+    width: 80px;
+    height: 35px;
+    border-radius: 50px;
+
+    &:hover{
+        background: var(--green-primary);
+        border: 1px solid var(--white-color);
+        color: var(--white-color);
+    }
+}

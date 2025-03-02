@@ -1,0 +1,19 @@
+.signup-main {
+  background: url(../../assets/signup-background.jpg) center no-repeat;
+  text-align: center;
+  width: 100%;
+  height: 100%;
+  padding-bottom: 50px;
+  position: relative;
+  z-index: 1;
+
+  &::before {
+    content: "";
+    width: 100%;
+    height: 100%;
+    background-color: #0000004d;
+    position: absolute;
+    left: 0;
+    z-index: -1;
+  }
+}

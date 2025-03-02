@@ -1,0 +1,167 @@
+@import url("https://fonts.googleapis.com/css2?family=Ubuntu:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500;1,700&display=swap");
+
+* {
+  margin: 0;
+  padding: 0;
+  font-family: "Ubuntu", serif;
+}
+body {
+  color: var(--sm-text);
+  /* background: linear-gradient(180deg, #98ff9c, #ffffff); */
+}
+.main {
+  width: 100%;
+  margin: 0 auto 20px;
+}
+
+.inner-width {
+  width: 90%;
+  margin: 0 auto;
+}
+
+li {
+  list-style: none;
+}
+a {
+  text-decoration: none;
+  color: #424242;
+}
+
+img {
+  width: 100%;
+}
+
+/* General input styling */
+.input-box {
+  padding: 12px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 16px;
+  outline: none;
+  transition: all 0.3s ease;
+}
+
+/* Hover effect */
+.input-box:hover {
+  border-color: var(--green-primary);
+}
+
+/* Focus effect */
+.input-box:focus {
+  border-color: var(--green-primary);
+  box-shadow: 0 0 8px var(--green-primary);
+}
+
+/* Placeholder styling */
+.input-box::placeholder {
+  color: #aaa;
+  font-size: 14px;
+}
+
+/* Disabled input */
+.input-box:disabled {
+  background-color: #f2f2f2;
+  cursor: not-allowed;
+}
+
+.light-mode {
+  --green-primary: #4caf50;
+  --white-color: #ffffff;
+  --sm-text: #424242;
+  /* --green-border: #424242; */
+}
+
+.btn {
+  padding: 8px 15px;
+  border-radius: 10px;
+  background: var(--green-primary);
+  color: var(--white-color);
+}
+.signin {
+  color: var(--green-primary);
+  border: 1px solid var(--green-primary);
+  background: var(--white-color);
+}
+.signup {
+  color: var(--white-color);
+  border: 1px solid var(--green-primary);
+  background: var(--green-primary);
+}
+
+.button {
+  border: none;
+  outline: none;
+  width: 120px;
+  height: 50px;
+  cursor: pointer;
+  background: var(--white-color);
+  box-shadow: 4px 4px 0px var(--green-primary);
+  color: var(--green-primary);
+  overflow: hidden;
+  position: relative;
+  transition: all 0.2s ease;
+  font-size: 18px;
+  border: 1px solid var(--green-primary);
+}
+button{
+  cursor: pointer;
+}
+.button:hover::before {
+  animation-duration: 1.6s;
+  scale: 1.5;
+  background: #ffffff36;
+}
+.button:hover {
+  box-shadow: 6px 6px 0px #337536;
+  background: var(--green-primary);
+  color: var(--white-color);
+}
+.button::before {
+  content: "";
+  width: 40px;
+  height: 150px;
+  position: absolute;
+  transform: rotate(40deg);
+  top: -100%;
+  left: -30%;
+  opacity: 0.8;
+  animation-name: slidebtn;
+  animation-duration: 1.5s;
+  animation-timing-function: ease;
+  animation-iteration-count: infinite;
+  background: linear-gradient(to right, transparent, #4caf4f41 80%);
+}
+
+@keyframes slidebtn {
+  0% {
+    left: -50%;
+  }
+  100% {
+    left: 150%;
+  }
+}
+
+.button-secondary {
+  border: 1px solid var(--green-primary);
+  outline: none;
+  background: var(--white-color);
+  padding: 8px 15px;
+  color: var(--green-primary);
+  cursor: pointer;
+}
+.button-secondary:hover {
+  background: var(--green-primary);
+  color: var(--white-color);
+}
+
+.link:hover {
+  text-decoration: underline;
+  text-decoration-color: var(--green-primary);
+  text-decoration-thickness: 2px;
+  text-underline-offset: 3px;
+}
+.title {
+  font-size: 30px;
+  color: var(--green-primary);
+  font-weight: 700;
+}

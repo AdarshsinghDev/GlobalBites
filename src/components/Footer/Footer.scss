@@ -1,0 +1,36 @@
+.footer-main {
+  background: var(--sm-text);
+  margin: 0;
+  padding: 10px 0;
+  background: var(--sm-text);
+  p {
+    color: var(--white-color);
+    text-align: center;
+  }
+  .footer-container {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    .title {
+      padding: 10px 0;
+      text-shadow: 1px 1px 0px var(--white-color);
+    }
+    .footer-link {
+      ul {
+        display: flex;
+        gap: 20px;
+        padding: 20px 0;
+        li {
+          a {
+            color: var(--white-color);
+            &:hover {
+              color: var(--green-primary);
+            }
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,29 @@
+  .navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+    // background: #f5f5f5;
+
+    .nav-link ul {
+      display: flex;
+      flex-direction: row;
+      gap: 15px;
+      color: inherit;
+
+      .signin {
+        border-top-left-radius: 50px;
+        border-bottom-left-radius: 50px;
+
+        &:hover {
+          background: var(--green-primary);
+          color: var(--white-color);
+        }
+      }
+
+      .signup {
+        border-top-right-radius: 50px;
+        border-bottom-right-radius: 50px;
+      }
+    }
+  }
