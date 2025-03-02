@@ -19,7 +19,7 @@
                 border: 1px solid black;
 
                 .input-container{
-                    width: 40%;
+                    width: 60%;
 
                     .input-textarea{
                         width: 100%;
@@ -27,7 +27,7 @@
                         border: 1px solid gray;
                         border-radius: 8px;
                         padding: 10px;
-                        resize: none; /* Prevent resizing */
+                        resize: none; 
                         text-align: left;
                         vertical-align: top;
                         font-size: 18px;
@@ -60,4 +60,8 @@
             }
         }
     }
+}
+
+@media (max-width:480px) {
+    
 }

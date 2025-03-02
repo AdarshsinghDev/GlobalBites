@@ -18,3 +18,9 @@
         }
     }
 }
+
+@media (max-width:768px) {
+    .discover-container{
+        flex-wrap: wrap;
+    }
+}

@@ -27,3 +27,14 @@
       }
     }
   }
+
+  @media (max-width:580px) {
+    .navbar{
+      flex-direction: column;
+      gap: 20px;
+      .btn{
+        padding: 5px 8px;
+        font-size: 15px;
+      }
+    }
+  }

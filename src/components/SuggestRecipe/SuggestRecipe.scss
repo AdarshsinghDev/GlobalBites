@@ -3,3 +3,37 @@
     justify-content: space-evenly;
     width: 100%;
 }
+
+@media (max-width:966px) {
+    .card-container{
+        flex-wrap: wrap;
+        .card-main{
+            margin: 40px 0 0px;
+            flex-wrap: wrap;
+            width: 27%;
+            justify-content: center;
+            .card-left{
+                width: 100%;
+                div{
+                    text-align: center;
+                }
+            }
+        }
+    }
+}
+
+@media (max-width:768px) {
+    h1{
+        text-align: center;
+        margin: 20px auto;
+    }
+    .card-container .card-main{
+        width: 38%;
+    }
+}
+
+@media (max-width:480px) {
+    .card-container .card-main{
+        width: 60%;
+    }
+}

@@ -5,8 +5,12 @@ import "./Login.scss";
 import { useNavigate } from "react-router-dom";
 
 const Login = () => {
-  const [userId, setUserId] = useState('');
-  const [userPass, setUserPass] = useState('');
+  const [userId, setUserId] = useState("");
+  const [userPass, setUserPass] = useState("");
+  const [buttonColor, setButtonColor] = useState("");
+  const [buttonText, setButtonText] = useState(
+    "Enter the GlobalBites Kitchen!"
+  );
   const navigate = useNavigate();
 
   const handlealert = () => {
@@ -14,10 +18,12 @@ const Login = () => {
   };
 
   const handleLogin = () => {
+
     if (userId === "user" && userPass === "user123") {
-      navigate("/ExploreRecipe")
+      navigate("/ExploreRecipe");
     } else {
-      alert("Please Sign up!");
+      setButtonText("incorrect password Try again!");
+      setButtonColor("button-error");
     }
   };
 
@@ -42,7 +48,7 @@ const Login = () => {
                     name=""
                     id="userId"
                     value={userId}
-                    onChange={(e)=>setUserId(e.target.value)}
+                    onChange={(e) => setUserId(e.target.value)}
                     placeholder="Email"
                   />
                   <FontAwesomeIcon className="input-icon" icon={faEnvelope} />
@@ -54,7 +60,9 @@ const Login = () => {
                     name=""
                     id="userPass"
                     value={userPass}
-                    onChange={(e)=>{setUserPass(e.target.value)}}
+                    onChange={(e) => {
+                      setUserPass(e.target.value);
+                    }}
                     placeholder="Password"
                   />
                   <FontAwesomeIcon className="input-icon" icon={faLock} />
@@ -83,9 +91,9 @@ const Login = () => {
                 <button
                   onClick={handleLogin}
                   type="submit"
-                  className="login-form__button button"
+                  className={`login-form__button button ${buttonColor}`}
                 >
-                  Enter the GlobalBites Kitchen!
+                  {buttonText}
                 </button>
 
                 <div className="login-social">

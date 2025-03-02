@@ -1,5 +1,5 @@
 .login-main {
-  background: url(../../assets//login-background.jpg)  center no-repeat;
+  background: url(../../assets//login-background.jpg) center no-repeat;
   text-align: center;
   width: 100%;
   height: 100%;
@@ -91,10 +91,52 @@
         height: 45px;
         font-size: 13px;
       }
+      .button-error {
+        color: #ff0000;
+        box-shadow: 4px 4px 0px #ff0000;
+        border-color: red;
+
+        &:hover {
+          background: #ff0000;
+          color: var(--white-color);
+          box-shadow: 4px 4px 0px #ff7070;
+        }
+      }
 
       .login-social p {
         padding-bottom: 10px;
       }
+    }
+  }
+}
+
+@media (max-width: 988px) {
+  .login-main .login-card {
+    width: 50%;
+  }
+}
+@media (max-width: 580px) {
+  h1 {
+    margin: 0;
+  }
+  .login-main .login-card {
+    width: 65%;
+  }
+}
+
+@media (max-width: 480px) {
+  h1{
+    font-size: 22px;
+  }
+
+  .login-main .login-card {
+    width: 100%;
+  }
+  .login-main .login-main_h2 {
+    font-size: 25px;
+
+    .login-main .login-card {
+      width: 100%;
     }
   }
 }
