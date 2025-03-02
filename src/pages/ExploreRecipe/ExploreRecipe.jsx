@@ -19,7 +19,7 @@ function ExploreRecipe() {
 
     setLoading(true);
     try {
-      const response = await axios.post("http://localhost:5000/get-recipes", {
+      const response = await axios.post("https://backend-globalbites.onrender.com/get-recipes", {
         ingredients: text,
       });
       setRecipes(response.data.recipes);
