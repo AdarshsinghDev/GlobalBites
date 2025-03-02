@@ -54,7 +54,7 @@ function ExploreRecipe() {
 
           <div className="explore-bottom_container">
             <div className="explore-bottom_container_generated">
-              <div className="explore-bottom_container_food">
+              <div className="explore-bottom_container_food card-container">
                 {recipes.length > 0 ? (
                   recipes.map((recipe, index) =>
                     typeof recipe === "string" ? (
