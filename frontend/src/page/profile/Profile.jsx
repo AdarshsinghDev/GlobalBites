@@ -103,7 +103,7 @@ const Profile = () => {
 
             {/* Enhanced Form */}
             <form onSubmit={handleSubmit} className="space-y-8">
-              <div className="grid md:grid-cols-2 gap-8">
+              <div className="grid md:grid-cols-2 lg:gap-8 gap-2">
                 <div className="group">
                   <label className="flex items-center gap-2 text-sm font-semibold text-gray-700 mb-3">
                     <span className="text-lg">👤</span>
