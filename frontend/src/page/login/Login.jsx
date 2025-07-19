@@ -40,7 +40,7 @@ const Login = () => {
     setIsLoading(true);
 
     try {
-      const res = await axios.post("http://localhost:8080/api/auth/login", {
+      const res = await axios.post("https://globalbites-production.up.railway.app/api/auth/login", {
         email: userData.email,
         password: userData.password,
       });
