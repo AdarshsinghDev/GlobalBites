@@ -14,6 +14,7 @@ function App() {
     <>
       <Navbar />
       <Routes>
+        <Route path="/" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
         <Route path="/login" element={<Login />} />
         <Route path="/verify-otp" element={<VerifyOTP />} />

@@ -87,9 +87,9 @@ const Home = () => {
       <section className="relative py-16 px-4 text-center">
         <div className="max-w-5xl mx-auto">
           <div className="animate-fadeInUp">
-            <h2 className="text-5xl md:text-6xl font-black mb-6 leading-tight" style={{ color: '#3B2F2F' }}>
+            <h2 className="text-4xl md:text-6xl font-black mb-3 leading-tight" style={{ color: '#3B2F2F' }}>
               What's cooking
-              <span className="block mt-2" style={{ color: '#16a34a' }}>today?</span>
+              <span className="block lg:mt-2 " style={{ color: '#16a34a' }}>today?</span>
             </h2>
             <p className="text-xl mb-12 max-w-2xl mx-auto leading-relaxed" style={{ color: '#3B2F2F', opacity: 0.8 }}>
               Transform your ingredients into culinary masterpieces with 
@@ -100,28 +100,28 @@ const Home = () => {
           {/* Modern Search Bar */}
           <div className="relative max-w-3xl mx-auto group animate-slideInUp">
             <div className="absolute inset-0 rounded-2xl blur-lg opacity-60 group-hover:opacity-80 transition-all duration-500" style={{ background: `linear-gradient(135deg, #FFAAA5, #FFD3B6, #8EE4AF)` }}></div>
-            <div className="relative flex bg-white/90 backdrop-blur-sm border-2 border-white/50 rounded-2xl p-3 shadow-2xl hover:shadow-3xl transition-all duration-500">
+            <div className="relative flex lg:flex-row flex-col lg:gap-0 gap-2 bg-white/90 backdrop-blur-sm border-2 border-white/50 rounded-2xl p-3 shadow-2xl hover:shadow-3xl transition-all duration-500">
               <input
                 type="text"
                 placeholder="Enter ingredients... (e.g., paneer, curd, tomato)"
                 value={ingredients}
                 onChange={(e) => setIngredients(e.target.value)}
                 onKeyPress={handleKeyPress}
-                className="flex-1 px-6 py-4 bg-transparent min-h-[60px] outline-none text-xl placeholder-gray-500 rounded-xl"
+                className="flex-1  px-6 py-4 bg-transparent min-h-[60px] outline-none text-xl placeholder-gray-500 rounded-xl"
                 style={{ color: '#3B2F2F' }}
               />
               <button
                 onClick={handleSearch}
                 disabled={loading}
-                className="text-white ml-4 px-5 py-4 rounded-xl font-semibold shadow-lg hover:shadow-xl transform hover:scale-105 active:scale-95 transition-all duration-300 disabled:opacity-50"
+                className="text-white lg:ml-4 px-5 lg:py-4 py-3  rounded-xl font-semibold shadow-lg hover:shadow-xl transform hover:scale-105 active:scale-95 transition-all duration-300 disabled:opacity-50"
                 style={{ background: `linear-gradient(135deg, #3dff84, #379683)` }}
               >
                 {loading ? (
                   <div className="animate-spin h-6 w-6 border-2 border-white border-t-transparent rounded-full"></div>
                 ) : (
-                  <div className="flex items-center space-x-2">
+                  <div className="flex items-center justify-center space-x-2">
                     <CiSearch size={24} />
-                    <span className="hidden sm:inline">Search</span>
+                    <span className="">Search</span>
                   </div>
                 )}
               </button>

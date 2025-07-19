@@ -86,10 +86,7 @@ const VerifyOTP = () => {
         <div className="absolute top-20 left-20 text-white/60 animate-pulse">
           <Shield size={80} />
         </div>
-        <div className="absolute bottom-[250px] left-[420px] z-[20] text-white text-6xl">
-          🔐
-        </div>
-        <div className="absolute top-[190px]  z-[20] right-1/3 text-white text-5xl animate-bounce delay-700">
+        <div className="absolute text-[40px] top-[240px] lg:top-[190px]  z-[20] right-[40px] lg:right-1/3 text-white text-5xl animate-bounce delay-700">
           📧
         </div>
       </div>
@@ -114,9 +111,9 @@ const VerifyOTP = () => {
         {/* Verification Card */}
         <div className="bg-white/95 backdrop-blur-md rounded-2xl shadow-2xl border border-white/20 p-8 animate-fade-in">
           {/* GlobalBites Branding */}
-          <Logo logoStyle={"text-[18px]"} logoIconPad={"p-[5px]"} />
+          <Logo logoStyle={"text-[18px]"} logoIconPad={"p-[5px]"} className="" />
 
-          <div className="text-center mb-6">
+          <div className="text-center my-6">
             <h2 className="text-xl font-bold text-gray-800 mb-2 flex items-center justify-center gap-2">
               <KeyRound className="text-indigo-600" size={24} />
               Verify Your Email
@@ -136,11 +133,11 @@ const VerifyOTP = () => {
           </div>
 
           {/* Instructions */}
-          <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 mb-6">
+          {/* <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 mb-6">
             <div className="flex items-start gap-3">
               <Clock className="text-amber-600 mt-0.5" size={18} />
               <div className="text-sm text-amber-800">
-                <p className="font-medium mb-1">
+                <p className="font-medium mb-[5px]">
                   Quick verification needed! 🍳
                 </p>
                 <p>
@@ -148,7 +145,7 @@ const VerifyOTP = () => {
                 </p>
               </div>
             </div>
-          </div>
+          </div> */}
 
           {/* OTP Form */}
           <form onSubmit={handleSumbit} className="space-y-6">
@@ -167,8 +164,8 @@ const VerifyOTP = () => {
                   onChange={handelChange}
                   value={otp}
                   maxLength="6"
-                  style={{ letterSpacing: "10px" }}
-                  className="w-1/2 m-auto px-4 py-4 min-h-[50px] text-center text-xl font-mono font-bold border-2 border-gray-200 rounded-xl focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 transition-all duration-300 outline-none bg-white/90 hover:shadow-md tracking-wider"
+                  style={{ letterSpacing: "5px" }}
+                  className="w-[60%] m-auto px-4 py-4 min-h-[50px] text-center text-xl font-mono font-bold border-2 border-gray-200 rounded-xl focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 transition-all duration-300 outline-none bg-white/90 hover:shadow-md tracking-wider"
                 />
               </div>
             </div>

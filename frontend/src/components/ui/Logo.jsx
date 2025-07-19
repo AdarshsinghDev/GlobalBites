@@ -3,7 +3,7 @@ import { ChefHat } from "lucide-react";
 
 const Logo = ({ logoStyle, logoIconSize, logoIconPad }) => {
   return (
-    <div className={`flex items-center justify-center mb-4`}>
+    <div className={`flex items-center justify-center`}>
       <div className={`bg-green-500 p-3 rounded-full mr-3 shadow-lg ${logoIconPad}`}>
         <ChefHat className="text-white" size={logoIconSize} />
       </div>
