@@ -1,0 +1,27 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+input {
+  border: 1px solid rgba(110, 110, 110, 0.404);
+  border-radius: 5px;
+  height: 35px;
+  padding-left: 8px;
+  outline: none;
+  transition: border 0.2s ease;
+}
+
+/* Fix: 'active' is not a valid input state. Use ':focus' instead */
+input:focus {
+  border: 1px solid #4caf4f88; /* green border on focus */
+  box-shadow: 0 0 3px #4caf4fad;
+}
+img {
+  width: 100%;
+}
