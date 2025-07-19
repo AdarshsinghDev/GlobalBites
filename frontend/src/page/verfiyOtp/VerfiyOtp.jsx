@@ -78,6 +78,9 @@ const VerifyOTP = () => {
       setIsLoading(false);
     }
   };
+  useEffect(async()=> {
+    const res = await axios.get(" ")
+  },[])
 
   return (
     <div className="min-h-screen w-full flex items-center justify-center bg-indigo-200 to-purple-50 relative overflow-hidden px-4">
