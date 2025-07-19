@@ -5,7 +5,7 @@ const Profile = () => {
   const [fullname, setFullname] = useState(
     localStorage.getItem("storedFullname")
   );
-
+  const [email, setEmail] = useState(localStorage.getItem("storedEmail"));
   const token = localStorage.getItem("token");
 
   const handleSubmit = async (e) => {
@@ -34,10 +34,18 @@ const Profile = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-orange-50 via-amber-50 to-green-50 text-gray-800 px-4 py-8">
       {/* Decorative food elements */}
-      <div className="fixed top-35 lg:top-10 left-10 opacity-40 text-2xl lg:text-8xl">🍽️</div>
-      <div className="fixed top-20 right-20 opacity-40 text-2xl lg:text-6xl">🥗</div>
-      <div className="fixed bottom-20 left-20 opacity-40 text-2xl lg:text-7xl">🍕</div>
-      <div className="fixed bottom-10 right-10 opacity-40 text-2xl lg:text-5xl">🍔</div>
+      <div className="fixed top-35 lg:top-10 left-10 opacity-40 text-2xl lg:text-8xl">
+        🍽️
+      </div>
+      <div className="fixed top-20 right-20 opacity-40 text-2xl lg:text-6xl">
+        🥗
+      </div>
+      <div className="fixed bottom-20 left-20 opacity-40 text-2xl lg:text-7xl">
+        🍕
+      </div>
+      <div className="fixed bottom-10 right-10 opacity-40 text-2xl lg:text-5xl">
+        🍔
+      </div>
 
       <div className="max-w-5xl mx-auto">
         {/* Header Section */}
@@ -51,7 +59,7 @@ const Profile = () => {
           {/* Enhanced Banner Header with food pattern */}
           <div className="relative bg-gradient-to-r from-green-600 via-lime-500 to-amber-400 lg:h-52 h-36 flex items-center justify-center">
             {/* Subtle food pattern overlay */}
-            <Logo logoStyle={"text-xl"}  />
+            <Logo logoStyle={"text-xl"} />
             <div className="absolute inset-0 opacity-40">
               <div className="absolute top-4 left-8 text-2xl">🌿</div>
               <div className="absolute top-8 right-12 text-2xl">🍃</div>
@@ -85,7 +93,7 @@ const Profile = () => {
               </h2>
               <div className="flex gap-1 items-center justify-center text-gray-600 mb-4">
                 <div className="p-1 rounded-full text-2xl">📧</div>
-                <p className="text-lg">Adarsh@gmail.com</p>
+                <p className="">{email}</p>
               </div>
               <div className="flex items-center justify-center gap-2 text-sm text-gray-500 bg-gray-50 rounded-full px-4 py-2 inline-flex">
                 <span className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></span>
