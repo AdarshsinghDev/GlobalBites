@@ -41,7 +41,7 @@ const VerifyOTP = () => {
 
     try {
       const res = await axios.post(
-        "http://localhost:8080/api/auth/verify-otp",
+        "https://globalbites-production.up.railway.app/api/auth/verify-otp",
         { email, otp }
       );
 

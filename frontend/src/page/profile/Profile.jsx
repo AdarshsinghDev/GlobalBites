@@ -13,7 +13,7 @@ const Profile = () => {
 
     try {
       const res = await axios.put(
-        "http://localhost:8080/api/auth/update-profile",
+        "https://globalbites-production.up.railway.app/api/auth/update-profile",
         { fullname },
         {
           headers: {

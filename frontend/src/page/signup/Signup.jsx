@@ -69,7 +69,7 @@ const Signup = () => {
     }
 
     try {
-      const res = await axios.post("http://localhost:8080/api/auth/signup", {
+      const res = await axios.post("https://globalbites-production.up.railway.app/api/auth/signup", {
         email: userData.email,
         fullname: userData.fullname,
         password: userData.password,
