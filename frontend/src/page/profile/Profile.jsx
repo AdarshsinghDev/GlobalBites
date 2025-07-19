@@ -34,10 +34,10 @@ const Profile = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-orange-50 via-amber-50 to-green-50 text-gray-800 px-4 py-8">
       {/* Decorative food elements */}
-      <div className="fixed top-10 left-10 opacity-40 text-8xl">🍽️</div>
-      <div className="fixed top-20 right-20 opacity-40 text-6xl">🥗</div>
-      <div className="fixed bottom-20 left-20 opacity-40 text-7xl">🍕</div>
-      <div className="fixed bottom-10 right-10 opacity-40 text-5xl">🍔</div>
+      <div className="fixed top-35 lg:top-10 left-10 opacity-40 text-2xl lg:text-8xl">🍽️</div>
+      <div className="fixed top-20 right-20 opacity-40 text-2xl lg:text-6xl">🥗</div>
+      <div className="fixed bottom-20 left-20 opacity-40 text-2xl lg:text-7xl">🍕</div>
+      <div className="fixed bottom-10 right-10 opacity-40 text-2xl lg:text-5xl">🍔</div>
 
       <div className="max-w-5xl mx-auto">
         {/* Header Section */}
@@ -49,9 +49,9 @@ const Profile = () => {
 
         <div className="bg-white/80 backdrop-blur-sm rounded-3xl shadow-2xl overflow-hidden border border-white/20">
           {/* Enhanced Banner Header with food pattern */}
-          <div className="relative bg-gradient-to-r from-green-600 via-lime-500 to-amber-400 h-52 flex items-center justify-center">
+          <div className="relative bg-gradient-to-r from-green-600 via-lime-500 to-amber-400 lg:h-52 h-36 flex items-center justify-center">
             {/* Subtle food pattern overlay */}
-            <Logo />
+            <Logo logoStyle={"text-xl"}  />
             <div className="absolute inset-0 opacity-40">
               <div className="absolute top-4 left-8 text-2xl">🌿</div>
               <div className="absolute top-8 right-12 text-2xl">🍃</div>
@@ -64,11 +64,11 @@ const Profile = () => {
             {/* Profile image with enhanced styling */}
             <div className="absolute -bottom-12">
               <div className="relative">
-                <div className="absolute inset-0 bg-gradient-to-r from-orange-400 to-amber-400 rounded-full blur-md opacity-50 scale-110"></div>
+                <div className="absolute inset-0 bg-gradient-to-r from-orange-400 to-amber-400 rounded-full blur-md opacity-50 scale-80"></div>
                 <img
                   src="https://i.pravatar.cc/150?img=5"
                   alt="Profile"
-                  className="relative rounded-full border-4 border-white w-28 h-28 object-cover shadow-xl"
+                  className="relative rounded-full border-4 border-white lg:w-28 lg:h-28 w-20 h-20   object-cover shadow-xl"
                 />
                 <div className="absolute text-xl -bottom-1 -right-1 bg-green-500 text-white rounded-full w-8 h-8 flex items-center justify-center shadow-lg">
                   👨‍🍳
@@ -84,7 +84,7 @@ const Profile = () => {
                 {fullname}
               </h2>
               <div className="flex gap-1 items-center justify-center text-gray-600 mb-4">
-                <div className="p-1 rounded-full text-4xl">📧</div>
+                <div className="p-1 rounded-full text-2xl">📧</div>
                 <p className="text-lg">Adarsh@gmail.com</p>
               </div>
               <div className="flex items-center justify-center gap-2 text-sm text-gray-500 bg-gray-50 rounded-full px-4 py-2 inline-flex">
@@ -177,8 +177,8 @@ const Profile = () => {
                     </p>
                   </div>
 
-                  <button className="group relative px-12 py-4 rounded-2xl bg-gradient-to-r from-green-600 to-lime-500 text-white font-semibold text-lg hover:from-green-700 hover:to-lime-600 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 active:translate-y-0">
-                    <span className="flex items-center gap-3 justify-center">
+                  <button className="group relative px-4 py-2 lg:px-8 lg:py-4 rounded-2xl bg-gradient-to-r from-green-600 to-lime-500 text-white font-semibold text-lg hover:from-green-700 hover:to-lime-600 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 active:translate-y-0">
+                    <span className="flex items-center gap-1 justify-center ">
                       <span className="text-xl">👨‍🍳</span>
                       Save Profile
                       <span className="text-xl group-hover:translate-x-1 transition-transform duration-200">
