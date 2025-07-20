@@ -102,7 +102,7 @@ const Login = () => {
   };
 
   return (
-    <div className="min-h-screen w-full flex items-center justify-center bg-gradient-to-br  relative overflow-hidden">
+    <div className="min-h-screen  w-full flex items-center justify-center bg-gradient-to-br  relative overflow-hidden">
       {/* Background Image with Overlay */}
       <div className="absolute inset-0">
         <img
@@ -122,7 +122,7 @@ const Login = () => {
       </div>
 
       {/* Main Content */}
-      <div className="relative z-10 w-full max-w-md mx-4">
+      <div className="relative z-10 w-full max-w-md mx-4 lg:mt-0 mt-[-40%]">
         {/* Header */}
         <div className="text-center mb-4 mt-8">
           <Logo />
@@ -155,7 +155,7 @@ const Login = () => {
                   placeholder="chef@globalbites.com"
                   onChange={handleChange}
                   value={userData.email}
-                  className="w-full px-4 py-3 pl-12 border-2 border-gray-200 rounded-xl focus:border-green-500 focus:ring-2 focus:ring-green-200 transition-all duration-300 outline-none bg-white/90"
+                  className="w-full px-4 py-3 min-h-[50px] pl-12 border-2 border-gray-200 rounded-xl focus:border-green-500 focus:ring-2 focus:ring-green-200 transition-all duration-300 outline-none bg-white/90"
                 />
                 <Mail
                   className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400"
@@ -180,7 +180,7 @@ const Login = () => {
                   placeholder="Enter your secret recipe"
                   onChange={handleChange}
                   value={userData.password}
-                  className="w-full px-4 py-3 pl-12 pr-12 border-2 border-gray-200 rounded-xl focus:border-green-500 focus:ring-2 focus:ring-green-200 transition-all duration-300 outline-none bg-white/90"
+                  className="w-full px-4 py-3 min-h-[50px] pl-12 pr-12 border-2 border-gray-200 rounded-xl focus:border-green-500 focus:ring-2 focus:ring-green-200 transition-all duration-300 outline-none bg-white/90"
                 />
                 <Lock
                   className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400"
