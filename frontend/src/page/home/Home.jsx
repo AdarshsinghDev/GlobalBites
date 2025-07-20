@@ -119,12 +119,11 @@ const Home = () => {
               className="text-xl mb-12 max-w-2xl mx-auto leading-relaxed"
               style={{ color: "#3B2F2F", opacity: 0.8 }}
             >
-              Transform your ingredients into culinary masterpieces with
-              <span className="font-semibold" style={{ color: "#6A0572" }}>
-                {" "}
-                AI-powered
-              </span>{" "}
-              recipe suggestions
+              Memories don’t come in English only.
+              <br />
+              🗣️ English . हिन्दी . भोजपुरी . ગુજરાતી. . తెలుగు . . മലയാളം. मराठी
+              <br />
+              So we made GlobalBites understand your language too.
             </p>
           </div>
 
