@@ -154,7 +154,7 @@ const Home = () => {
                 }}
               >
                 {loading ? (
-                  <div className="animate-spin h-6 w-6 border-2 border-white border-t-transparent rounded-full"></div>
+                  <div className="animate-spin h-6 w-6 m-auto border-2 border-white border-t-transparent rounded-full"></div>
                 ) : (
                   <div className="flex items-center justify-center space-x-2">
                     <CiSearch size={24} />
