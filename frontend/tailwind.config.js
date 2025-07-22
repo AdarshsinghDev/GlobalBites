@@ -5,7 +5,17 @@ export default {
     "./src/**/*.{js,ts,jsx,tsx}",
   ],
   theme: {
-    extend: {},
+    extend: {
+      keyframes: {
+        spinOnce: {
+          '0%': { transform: 'rotate(0deg)' },
+          '100%': { transform: 'rotate(90deg)' },
+        },
+      },
+      animation: {
+        spinOnce: 'spinOnce 0.5s ease-in-out',
+      },
+    },
   },
   plugins: [],
-}
+};

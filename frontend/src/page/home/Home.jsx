@@ -1,7 +1,21 @@
 import React, { useEffect, useState } from "react";
-import { CiSearch } from "react-icons/ci";
+import { CiSearch, CiCircleMore } from "react-icons/ci";
+import {
+  ChefHat,
+  Heart,
+  DollarSign,
+  Sparkles,
+  ArrowRight,
+  Utensils,
+  FlaskConicalOff,
+  CalendarDays,
+  HeartHandshake,
+  X,
+} from "lucide-react";
 import { useUserContext } from "../../context/CreateContext";
 import axios from "axios";
+import { DollarSignIcon } from "lucide-react";
+import { Link } from "react-router-dom";
 
 const Home = () => {
   const { userContextData } = useUserContext();
@@ -10,7 +24,7 @@ const Home = () => {
   const [recipes, setRecipes] = useState([]);
   const [loading, setLoading] = useState(false);
   const [searchedIngredients, setSearchedIngredients] = useState("");
-
+  const [closeMenu, setCloseMenu] = useState(false);
   useEffect(() => {
     const storedFullame = localStorage.getItem("storedFullname");
     setFullname(userContextData.fullname || storedFullame || "Guest");
@@ -54,6 +68,26 @@ const Home = () => {
     }
   };
 
+  const featuresBtn = [
+    { id: 1, btnTitle: "Chef", btnIcon: ChefHat, to: "/chef" },
+    { id: 2, btnTitle: "Budget", btnIcon: DollarSign, to: "/budget" },
+    { id: 3, btnTitle: "Dont Combo", btnIcon: X, to: "/chef" },
+    { id: 4, btnTitle: "Mood Based", btnIcon: Heart, to: "/chef" },
+    {
+      id: 5,
+      btnTitle: "Science behind",
+      btnIcon: FlaskConicalOff,
+      to: "/chef",
+    },
+    { id: 6, btnTitle: "Health Goal", btnIcon: HeartHandshake, to: "/chef" },
+    { id: 7, btnTitle: "Weekly Meal", btnIcon: CalendarDays, to: "/chef" },
+  ];
+
+  const handleCloseMenu = () => {
+    setCloseMenu((prev) => !prev);
+    console.log("workin");
+  };
+
   return (
     <div
       className="min-h-screen bg-gradient-to-br from-[#EDF6E5] via-[#DCEDC1] to-[#A8E6CF] overflow-hidden"
@@ -77,49 +111,61 @@ const Home = () => {
         </div>
       </div>
 
-      {/* Modern Header */}
-      {/* <div className="relative backdrop-blur-sm bg-white/80 border-b border-gray-200/50 shadow-lg">
-        <div className="max-w-7xl mx-auto px-4 py-6">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-4">
-              <div className="w-12 h-12 rounded-2xl flex items-center justify-center shadow-lg transform hover:scale-105 transition-transform duration-300" style={{ background: `linear-gradient(135deg, #FFAAA5, #FFD3B6)` }}>
-                <span className="text-2xl">🍽️</span>
+      {/* Modal Overlay - Fixed Logic */}
+      {closeMenu && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 px-4 py-4 overflow-y-auto">
+          {/* Modal Container - Fully Responsive */}
+          <div className="w-full max-w-sm sm:max-w-md md:max-w-lg lg:max-w-xl xl:max-w-2xl h-auto max-h-[90vh] bg-gradient-to-br from-[#EDF6E5] via-[#bbfae3] to-[#15885e] rounded-xl shadow-2xl relative overflow-y-auto">
+            {/* Close Button */}
+            <button
+              onClick={handleCloseMenu}
+              className="absolute top-2  right-3 z-10 bg-green-500 hover:bg-green-700 text-white rounded-full p-1 transform transition-all duration-500 ease-in-out hover:scale-110 shadow-2xl"
+            >
+              <X size={24} className="sm:w-5 sm:h-5 md:w-6 md:h-6" />
+            </button>
+
+            {/* Modal Content */}
+            <div className="p-6 sm:p-8 md:p-10 pt-16 sm:pt-20">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-3 sm:gap-4 justify-items-center">
+                {featuresBtn.map((btn) => {
+                  const Icon = btn.btnIcon;
+                  return (
+                    <Link
+                      key={btn.id}
+                      className="w-full max-w-[200px]"
+                      to={btn.to}
+                    >
+                      <button className="flex items-center gap-2 sm:gap-3 w-full bg-white text-black border-green-600 border-2 shadow-lg px-3 sm:px-4 py-2 sm:py-3 rounded-xl hover:bg-green-100 transition duration-300 text-sm sm:text-base">
+                        <Icon className="w-5 h-5 sm:w-6 sm:h-6 md:w-8 md:h-8 flex-shrink-0" />
+                        <span className="truncate">{btn.btnTitle}</span>
+                      </button>
+                    </Link>
+                  );
+                })}
               </div>
-              <div>
-                <h1 className="text-2xl font-bold" style={{ color: '#3B2F2F' }}>
-                  AI Recipe Generator
-                </h1>
-                <p className="text-sm opacity-70" style={{ color: '#3B2F2F' }}>
-                  Cook smarter, not harder
-                </p>
-              </div>
-            </div>
-            <div className="text-right">
-              <p className="text-sm" style={{ color: '#3B2F2F' }}>Welcome back,</p>
-              <p className="font-semibold" style={{ color: '#6A0572' }}>{fullname}</p>
             </div>
           </div>
         </div>
-      </div> */}
+      )}
 
       {/* Hero Section */}
-      <section className="relative py-16 px-4 text-center">
+      <section className="relative py-8 sm:py-12 md:py-16 px-4 text-center">
         <div className="max-w-5xl mx-auto">
           <div className="animate-fadeInUp">
             <h2
-              className="text-4xl md:text-6xl font-black mb-3 leading-tight"
+              className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-black mb-3 leading-tight"
               style={{ color: "#3B2F2F" }}
             >
               What's cooking
-              <span className="block lg:mt-2 " style={{ color: "#16a34a" }}>
+              <span className="block mt-1 lg:mt-2" style={{ color: "#16a34a" }}>
                 today?
               </span>
             </h2>
             <p
-              className="text-xl mb-12 max-w-2xl mx-auto leading-relaxed"
+              className="text-base sm:text-lg md:text-xl mb-8 sm:mb-12 max-w-2xl mx-auto leading-relaxed px-4"
               style={{ color: "#3B2F2F", opacity: 0.8 }}
             >
-              Memories don’t come in English only.
+              Memories don't come in English only.
               <br />
               🗣️ English . हिन्दी . भोजपुरी . ગુજરાતી . తెలుగు . മലയാളം . मराठी
               <br />
@@ -127,41 +173,50 @@ const Home = () => {
             </p>
           </div>
 
-          {/* Modern Search Bar */}
-          <div className="relative max-w-3xl mx-auto group animate-slideInUp">
+          {/* Modern Search Bar - Fully Responsive */}
+          <div className="relative max-w-3xl mx-auto group animate-slideInUp px-4">
             <div
               className="absolute inset-0 rounded-2xl blur-lg opacity-60 group-hover:opacity-80 transition-all duration-500"
               style={{
                 background: `linear-gradient(135deg, #FFAAA5, #FFD3B6, #8EE4AF)`,
               }}
             ></div>
-            <div className="relative flex lg:flex-row flex-col lg:gap-0 gap-2 bg-white/90 backdrop-blur-sm border-2 border-white/50 rounded-2xl p-3 shadow-2xl hover:shadow-3xl transition-all duration-500">
+            <div className="relative flex flex-col sm:flex-row gap-2 sm:gap-0 bg-white/90 backdrop-blur-sm border-2 border-white/50 rounded-2xl p-2 sm:p-3 shadow-2xl hover:shadow-3xl transition-all duration-500">
               <input
                 type="text"
                 placeholder="Enter ingredients...(e.g.paneer, curd, tomato)"
                 value={ingredients}
                 onChange={(e) => setIngredients(e.target.value)}
                 onKeyPress={handleKeyPress}
-                className="flex-1 px-3  py-4 bg-transparent lg:h-[60px] h-[40px] outline-none lg:text-xl placeholder-gray-500 rounded-xl"
+                className="flex-1 px-3 py-3 sm:py-4 h-[50px] bg-transparent text-base sm:text-lg lg:text-xl outline-none placeholder-gray-500 rounded-xl"
                 style={{ color: "#3B2F2F" }}
               />
-              <button
-                onClick={handleSearch}
-                disabled={loading}
-                className="text-white lg:ml-4 px-5 lg:py-4 py-3  rounded-xl font-semibold shadow-lg hover:shadow-xl transform hover:scale-105 active:scale-95 transition-all duration-300 disabled:opacity-50"
-                style={{
-                  background: `linear-gradient(135deg, #3dff84, #379683)`,
-                }}
-              >
-                {loading ? (
-                  <div className="animate-spin h-6 w-6 m-auto border-2 border-white border-t-transparent rounded-full"></div>
-                ) : (
-                  <div className="flex items-center justify-center space-x-2">
-                    <CiSearch size={24} />
-                    <span className="">Search</span>
-                  </div>
-                )}
-              </button>
+              <div className="flex gap-2 sm:gap-1">
+                <button
+                  onClick={handleCloseMenu}
+                  className="text-green-600 hover:text-green-700 p-2 rounded-lg hover:bg-green-50 transition-colors"
+                >
+                  <CiCircleMore className="w-6 h-6 sm:w-8 sm:h-8 lg:w-10 lg:h-10" />
+                </button>
+
+                <button
+                  onClick={handleSearch}
+                  disabled={loading}
+                  className="text-white px-4 sm:px-5 py-3 sm:py-4 rounded-xl font-semibold shadow-lg hover:shadow-xl transform hover:scale-105 active:scale-95 transition-all duration-300 disabled:opacity-50 flex-shrink-0"
+                  style={{
+                    background: `linear-gradient(135deg, #3dff84, #379683)`,
+                  }}
+                >
+                  {loading ? (
+                    <div className="animate-spin h-5 w-5 sm:h-6 sm:w-6 border-2 border-white border-t-transparent rounded-full"></div>
+                  ) : (
+                    <div className="flex items-center justify-center space-x-2">
+                      <CiSearch className="w-5 h-5 sm:w-6 sm:h-6" />
+                      <span className="text-sm sm:text-base">Search</span>
+                    </div>
+                  )}
+                </button>
+              </div>
             </div>
           </div>
         </div>
@@ -169,8 +224,8 @@ const Home = () => {
 
       {/* Loading State */}
       {loading && (
-        <div className="text-center py-16 animate-fadeIn">
-          <div className="relative mx-auto w-20 h-20 mb-6">
+        <div className="text-center py-8 sm:py-16 animate-fadeIn px-4">
+          <div className="relative mx-auto w-16 h-16 sm:w-20 sm:h-20 mb-6">
             <div
               className="absolute inset-0 rounded-full border-4 border-t-transparent animate-spin"
               style={{ borderColor: "#FFAAA5", borderTopColor: "transparent" }}
@@ -191,7 +246,10 @@ const Home = () => {
               }}
             ></div>
           </div>
-          <p className="text-xl font-semibold" style={{ color: "#3B2F2F" }}>
+          <p
+            className="text-lg sm:text-xl font-semibold"
+            style={{ color: "#3B2F2F" }}
+          >
             Crafting perfect recipes for you...
           </p>
           <p className="text-sm mt-2" style={{ color: "#6A0572" }}>
@@ -202,18 +260,21 @@ const Home = () => {
 
       {/* AI Generated Recipes */}
       {!loading && recipes.length > 0 && (
-        <section className="relative px-4 py-12 max-w-7xl mx-auto">
-          <div className="text-center mb-12 animate-fadeInUp">
+        <section className="relative px-4 py-8 sm:py-12 max-w-7xl mx-auto">
+          <div className="text-center mb-8 sm:mb-12 animate-fadeInUp">
             <h3
-              className="text-4xl font-bold mb-4"
+              className="text-2xl sm:text-3xl md:text-4xl font-bold mb-4"
               style={{ color: "#3B2F2F" }}
             >
               🍳 <span style={{ color: "#16a34a" }}>AI Curated</span> Recipes
             </h3>
-            <p className="text-lg" style={{ color: "#3B2F2F", opacity: 0.8 }}>
+            <p
+              className="text-base sm:text-lg px-4"
+              style={{ color: "#3B2F2F", opacity: 0.8 }}
+            >
               Based on ingredients:
               <span
-                className="font-semibold px-3 py-1 rounded-full ml-2"
+                className="font-semibold px-2 sm:px-3 py-1 rounded-full ml-1 sm:ml-2 text-sm sm:text-base inline-block mt-1 sm:mt-0"
                 style={{ color: "#6A0572", backgroundColor: "#FFD3B6" }}
               >
                 {searchedIngredients}
@@ -221,7 +282,7 @@ const Home = () => {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 sm:gap-6 lg:gap-8">
             {recipes.map((recipe, index) => (
               <div
                 key={recipe.id}
@@ -237,20 +298,20 @@ const Home = () => {
                 ></div>
 
                 {/* Main Card */}
-                <div className="relative bg-white/90 backdrop-blur-sm border border-gray-200/50 rounded-2xl p-6 shadow-xl hover:shadow-2xl transition-all duration-500">
+                <div className="relative bg-white/90 backdrop-blur-sm border border-gray-200/50 rounded-2xl p-4 sm:p-6 shadow-xl hover:shadow-2xl transition-all duration-500 h-full flex flex-col">
                   {/* Recipe Header */}
-                  <div className="flex items-start justify-between mb-4">
-                    <div className="flex-1">
+                  <div className="flex items-start justify-between mb-4 gap-2">
+                    <div className="flex-1 min-w-0">
                       <h2
-                        className="text-xl font-bold mb-2 leading-tight"
+                        className="text-lg sm:text-xl font-bold mb-2 leading-tight"
                         style={{ color: "#3B2F2F" }}
                       >
                         {recipe.name}
                       </h2>
                     </div>
-                    <div className="ml-4 flex-shrink-0">
+                    <div className="flex-shrink-0">
                       <span
-                        className="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold text-white shadow-sm"
+                        className="inline-flex items-center px-2 sm:px-3 py-1 rounded-full text-xs font-bold text-white shadow-sm"
                         style={{ backgroundColor: "#6A0572" }}
                       >
                         #{recipe.id}
@@ -260,7 +321,7 @@ const Home = () => {
 
                   {/* Description */}
                   <p
-                    className="mb-4 leading-relaxed line-clamp-3"
+                    className="mb-4 leading-relaxed line-clamp-3 text-sm sm:text-base flex-grow"
                     style={{ color: "#3B2F2F", opacity: 0.8 }}
                   >
                     {recipe.description}
@@ -277,7 +338,7 @@ const Home = () => {
                       </span>
                     </div>
                     <div
-                      className="p-3 rounded-lg border-2 border-dashed"
+                      className="p-2 sm:p-3 rounded-lg border-2 border-dashed"
                       style={{
                         backgroundColor: "#ffb889",
                         borderColor: "#fb291c",
@@ -285,7 +346,7 @@ const Home = () => {
                       }}
                     >
                       <p
-                        className="text-sm font-medium"
+                        className="text-xs sm:text-sm font-medium break-words"
                         style={{ color: "#3B2F2F" }}
                       >
                         {recipe.mainIngredients}
@@ -295,11 +356,11 @@ const Home = () => {
 
                   {/* Cooking Time */}
                   <div
-                    className="flex items-center mb-6 p-3 rounded-lg"
+                    className="flex items-center mb-4 sm:mb-6 p-2 sm:p-3 rounded-lg"
                     style={{ backgroundColor: "#8EE4AF" }}
                   >
                     <span
-                      className="text-sm font-semibold flex items-center"
+                      className="text-sm font-semibold flex items-center flex-wrap"
                       style={{ color: "#3B2F2F" }}
                     >
                       ⏱️ Cooking Time:
@@ -313,7 +374,7 @@ const Home = () => {
                   </div>
 
                   {/* View Recipe Button */}
-                  <button className="w-full relative overflow-hidden text-white py-3 px-6 rounded-xl font-semibold shadow-lg hover:shadow-xl transform hover:scale-105 active:scale-95 transition-all duration-300 group">
+                  <button className="w-full relative overflow-hidden text-white py-2 sm:py-3 px-4 sm:px-6 rounded-xl font-semibold shadow-lg hover:shadow-xl transform hover:scale-105 active:scale-95 transition-all duration-300 group mt-auto">
                     <div
                       className="absolute inset-0 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left"
                       style={{
@@ -328,7 +389,9 @@ const Home = () => {
                         backgroundClip: "text",
                       }}
                     >
-                      <span className="text-white">View Full Recipe 🍴</span>
+                      <span className="text-white text-sm sm:text-base">
+                        View Full Recipe 🍴
+                      </span>
                     </div>
                     <div
                       className="absolute inset-0"
@@ -344,26 +407,29 @@ const Home = () => {
 
       {/* No Results */}
       {!loading && recipes.length === 0 && searchedIngredients && (
-        <div className="text-center py-16 animate-fadeIn">
+        <div className="text-center py-8 sm:py-16 animate-fadeIn px-4">
           <div className="max-w-md mx-auto">
             <div
-              className="w-24 h-24 rounded-full flex items-center justify-center mx-auto mb-6 shadow-lg"
+              className="w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 rounded-full flex items-center justify-center mx-auto mb-6 shadow-lg"
               style={{
                 background: `linear-gradient(135deg, #FFD3B6, #FFAAA5)`,
               }}
             >
-              <span className="text-4xl">🤔</span>
+              <span className="text-2xl sm:text-3xl md:text-4xl">🤔</span>
             </div>
             <h3
-              className="text-2xl font-bold mb-4"
+              className="text-xl sm:text-2xl font-bold mb-4"
               style={{ color: "#3B2F2F" }}
             >
               No recipes found
             </h3>
-            <p className="text-lg" style={{ color: "#3B2F2F", opacity: 0.8 }}>
+            <p
+              className="text-base sm:text-lg"
+              style={{ color: "#3B2F2F", opacity: 0.8 }}
+            >
               Couldn't find recipes for
               <span
-                className="font-semibold px-2 py-1 rounded-full mx-1"
+                className="font-semibold px-2 py-1 rounded-full mx-1 text-sm sm:text-base inline-block"
                 style={{ color: "#6A0572", backgroundColor: "#FFD3B6" }}
               >
                 {searchedIngredients}

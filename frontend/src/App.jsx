@@ -8,6 +8,8 @@ import Profile from "./page/profile/Profile";
 import Settings from "./page/setting/Setting";
 import Favourites from "./page/favourite/Favourites";
 import MyRecipes from "./page/my-recipe/MyRecipe";
+import Chef from "./page/features/Chef";
+import Budget from "./page/features/Budget";
 
 function App() {
   return (
@@ -23,6 +25,8 @@ function App() {
         <Route path="/setting" element={<Settings />} />
         <Route path="/favourites" element={<Favourites />} />
         <Route path="/my-recipes" element={<MyRecipes />} />
+        <Route path="/chef" element={<Chef />} />
+        <Route path="/budget" element={<Budget />} />
       </Routes>
     </>
   );
