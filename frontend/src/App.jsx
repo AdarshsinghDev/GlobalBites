@@ -10,6 +10,10 @@ import Favourites from "./page/favourite/Favourites";
 import MyRecipes from "./page/my-recipe/MyRecipe";
 import Chef from "./page/features/Chef";
 import Budget from "./page/features/Budget";
+import Combo from "./page/features/Combo";
+import Mood from "./page/features/Mood";
+import ScienceBehind from "./page/features/ScienceBehind";
+import Health from "./page/features/Health";
 
 function App() {
   return (
@@ -27,6 +31,10 @@ function App() {
         <Route path="/my-recipes" element={<MyRecipes />} />
         <Route path="/chef" element={<Chef />} />
         <Route path="/budget" element={<Budget />} />
+        <Route path="/combo" element={<Combo />} />
+        <Route path="/mood" element={<Mood />} />
+        <Route path="/science-behind" element={<ScienceBehind />} />
+        <Route path="/health" element={<Health />} />
       </Routes>
     </>
   );

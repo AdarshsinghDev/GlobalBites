@@ -211,8 +211,6 @@ const Chef = () => {
             <input
               type="text"
               placeholder="Search chefs or specialties..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
               className="w-full pl-12 pr-4 h-[40px] py-3 rounded-full border-2 border-gray-200 focus:border-green-300 focus:outline-none transition-colors"
               style={{ backgroundColor: "white" }}
             />

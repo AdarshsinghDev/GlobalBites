@@ -71,15 +71,15 @@ const Home = () => {
   const featuresBtn = [
     { id: 1, btnTitle: "Chef", btnIcon: ChefHat, to: "/chef" },
     { id: 2, btnTitle: "Budget", btnIcon: DollarSign, to: "/budget" },
-    { id: 3, btnTitle: "Dont Combo", btnIcon: X, to: "/chef" },
-    { id: 4, btnTitle: "Mood Based", btnIcon: Heart, to: "/chef" },
+    { id: 3, btnTitle: "Dont Combo", btnIcon: X, to: "/combo" },
+    { id: 4, btnTitle: "Mood Based", btnIcon: Heart, to: "/mood" },
     {
       id: 5,
       btnTitle: "Science behind",
       btnIcon: FlaskConicalOff,
-      to: "/chef",
+      to: "/science-behind",
     },
-    { id: 6, btnTitle: "Health Goal", btnIcon: HeartHandshake, to: "/chef" },
+    { id: 6, btnTitle: "Health Goal", btnIcon: HeartHandshake, to: "/health" },
     { id: 7, btnTitle: "Weekly Meal", btnIcon: CalendarDays, to: "/chef" },
   ];
 
@@ -191,7 +191,7 @@ const Home = () => {
                 className="flex-1 px-3 py-3 sm:py-4 h-[50px] bg-transparent text-base sm:text-lg lg:text-xl outline-none placeholder-gray-500 rounded-xl"
                 style={{ color: "#3B2F2F" }}
               />
-              <div className="flex gap-2 sm:gap-1">
+              <div className="flex gap-2 sm:gap-1 justify-center">
                 <button
                   onClick={handleCloseMenu}
                   className="text-green-600 hover:text-green-700 p-2 rounded-lg hover:bg-green-50 transition-colors"
