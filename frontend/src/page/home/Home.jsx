@@ -40,13 +40,12 @@ const Home = () => {
         "Please enter some ingredients (e.g., paneer, curd/dahi, onion/pyaz)"
       );
     }
-
     try {
       setLoading(true);
       setRecipes([]);
 
       const res = await axios.post(
-        "https://globalbites-production.up.railway.app/api/recipe-ai/get-recipes",
+        `${process.env.REACT_APP_BACKEND_URL}/api/recipe-ai/get-recipes`,
         {
           ingredients: trimmedIngredients,
         }
@@ -127,7 +126,7 @@ const Home = () => {
             </button>
 
             {/* Modal Content */}
-            <div className="p-6 sm:p-8 md:p-10 pt-16 sm:pt-20 pt-10">
+            <div className="p-6 sm:p-8 md:p-10 sm:pt-20 pt-10">
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-3 sm:gap-4 justify-items-center">
                 {featuresBtn.map((btn) => {
                   const Icon = btn.btnIcon;

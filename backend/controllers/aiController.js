@@ -60,7 +60,7 @@ Only provide the recipe information, no extra text.`;
 
         const recipes = recipeLines.map((line, index) => {
             const parts = line.split("|").map(part => part.trim());
-            
+
             if (parts.length >= 4) {
                 return {
                     id: index + 1,
@@ -103,3 +103,16 @@ Only provide the recipe information, no extra text.`;
         });
     }
 };
+
+// export const aiChefController = async (req, res) => {
+//     try {
+//         const { chefName, generatedRecipe } = req.body;
+//         if (!chefName || !generatedRecipe) {
+//             return res.status(400).json({ message: "Plese Enter Recipe and Select your Chef!", success: false });
+//         }
+
+
+//     } catch (error) {
+
+//     }
+// }

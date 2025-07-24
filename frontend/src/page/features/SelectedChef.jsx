@@ -177,7 +177,7 @@ const SelectedChef = () => {
         </div>
 
         {/* Advanced Recipe Generator */}
-        <div className="bg-white/60 backdrop-blur-xl rounded-3xl p-8 shadow-xl mb-12 border  transition-all duration-700">
+        <div className="lg:bg-white/60 backdrop-blur-xl rounded-3xl lg:p-8 lg:shadow-xl mb-12 lg:border  transition-all duration-700">
           <div className="flex items-center gap-4 mb-8">
             <div className="p-1 bg-gradient-to-r from-emerald-500 to-green-800 rounded-2xl shadow-lg">
               <Sparkles className="w-8 h-8 text-white" />
