@@ -27,11 +27,6 @@ const Home = () => {
   const [searchedIngredients, setSearchedIngredients] = useState("");
   const [closeMenu, setCloseMenu] = useState(false);
 
-  //TESTING
-  const BACKEND_URL =
-    process.env.REACT_APP_BACKEND_URL ||
-    "https://globalbites-production.up.railway.app";
-
   useEffect(() => {
     const storedFullame = localStorage.getItem("storedFullname");
     setFullname(userContextData.fullname || storedFullame || "Guest");
@@ -45,19 +40,17 @@ const Home = () => {
         "Please enter some ingredients (e.g., paneer, curd/dahi, onion/pyaz)"
       );
     }
+
     try {
       setLoading(true);
       setRecipes([]);
 
-      //TESTING
-      console.log(
-        "Making request to:",
-        `${BACKEND_URL}/api/recipe-ai/get-recipes`
+      const res = await axios.post(
+        "https://globalbites-production.up.railway.app/api/recipe-ai/get-recipes",
+        {
+          ingredients: trimmedIngredients,
+        }
       );
-
-      const res = await axios.post(`${BACKEND_URL}/api/recipe-ai/get-recipes`, {
-        ingredients: trimmedIngredients,
-      });
 
       setRecipes(res.data.recipes || []);
       setSearchedIngredients(
