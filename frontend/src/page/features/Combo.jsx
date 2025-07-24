@@ -255,7 +255,7 @@ const Combo = () => {
             <h2 className="text-xl md:text-2xl font-semibold text-white mb-4 opacity-90">
               Food Combinations to Avoid
             </h2>
-            <p className="relative text-gray-200 text-lg max-w-3xl mx-auto italic bg-black bg-opacity-30 backdrop-blur-sm rounded-xl px-6 py-4 border border-white border-opacity-20">
+            <p className="relative text-gray-200  lg:w-3xl w-[90%] mx-auto italic bg-black bg-opacity-30 backdrop-blur-sm rounded-xl px-6 py-4 border border-white border-opacity-20">
               Not all foods are meant to be eaten together. Discover
               combinations that may affect your digestion, health, and energy
               with our AI-powered analysis.
@@ -264,14 +264,14 @@ const Combo = () => {
         </div>
 
         {/* Premium Search Bar */}
-        <div className="flex w-1/2 m-auto mb-12 flex-col sm:flex-row gap-2 sm:gap-0 bg-green-400/60 backdrop-blur-sm border-2 border-green-200/50 rounded-2xl p-2 sm:p-3 shadow-2xl hover:shadow-3xl transition-all duration-500">
+        <div className="flex lg:w-1/2 w-[90%]  m-auto mb-12 flex-col sm:flex-row gap-2 sm:gap-0 bg-green-400/60 backdrop-blur-sm border-2  rounded-2xl p-2 sm:p-3 shadow-2xl hover:shadow-3xl transition-all duration-500">
           <input
             type="text"
             placeholder="Enter ingredients...(e.g.Fish, Doodh)"
-            className="text-white  flex-1 px-3 py-3 sm:py-4 h-[50px] bg-transparent text-base sm:text-lg lg:text-xl outline-none placeholder-white rounded-xl"
+            className="text-white  flex-1 px-3 py-3 sm:py-4 h-[50px] mb-2 bg-transparent text-base sm:text-lg lg:text-xl outline-none placeholder-white rounded-xl"
           />
 
-          <button className=" ml-4 text-white bg-green-900 px-1 sm:px-2 py-1 sm:py-2 rounded-xl font-semibold shadow-lg hover:shadow-xl transform hover:scale-105 active:scale-95 transition-all duration-300 disabled:opacity-50 flex-shrink-0">
+          <button className=" ml-4 text-white bg-green-900 px-1 h-[40px] sm:px-2 py-1 sm:py-2 rounded-xl font-semibold shadow-lg hover:shadow-xl transform hover:scale-105 active:scale-95 transition-all duration-300 disabled:opacity-50 flex-shrink-0">
             <div className="flex items-center justify-center space-x-2">
               <CiSearch className="w-5 h-5 sm:w-6 sm:h-6" />
               <span className="text-sm sm:text-base">Search</span>

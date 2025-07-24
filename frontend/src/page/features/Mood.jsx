@@ -303,7 +303,7 @@ const Mood = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#b7f382] via-[#a2db46] to-[#3dd39c] relative overflow-hidden">
+    <div className="min-h-screen bg-gradient-to-br from-green-600 via-green-600 to-teal-400 relative overflow-hidden">
       {/* Background Decorative Elements */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <div className="absolute top-20 left-10 w-32 h-32 bg-white/10 rounded-full blur-xl animate-pulse"></div>
@@ -322,15 +322,12 @@ const Mood = () => {
       
       {/* Header Section */}
       <div className="relative z-10 py-16">
-        <div className="container mx-auto px-4 text-center">
-          <div className="inline-block p-6 bg-white/20 backdrop-blur-sm rounded-full mb-6 animate-pulse">
-            <span className="text-7xl">🍽️</span>
-          </div>
+        <div className="container mx-auto px-4 text-center mt-4">
           
           <div className="space-y-4 mb-8">
             <h1 className="text-5xl md:text-7xl font-black text-[#1E293B] leading-tight">
               What's Your
-              <span className="bg-gradient-to-r from-[#FF6B6B] to-[#FF8E8E] bg-clip-text text-transparent"> Mood </span>
+              <span className="bg-gradient-to-r from-yellow-300 to-orange-400 text-slate-900 bg-clip-text text-transparent"> Mood </span>
               Today?
             </h1>
             <h2 className="text-2xl md:text-4xl font-bold text-[#1E293B]/80">
@@ -341,7 +338,7 @@ const Mood = () => {
           <div className="max-w-3xl mx-auto bg-white/20 backdrop-blur-sm rounded-2xl p-6 border border-white/30">
             <p className="text-lg md:text-xl text-[#1E293B] leading-relaxed">
               Tell us how you feel, and we'll tell you what to eat — with reasons backed by 
-              <span className="font-semibold text-[#FF6B6B]"> food science </span> and emotions.
+              <span className="font-semibold text-yellow-400"> food science </span> and emotions.
             </p>
           </div>
         </div>
@@ -349,13 +346,13 @@ const Mood = () => {
 
       <div className="container mx-auto px-4 pb-16 relative z-10">
         {/* Enhanced Mood Selection */}
-        <div className="bg-white/95 backdrop-blur-lg rounded-3xl shadow-2xl p-8 md:p-12 mb-12 border border-white/50">
+        <div className="bg-white/60 backdrop-blur-xl  rounded-3xl shadow-2xl p-5 lg:p-8 md:p-12 mb-12 border border-white/50">
           <div className="text-center mb-10">
-            <div className="inline-flex items-center gap-2 bg-gradient-to-r from-[#b7f382] to-[#3dd39c] text-white px-6 py-2 rounded-full text-sm font-medium mb-4">
+            <div className="inline-flex items-center gap-2 bg-gradient-to-r from-[#aeff67] to-[#26e7a0] text-slate-600 px-6 py-2 rounded-full text-sm font-medium mb-4">
               <Sparkles size={16} />
               Choose Your Vibe
             </div>
-            <h3 className="text-3xl md:text-4xl font-bold text-[#1E293B] mb-2">
+            <h3 className="text-3xl md:text-4xl font-bold text-slate-700 mb-2">
               How Are You Feeling?
             </h3>
             <p className="text-[#64748B] text-lg">Select your current mood to discover perfect recipes</p>
@@ -368,12 +365,12 @@ const Mood = () => {
               return (
                 <div
                   key={mood.id}
-                  className={`relative group cursor-pointer transition-all duration-500 hover:scale-105 ${
+                  className={`relative group cursor-pointer h transition-all duration-500 hover:scale-105 ${
                     isSelected ? 'scale-105' : ''
                   }`}
                   onClick={() => setSelectedMood(mood.id)}
                 >
-                  <div className={`relative overflow-hidden rounded-3xl transition-all duration-300 ${
+                  <div className={`relative overflow-hidden rounded-3xl  transition-all duration-300 ${
                     isSelected 
                       ? 'bg-gradient-to-br from-white to-gray-50 shadow-2xl ring-4 ring-[#FF6B6B]/50' 
                       : 'bg-white hover:bg-gradient-to-br hover:from-white hover:to-gray-50 shadow-lg hover:shadow-xl'
@@ -382,7 +379,7 @@ const Mood = () => {
                     {/* Background Pattern */}
                     <div className={`absolute inset-0 ${mood.bgAccent} opacity-30`}></div>
                     
-                    <div className="relative p-6 text-center">
+                    <div className="relative lg:p-6 p-3 text-center">
                       {/* Icon Container */}
                       <div className={`w-20 h-20 mx-auto mb-4 rounded-2xl bg-gradient-to-r ${mood.color} flex items-center justify-center text-white shadow-lg transform transition-transform duration-300 ${
                         isSelected ? 'rotate-12 scale-110' : 'group-hover:rotate-6 group-hover:scale-105'
@@ -425,7 +422,7 @@ const Mood = () => {
         </div>
 
         {/* Enhanced Recipe Recommendations */}
-        <div className="bg-white/95 backdrop-blur-lg rounded-3xl shadow-2xl p-8 md:p-12 mb-12 border border-white/50">
+        <div className="bg-white/60 backdrop-blur-xl rounded-3xl shadow-2xl p-8 md:p-12 mb-12 border border-white/50">
           <div className="text-center mb-10">
             <div className="inline-flex items-center gap-2 mb-4">
               <div className={`w-3 h-3 rounded-full bg-gradient-to-r ${moods.find(m => m.id === selectedMood)?.color} animate-pulse`}></div>
@@ -471,14 +468,14 @@ const Mood = () => {
                       <span className={`px-3 py-1 rounded-full text-xs font-semibold ${getDifficultyColor(recipe.difficulty)}`}>
                         {recipe.difficulty}
                       </span>
-                      <span className="text-xs text-[#64748B] bg-gray-100 px-3 py-1 rounded-full">
+                      <span className="text-xs text-[#64748B] bg-gray-100 px-3 py-1 rounded-lg">
                         ⏱️ {recipe.time}
                       </span>
                     </div>
                   </div>
                   
                   {/* CTA Button */}
-                  <button className="w-full bg-gradient-to-r from-[#FF6B6B] to-[#FF8E8E] text-white py-4 px-6 rounded-2xl font-semibold hover:from-[#FF5252] hover:to-[#FF7979] transition-all duration-300 flex items-center justify-center gap-2 group-hover:shadow-lg transform hover:scale-[1.02] active:scale-[0.98]">
+                  <button className="w-full bg-gradient-to-r from-yellow-300 to-orange-400 text-slate-900 py-4 px-6 rounded-2xl font-semibold hover:from-[#FF5252] hover:to-[#FF7979] transition-all duration-300 flex items-center justify-center gap-2 group-hover:shadow-lg transform hover:scale-[1.02] active:scale-[0.98]">
                     Try This Recipe
                     <ChevronRight size={18} className="group-hover:translate-x-1 transition-transform duration-300" />
                   </button>
@@ -492,7 +489,7 @@ const Mood = () => {
         </div>
 
         {/* Enhanced Custom Mood Input */}
-        <div className="bg-white/95 backdrop-blur-lg rounded-3xl shadow-2xl p-8 md:p-12 border border-white/50">
+        <div className="bg-white/60 backdrop-blur-xl rounded-3xl shadow-2xl p-8 md:p-12 border border-white/50">
           <div className="text-center mb-10">
             <div className="inline-flex items-center gap-2 bg-gradient-to-r from-[#3dd39c] to-[#2bc48a] text-white px-6 py-2 rounded-full text-sm font-medium mb-4">
               <Sparkles size={16} />
@@ -512,7 +509,7 @@ const Mood = () => {
                 value={customMood}
                 onChange={(e) => setCustomMood(e.target.value)}
                 placeholder="I'm feeling a bit overwhelmed with work but excited about the weekend coming up. Looking for something comforting yet energizing..."
-                className="w-full p-6 border-2 border-gray-200 rounded-2xl resize-none h-40 focus:border-[#FF6B6B] focus:outline-none transition-all duration-300 text-[#1E293B] placeholder:text-[#64748B] bg-white shadow-inner"
+                className="w-full p-6 border-2 border-gray-200 rounded-2xl resize-none h-40 focus:border-orange-400 focus:outline-none transition-all duration-300 text-[#1E293B] placeholder:text-[#64748B] bg-white shadow-inner"
               />
               <div className="absolute bottom-4 right-4 text-xs text-[#64748B]">
                 {customMood.length}/500
@@ -521,7 +518,7 @@ const Mood = () => {
             
             <button
               onClick={handleCustomMoodSubmit}
-              className="w-full bg-gradient-to-r from-[#3dd39c] to-[#2bc48a] text-white py-4 px-8 rounded-2xl font-semibold hover:from-[#2bc48a] hover:to-[#25a074] transition-all duration-300 flex items-center justify-center gap-2 shadow-lg hover:shadow-xl transform hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full bg-gradient-to-r from-yellow-300 to-orange-400 text-slate-900  py-4 px-8 rounded-2xl font-semibold transition-all duration-300 flex items-center justify-center gap-2 shadow-lg hover:shadow-xl transform hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed"
               disabled={!customMood.trim()}
             >
               <Sparkles size={18} className="animate-pulse" />

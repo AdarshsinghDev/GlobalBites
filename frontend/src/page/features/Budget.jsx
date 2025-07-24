@@ -149,21 +149,14 @@ const Budget = () => {
   ];
 
   return (
-    <div
-      className="min-h-screen py-6"
-      style={{
-        background:
-          "linear-gradient(135deg, #A8E6CF 0%, #88D8C0 25%, #7BCCC4 50%, #6EC5C8 75%, #7BCCC4 100%)",
-      }}
-    >
-      <Development
+    <div className="min-h-screen py-6 bg-gradient-to-br from-green-300 via-green-400 to-teal-400">
+      {/* <Development
         title="🔥 Coming Soon"
         subtitle="Amazing features in development"
         variant="coding"
         showProgress={false}
         estimatedTime="Next Week"
-      />
-
+      /> */}
 
       <div className="max-w-6xl mx-auto px-6 pb-12">
         {/* Main Title */}
@@ -180,7 +173,7 @@ const Budget = () => {
           {/* Left Side - Budget Controls */}
           <div className="space-y-8">
             {/* Budget Input Card */}
-            <div className="bg-white/95 backdrop-blur-sm rounded-3xl p-8 shadow-2xl">
+            <div className="bg-white/60 backdrop-blur-xl rounded-3xl p-8 shadow-2xl">
               <div className="text-center mb-6">
                 <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
                   <IndianRupee className="w-8 h-8 text-green-600" />
@@ -244,7 +237,7 @@ const Budget = () => {
             </div>
 
             {/* Recipe Type Preferences */}
-            <div className="bg-white/95 backdrop-blur-sm rounded-3xl p-8 shadow-2xl">
+            <div className="bg-white/60 backdrop-blur-xl rounded-3xl p-8 shadow-2xl">
               <div className="text-center mb-6">
                 <div className="text-4xl mb-2">🍽️</div>
                 <h3 className="text-2xl font-bold text-gray-800 mb-2">
@@ -328,7 +321,7 @@ const Budget = () => {
           {/* Right Side - Recipe Preview */}
           <div className="space-y-6">
             <div className="text-center mb-8">
-              <h3 className="text-3xl font-bold text-white mb-2">
+              <h3 className="text-3xl font-bold mb-2 bg-white  py-1bg-white text-slate-700 p-2 rounded-lg py-1">
                 🍳 Recipe Previews
               </h3>
               <p className="text-white/90">Here's what you could be cooking!</p>

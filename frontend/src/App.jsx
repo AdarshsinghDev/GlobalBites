@@ -14,6 +14,7 @@ import Combo from "./page/features/Combo";
 import Mood from "./page/features/Mood";
 import ScienceBehind from "./page/features/ScienceBehind";
 import Health from "./page/features/Health";
+import SelectedChef from "./page/features/SelectedChef";
 
 function App() {
   return (
@@ -35,6 +36,7 @@ function App() {
         <Route path="/mood" element={<Mood />} />
         <Route path="/science-behind" element={<ScienceBehind />} />
         <Route path="/health" element={<Health />} />
+        <Route path="/selected-chef" element={<SelectedChef />} />
       </Routes>
     </>
   );

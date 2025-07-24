@@ -1,155 +1,34 @@
-import React, { useState } from "react";
-import { Search, Filter, Star, Award, Leaf, MapPin } from "lucide-react";
+import React, { useEffect, useState } from "react";
+import {
+  Search,
+  Filter,
+  Star,
+  Award,
+  Leaf,
+  MapPin,
+  ClockFading,
+} from "lucide-react";
 import Development from "../development/Development";
+import { useChefContext } from "../../context/ChefContext";
+import { useNavigate } from "react-router-dom";
 
 const Chef = () => {
+  const { chefContextData, selectedChef, setSelectedChef } = useChefContext();
+  const navigate = useNavigate();
+
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedFilter, setSelectedFilter] = useState("All");
 
-  const chefs = [
-    {
-      id: 1,
-      name: "Sanjeev Kapoor",
-      specialty: "Indian Fusion",
-      country: "India",
-      rating: 4.9,
-      image: "https://www.ssca.edu.in/assets/images/ChefSanjeev.jpg",
-      tags: ["MasterChef Judge", "5-Star Hotel Experience"],
-      cuisine: "Indian",
-    },
-    {
-      id: 2,
-      name: "Vikas Khanna",
-      specialty: "Modern Indian",
-      country: "India",
-      rating: 4.8,
-      image:
-        "https://images.moneycontrol.com/static-mcnews/2024/02/Vikas-Khanna.jpg?impolicy=website&width=770&height=431",
-      tags: ["Michelin Star", "MasterChef Judge"],
-      cuisine: "Indian",
-    },
-    {
-      id: 3,
-      name: "Ranveer Brar",
-      specialty: "Regional Indian",
-      country: "India",
-      rating: 4.7,
-      image:
-        "https://yt3.googleusercontent.com/ccCYUcBC69tdqspzHL_sUAyrbVKx_Y5pb6IeA7F_WpamxVYjd7OH0iUgxSAeKGY_7r8HMZUu=s900-c-k-c0x00ffffff-no-rj",
-      tags: ["Street Food Guru", "MasterChef Judge"],
-      cuisine: "Indian",
-    },
-    {
-      id: 4,
-      name: "Kunal Kapur",
-      specialty: "Contemporary Indian",
-      country: "India",
-      rating: 4.6,
-      image:
-        "https://www.financialexpress.com/wp-content/uploads/2024/04/Chef-Kunal-kapoor.jpg",
-      tags: ["5-Star Hotel Experience", "MasterChef Judge"],
-      cuisine: "Indian",
-    },
-    {
-      id: 10,
-      name: "Saransh Goila",
-      specialty: "Indian Grilled & Butter Chicken",
-      country: "India",
-      rating: 4.7,
-      image:
-        "https://www.entrepreneurindia.com/influencer/2021/images/speakers/saransh.jpg",
-      tags: ["Goila Butter Chicken", "TV Show Judge"],
-      cuisine: "Indian",
-    },
-    {
-      id: 11,
-      name: "Shipra Khanna",
-      specialty: "Global Indian Fusion",
-      country: "India",
-      rating: 4.6,
-      image:
-        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTUnARIU0c8Z6wfvqRMIad8d26YZ2gTDA-84Q&s",
-      tags: ["MasterChef India Winner", "Global Food Ambassador"],
-      cuisine: "Indian",
-    },
-    {
-      id: 5,
-      name: "Gordon Ramsay",
-      specialty: "British Fine Dining",
-      country: "UK",
-      rating: 4.9,
-      image:
-        "https://static1.srcdn.com/wordpress/wp-content/uploads/2021/07/Gordon-Ramsay-on-MasterChef.jpg?q=70&fit=contain&w=1200&h=628&dpr=1",
-      tags: ["Michelin Star", "MasterChef Judge"],
-      cuisine: "British",
-    },
-    {
-      id: 6,
-      name: "Jamie Oliver",
-      specialty: "Rustic Italian & British",
-      country: "UK",
-      rating: 4.8,
-      image:
-        "https://images.thewest.com.au/publication/C-10471647/cc4cbc976662250dc4f26ca6183e522947fb36e8.jpg",
-      tags: ["Vegan Expert", "Street Food Guru"],
-      cuisine: "Italian",
-    },
-
-    {
-      id: 12,
-      name: "Imtiaz Qureshi",
-      specialty: "Dum Pukht & Mughlai",
-      country: "India",
-      rating: 4.8,
-      image:
-        "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEiZUcKsvMFoYXZjKQbjx_O33yU0Ev4ctKp2MXyxmqsgSJweW3anWLN9HfFTN73tvOX2x2NwZVKzWBHJbNorm4TcV7rEDm4n_KRUuGOMzC-o0onWJQMACDgz7pwNGuV7zt_PgW0wBy6RVLE/s1600/chef1.jpg",
-      tags: ["ITC Hotels", "Legendary Chef"],
-      cuisine: "Mughlai",
-    },
-    {
-      id: 7,
-      name: "Nigella Lawson",
-      specialty: "Comfort Food & Baking",
-      country: "UK",
-      rating: 4.7,
-      image:
-        "https://s.yimg.com/ny/api/res/1.2/fop6PRLiL7oBoMHB6EAYlw--/YXBwaWQ9aGlnaGxhbmRlcjt3PTY0MDtoPTk2MA--/https://media.zenfs.com/en/homerun/feed_manager_auto_publish_494/b49e7101aa770210f488aa8c0bd6b8f3",
-      tags: ["Vegan Expert", "5-Star Hotel Experience"],
-      cuisine: "British",
-    },
-    {
-      id: 8,
-      name: "Massimo Bottura",
-      specialty: "Modern Italian",
-      country: "Italy",
-      rating: 4.9,
-      image:
-        "https://www.movietele.it/wp-content/uploads/2024/06/Massimo-Bottura.jpg",
-      tags: ["Michelin Star", "5-Star Hotel Experience"],
-      cuisine: "Italian",
-    },
-
-    {
-      id: 9,
-      name: "Ajay Chopra",
-      specialty: "Progressive Indian",
-      country: "India",
-      rating: 4.6,
-      image:
-        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSFcqPgzgN4K2RicUBwwoHx5AbcRt8w7HpDBw&s",
-      tags: ["MasterChef India", "Food Show Host"],
-      cuisine: "Indian",
-    },
-  ];
+  const chefs = chefContextData;
 
   const cuisineTypes = ["All", "Indian", "British", "Italian"];
 
   const filteredChefs = chefs.filter((chef) => {
     const matchesSearch =
-      chef.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      chef.specialty.toLowerCase().includes(searchTerm.toLowerCase());
+      chef.chefName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      chef.chefSpecialty.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesFilter =
-      selectedFilter === "All" || chef.cuisine === selectedFilter;
+      selectedFilter === "All" || chef.chefCuisine === selectedFilter;
     return matchesSearch && matchesFilter;
   });
 
@@ -181,37 +60,36 @@ const Chef = () => {
     }
   };
 
+  const handleSelectedChef = (chef) => {
+    // alert(chef.chefName);
+    setSelectedChef(chef);
+    localStorage.setItem("storeLocalSelectedChef", chef);
+    navigate("/selected-chef");
+  };
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#EDF6E5] via-[#DCEDC1] to-[#A8E6CF]">
+    <div className="min-h-screen bg-gradient-to-br from-green-100 via-green-200 to-teal-300">
       {/* Header */}
       <div className="text-center py-12 px-4">
-        <h1 className="text-5xl font-bold text-gray-800 mb-4">
+        <h1 className="lg:text-5xl text-3xl font-bold text-gray-800 mb-4">
           🍳 Pick Your Culinary Legend
         </h1>
-        <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+        <p className="lg:text-xl  text-gray-600 max-w-2xl mx-auto">
           Choose the chef whose dishes feel like memories — explore legendary
           flavors that feel like home on GlobalBites.
         </p>
       </div>
 
-      <Development
-        title="🔥 Coming Soon"
-        subtitle="Amazing features in development"
-        variant="construction"
-        showProgress={false}
-        estimatedTime="Next Week"
-      />
-
       {/* Search and Filter Section */}
       <div className="max-w-6xl mx-auto px-6 mb-12">
         <div className="flex flex-col md:flex-row gap-6 items-center justify-center">
           {/* Search Bar */}
-          <div className="relative flex-1 max-w-md">
+          <div className="relative flex-1 max-w-md w-full">
             <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
             <input
               type="text"
               placeholder="Search chefs or specialties..."
-              className="w-full pl-12 pr-4 h-[40px] py-3 rounded-full border-2 border-gray-200 focus:border-green-300 focus:outline-none transition-colors"
+              className="w-full  pl-12 pr-4 h-[50px] py-3 rounded-full border-2 border-gray-200 focus:border-green-300 focus:outline-none transition-colors"
               style={{ backgroundColor: "white" }}
             />
           </div>
@@ -223,7 +101,7 @@ const Chef = () => {
               <button
                 key={type}
                 onClick={() => setSelectedFilter(type)}
-                className={`px-6 py-2 rounded-full font-medium transition-all duration-300 ${
+                className={`lg:px-6 lg:py-2  px-4 py-2 rounded-full font-medium transition-all duration-300 ${
                   selectedFilter === type
                     ? "text-white shadow-lg transform scale-105"
                     : "bg-white text-gray-700 hover:shadow-md"
@@ -246,15 +124,15 @@ const Chef = () => {
           {filteredChefs.map((chef) => (
             <div
               key={chef.id}
-              className="bg-white rounded-3xl p-6 shadow-lg hover:shadow-2xl transform hover:scale-105 transition-all duration-300 border border-gray-100"
+              className="bg-white/70 backdrop-blur-xl rounded-3xl w-[80%] m-auto lg:w-full p-6 shadow-lg hover:shadow-2xl transform hover:scale-105 transition-all duration-300 border border-gray-100"
             >
               {/* Chef Image */}
               <div className="flex justify-center mb-6 ">
                 <div className="relative">
                   <img
-                    src={chef.image}
-                    alt={chef.name}
-                    className="w-full h-54  object-cover aspect-square shadow-2xl"
+                    src={chef.chefImg}
+                    alt={chef.chefName}
+                    className="lg:w-full lg:h-54 w-1/2 m-auto h-30 object-cover aspect-square shadow-2xl"
                   />
                   <div
                     className="absolute -bottom-2 -right-2 w-8 h-8 rounded-full flex items-center justify-center text-white text-xs font-bold shadow-lg"
@@ -268,10 +146,12 @@ const Chef = () => {
               {/* Chef Info */}
               <div className="text-center mb-4">
                 <h3 className="text-xl font-bold text-gray-800 mb-2">
-                  {chef.name}
+                  {chef.chefName}
                 </h3>
-                <p className="text-gray-600 font-medium">{chef.specialty}</p>
-                <p className="text-sm text-gray-500">{chef.country}</p>
+                <p className="text-gray-600 font-medium">
+                  {chef.chefSpecialty}
+                </p>
+                <p className="text-sm text-gray-500">{chef.chefCountry}</p>
               </div>
 
               {/* Rating */}
@@ -281,21 +161,21 @@ const Chef = () => {
                     <Star
                       key={i}
                       className={`w-4 h-4 ${
-                        i < Math.floor(chef.rating)
+                        i < Math.floor(chef.chefRating)
                           ? "text-yellow-400 fill-current"
                           : "text-gray-300"
                       }`}
                     />
                   ))}
                   <span className="ml-2 text-gray-700 font-semibold">
-                    {chef.rating}
+                    {chef.chefRating}
                   </span>
                 </div>
               </div>
 
               {/* Tags */}
               <div className="flex flex-wrap justify-center gap-2 mb-6">
-                {chef.tags.map((tag, index) => (
+                {chef.chefTags.map((tag, index) => (
                   <span
                     key={index}
                     className={`inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-medium ${getTagColor(
@@ -310,6 +190,8 @@ const Chef = () => {
 
               {/* Choose Button */}
               <button
+                type="button"
+                onClick={() => handleSelectedChef(chef)}
                 className="w-full py-3 px-6 rounded-full font-semibold text-white transition-all duration-300 hover:shadow-lg transform hover:scale-105 active:scale-95"
                 style={{
                   backgroundColor: "#A8E6CF",

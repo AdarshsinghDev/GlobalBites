@@ -12,10 +12,11 @@ import {
   HeartHandshake,
   X,
 } from "lucide-react";
-import { useUserContext } from "../../context/CreateContext";
 import axios from "axios";
 import { DollarSignIcon } from "lucide-react";
 import { Link } from "react-router-dom";
+
+import { useUserContext } from "../../context/CreateContext";
 
 const Home = () => {
   const { userContextData } = useUserContext();
@@ -25,6 +26,7 @@ const Home = () => {
   const [loading, setLoading] = useState(false);
   const [searchedIngredients, setSearchedIngredients] = useState("");
   const [closeMenu, setCloseMenu] = useState(false);
+
   useEffect(() => {
     const storedFullame = localStorage.getItem("storedFullname");
     setFullname(userContextData.fullname || storedFullame || "Guest");
@@ -90,7 +92,7 @@ const Home = () => {
 
   return (
     <div
-      className="min-h-screen bg-gradient-to-br from-[#EDF6E5] via-[#DCEDC1] to-[#A8E6CF] overflow-hidden"
+      className="min-h-screen bg-gradient-to-br from-green-100 via-green-200 to-teal-300 overflow-hidden"
       style={{ backgroundColor: "#FAFAFA" }}
     >
       {/* Animated Background Elements */}
@@ -125,7 +127,7 @@ const Home = () => {
             </button>
 
             {/* Modal Content */}
-            <div className="p-6 sm:p-8 md:p-10 pt-16 sm:pt-20">
+            <div className="p-6 sm:p-8 md:p-10 pt-16 sm:pt-20 pt-10">
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-3 sm:gap-4 justify-items-center">
                 {featuresBtn.map((btn) => {
                   const Icon = btn.btnIcon;
@@ -135,7 +137,7 @@ const Home = () => {
                       className="w-full max-w-[200px]"
                       to={btn.to}
                     >
-                      <button className="flex items-center gap-2 sm:gap-3 w-full bg-white text-black border-green-600 border-2 shadow-lg px-3 sm:px-4 py-2 sm:py-3 rounded-xl hover:bg-green-100 transition duration-300 text-sm sm:text-base">
+                      <button className="flex items-center sm:gap-3 w-full bg-white text-black border-green-600 border-2 shadow-lg px-3 sm:px-4  sm:py-3 py-3 gap-1 rounded-xl hover:bg-green-100 transition duration-300 text-sm sm:text-base">
                         <Icon className="w-5 h-5 sm:w-6 sm:h-6 md:w-8 md:h-8 flex-shrink-0" />
                         <span className="truncate">{btn.btnTitle}</span>
                       </button>

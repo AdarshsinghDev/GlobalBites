@@ -4,11 +4,14 @@ import "./index.css";
 import App from "./App.jsx";
 import { BrowserRouter } from "react-router-dom";
 import { UserProvider } from "./context/CreateContext.jsx";
+import { ChefProvider } from "./context/ChefContext.jsx";
 
 createRoot(document.getElementById("root")).render(
   <BrowserRouter>
     <UserProvider>
-      <App />
+      <ChefProvider>
+        <App />
+      </ChefProvider>
     </UserProvider>
   </BrowserRouter>
 );
