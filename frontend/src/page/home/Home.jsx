@@ -4,16 +4,12 @@ import {
   ChefHat,
   Heart,
   DollarSign,
-  Sparkles,
-  ArrowRight,
-  Utensils,
   FlaskConicalOff,
   CalendarDays,
   HeartHandshake,
   X,
 } from "lucide-react";
 import axios from "axios";
-import { DollarSignIcon } from "lucide-react";
 import { Link } from "react-router-dom";
 
 import { useUserContext } from "../../context/CreateContext";
