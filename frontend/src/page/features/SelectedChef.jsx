@@ -249,7 +249,9 @@ const SelectedChef = () => {
               ) : (
                 <div className="flex items-center justify-center space-x-2">
                   <CiSearch className="w-5 h-5 m-auto sm:w-6 sm:h-6" />
-                  <span className="text-sm sm:text-base">Search</span>
+                  <span className="text-sm sm:text-base text-center">
+                    Search
+                  </span>
                 </div>
               )}
             </button>
@@ -257,9 +259,9 @@ const SelectedChef = () => {
 
           {/* Enhanced Generated Recipe Display */}
           {dish && (
-            <div className="bg-white/70 backdrop-blur-xl rounded-3xl p-8 mb-12 shadow-xl border border-white/20">
+            <div className="lg:bg-white/70 md:bg-white/70 backdrop-blur-xl rounded-3xl lg:p-8 mb-12 shadow-xl border border-white/20">
               {/* Greeting Section */}
-              <div className="mb-8 p-6 bg-gradient-to-r from-yellow-50/80 to-orange-50/80 rounded-2xl border border-yellow-200/50">
+              <div className="mb-8 lg:p-6 p-2 bg-gradient-to-r from-yellow-50/80 to-orange-50/80 rounded-2xl border border-yellow-200/50">
                 <div className="flex items-center gap-3 mb-4">
                   <span className="text-2xl">👋</span>
                   <h3 className="text-xl font-bold text-gray-800">
