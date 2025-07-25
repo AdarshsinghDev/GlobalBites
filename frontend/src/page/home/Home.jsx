@@ -195,7 +195,7 @@ const Home = () => {
                   onClick={handleCloseMenu}
                   className="text-green-600 hover:text-green-700 p-2 rounded-lg hover:bg-green-50 transition-colors"
                 >
-                  <CiCircleMore className="w-6 h-6 sm:w-8 sm:h-8 lg:w-10 lg:h-10" />
+                  <CiCircleMore className="w-10 h-10 sm:w-8 sm:h-8 lg:w-10 lg:h-10" />
                 </button>
 
                 <button
