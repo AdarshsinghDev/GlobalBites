@@ -248,8 +248,8 @@ const SelectedChef = () => {
                 <div className="m-auto animate-spin h-5 w-5 sm:h-6 sm:w-6 border-2 border-white border-t-transparent rounded-full"></div>
               ) : (
                 <div className="flex items-center justify-center space-x-2">
-                  <CiSearch className="w-5 h-5 m-auto sm:w-6 sm:h-6" />
-                  <span className="text-sm sm:text-base text-center">
+                  <CiSearch className="w-5 h-5 sm:w-6 sm:h-6" />
+                  <span className="text-sm text-center">
                     Search
                   </span>
                 </div>
