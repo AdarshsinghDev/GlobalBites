@@ -261,7 +261,7 @@ const SelectedChef = () => {
           {dish && (
             <div className="lg:bg-white/70 md:bg-white/70 backdrop-blur-xl rounded-3xl lg:p-8 mb-12 shadow-xl border lg:border-white/20">
               {/* Greeting Section */}
-              <div className="mb-8 lg:p-6 p-2 lg:bg-gradient-to-r from-yellow-50/80 to-orange-50/80 rounded-2xl border lg:border-yellow-200/50">
+              <div className="mb-8 lg:p-6 p-2lg bg-gradient-to-r from-yellow-50/80 to-orange-50/80 rounded-2xl border border-yellow-200/50">
                 <div className="flex items-center gap-3 mb-4">
                   <span className="text-2xl">👋</span>
                   <h3 className="text-xl font-bold text-gray-800">
