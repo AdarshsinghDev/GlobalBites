@@ -21,7 +21,7 @@
 
   // Routes
   app.use("/api/auth", authRouter);
-  app.use("/api/recipe-ai", aiRoute); // ✅ Used OpenAI route
+  app.use("/api/recipe-ai", aiRoute); // 
 
   // Start server
   app.listen(PORT, () => {

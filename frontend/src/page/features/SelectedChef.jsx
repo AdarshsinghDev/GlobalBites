@@ -236,14 +236,6 @@ const SelectedChef = () => {
               />
             </div>
 
-            {/* <button
-              type="submit"
-              className="group bg-gradient-to-r from-emerald-500 to-green-600 text-white px-8 py-4 rounded-2xl hover:from-emerald-600 hover:to-green-700 transition-all duration-300 font-medium text-lg flex items-center gap-3 shadow-xl hover:shadow-2xl disabled:opacity-50 disabled:cursor-not-allowed transform hover:scale-105"
-            >
-              <span>Generate Recipe</span>
-              <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform duration-300" />
-            </button> */}
-
             <button
               type="submit"
               disabled={isLoading}
@@ -253,10 +245,10 @@ const SelectedChef = () => {
               }}
             >
               {isLoading ? (
-                <div className="animate-spin h-5 w-5 sm:h-6 sm:w-6 border-2 border-white border-t-transparent rounded-full"></div>
+                <div className="m-auto animate-spin h-5 w-5 sm:h-6 sm:w-6 border-2 border-white border-t-transparent rounded-full"></div>
               ) : (
                 <div className="flex items-center justify-center space-x-2">
-                  <CiSearch className="w-5 h-5 sm:w-6 sm:h-6" />
+                  <CiSearch className="w-5 h-5 m-auto sm:w-6 sm:h-6" />
                   <span className="text-sm sm:text-base">Search</span>
                 </div>
               )}
