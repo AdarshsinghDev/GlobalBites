@@ -376,47 +376,37 @@ const SelectedChef = () => {
         </div>
 
         {/* Modern Signature Dishes Grid */}
-        <div className="mb-8">
-          <div className="text-center mb-12">
-            <h2 className="text-4xl font-bold bg-gradient-to-r from-emerald-700 to-green-600 bg-clip-text text-transparent mb-4">
-              Signature Creations
-            </h2>
-            <p className="text-xl text-slate-600 font-light">
-              Handcrafted dishes that define excellence
-            </p>
-          </div>
 
-          {dish && dish.signature && dish.signature.length > 0 && (
-            <div className="mb-8">
-              <div className="text-center mb-12">
-                <h2 className="text-4xl font-bold bg-gradient-to-r from-emerald-700 to-green-600 bg-clip-text text-transparent mb-4">
-                  Signature Creations
-                </h2>
-                <p className="text-xl text-slate-600 font-light">
-                  Handcrafted dishes that define excellence
-                </p>
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                {dish.signature.map((sign, index) => (
-                  <div
-                    key={index}
-                    className="bg-white/70 backdrop-blur-xl rounded-2xl p-6 shadow-lg border border-white/20 hover:shadow-xl hover:bg-white/80 transition-all duration-300"
-                  >
-                    <h3 className="text-lg font-bold text-emerald-700 mb-2">
-                      {typeof sign === "object" ? sign.title : sign}
-                    </h3>
-                    {typeof sign === "object" && sign.description && (
-                      <p className="text-gray-600 text-sm leading-relaxed">
-                        {sign.description}
-                      </p>
-                    )}
-                  </div>
-                ))}
-              </div>
+        {dish && dish.signature && dish.signature.length > 0 && (
+          <div className="mb-8">
+            <div className="text-center mb-12">
+              <h2 className="text-4xl font-bold bg-gradient-to-r from-emerald-700 to-green-600 bg-clip-text text-transparent mb-4">
+                Signature Creations
+              </h2>
+              <p className="text-xl text-slate-600 font-light">
+                Handcrafted dishes that define excellence
+              </p>
             </div>
-          )}
-        </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {dish.signature.map((sign, index) => (
+                <div
+                  key={index}
+                  className="bg-white/70 backdrop-blur-xl rounded-2xl p-6 shadow-lg border border-white/20 hover:shadow-xl hover:bg-white/80 transition-all duration-300"
+                >
+                  <h3 className="text-lg font-bold text-emerald-700 mb-2">
+                    {typeof sign === "object" ? sign.title : sign}
+                  </h3>
+                  {typeof sign === "object" && sign.description && (
+                    <p className="text-gray-600 text-sm leading-relaxed">
+                      {sign.description}
+                    </p>
+                  )}
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
       </div>
 
       <style>{`
