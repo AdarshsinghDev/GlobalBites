@@ -38,8 +38,18 @@ export const signUpController = async (req, res) => {
 
         console.log(token);
 
-        sendOTP(newUser.email, otp);
-        sendWelcome(newUser.email, newUser.fullname);
+        // Send OTP email first (priority) - this is more time-sensitive
+        await sendOTP(newUser.email, otp);
+
+        // Send welcome email asynchronously (non-blocking)
+        // This prevents the welcome email from delaying the OTP
+        setImmediate(() => {
+            sendWelcome(newUser.email, newUser.fullname).catch(error => {
+                console.error('Welcome email failed (non-critical):', error);
+            });
+        });
+
+
         return res.status(201).json({ message: "Successfuly Created", success: true, newUser, token });
 
     } catch (error) {
