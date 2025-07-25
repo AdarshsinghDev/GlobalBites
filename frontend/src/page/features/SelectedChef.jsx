@@ -316,7 +316,7 @@ const SelectedChef = () => {
                           key={index}
                           className="flex gap-4 p-4 bg-gradient-to-r from-blue-50/80 to-indigo-50/80 rounded-xl border border-blue-200/50 hover:shadow-md transition-all duration-300"
                         >
-                          <div className="flex-shrink-0 w-8 h-8 bg-gradient-to-r from-blue-500 to-indigo-500 text-white rounded-full flex items-center justify-center text-sm font-bold shadow-lg">
+                          <div className="flex-shrink-0 w-8 h-8 bg-gradient-to-r from-blue-500 to-indigo-500 text-white rounded-full flex items-center justify-center text-sm font-bold shadow-lg flex-col">
                             {index + 1}
                           </div>
                           <span className="text-gray-700 leading-relaxed">
