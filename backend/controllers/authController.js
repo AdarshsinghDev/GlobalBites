@@ -1,6 +1,6 @@
 import User from "../models/User.js";
 import bcrypt from "bcrypt";
-import { sendOTP, sendWelcome } from "../utils/email.js";
+import { sendOTP } from "../utils/email.js";
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
 dotenv.config();
@@ -36,18 +36,18 @@ export const signUpController = async (req, res) => {
 
         console.log(newUser);
 
-        console.log(token);
 
         // Send OTP email first (priority) - this is more time-sensitive
         await sendOTP(newUser.email, otp);
 
         // Send welcome email asynchronously (non-blocking)
         // This prevents the welcome email from delaying the OTP
-        setImmediate(() => {
-            sendWelcome(newUser.email, newUser.fullname).catch(error => {
-                console.error('Welcome email failed (non-critical):', error);
-            });
-        });
+
+        // setImmediate(() => {
+        //     sendWelcome(newUser.email, newUser.fullname).catch(error => {
+        //         console.error('Welcome email failed (non-critical):', error);
+        //     });
+        // });
 
 
         return res.status(201).json({ message: "Successfuly Created", success: true, newUser, token });
