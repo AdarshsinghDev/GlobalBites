@@ -33,19 +33,19 @@ export const aiController = async (req, res) => {
         // Create simple prompt for AI
         const prompt = `Available ingredients: ${cleanIngredients}
 
-Generate 12 Indian recipes using these ingredients. For each recipe, provide and use hinglish:
-1. Recipe name
-2. Brief description (1-2 lines)
-3. Main ingredients needed
-4. Cooking time estimate
+    Generate 12 Indian recipes using these ingredients. For each recipe, provide and use hinglish:
+    1. Recipe name
+    2. Brief description (1-2 lines)
+    3. Main ingredients needed
+    4. Cooking time estimate
 
-Format each recipe exactly like this:
-RECIPE_NAME | DESCRIPTION | MAIN_INGREDIENTS | COOKING_TIME
+    Format each recipe exactly like this:
+    RECIPE_NAME | DESCRIPTION | MAIN_INGREDIENTS | COOKING_TIME
 
-Example:
-Paneer Butter Masala | Creamy tomato-based curry with soft paneer cubes | paneer, tomato, cream, butter | 30-40 mins
+    Example:
+    Paneer Butter Masala | Creamy tomato-based curry with soft paneer cubes | paneer, tomato, cream, butter | 30-40 mins
 
-Only provide the recipe information, no extra text.`;
+    Only provide the recipe information, no extra text.`;
 
         const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
         const result = await model.generateContent(prompt);
@@ -104,15 +104,109 @@ Only provide the recipe information, no extra text.`;
     }
 };
 
-// export const aiChefController = async (req, res) => {
-//     try {
-//         const { chefName, generatedRecipe } = req.body;
-//         if (!chefName || !generatedRecipe) {
-//             return res.status(400).json({ message: "Plese Enter Recipe and Select your Chef!", success: false });
-//         }
+export const aiChefController = async (req, res) => {
+    const { chefName, generateRecipe } = req.body;
+
+    if (!chefName || !generateRecipe) {
+        return res.status(400).json({ error: "Chef name and dish name are required" });
+    }
+
+    try {
+        const prompt = `
+    Dish: ${generateRecipe}
+    Chef: ${chefName}
+
+    Assume you are legendary Chef ${chefName}. How would you make the dish "${generateRecipe}" in your own signature cooking style and how would you react to that dish? Try to entertain in accurately original style. Everything should be Perfect and Accurate and feel like you are real there.
+
+    IMPORTANT: Please respond in JSON format with the following structure:
+    {
+    "greeting": "Accurate Greeting In ${chefName} style with his/her famous lines and tell something recent incident that happened with him in hinglish and in 3 lines and Make funny Jokes or lines on behalf of dish if chef never cooked that dish they directly told to user and say i am here by reason of GlobalBites WebApp in Hinglish format",
+    "ingredients": [
+        {"item": "ingredient name with emoji", "quantity": "amount"}
+    ],
+    "instructions": [
+        "Step 1: Accurate, fun and most detailed and easy instruction in hinglish",
+        "Step 2: Accurate, fun and most detailed and easy instruction in hinglish"
+        "Step 3: Accurate, fun and most detailed and easy instruction in hinglish"
+        "Step 4: Accurate, fun and most detailed and easy instruction in hinglish"
+        "Step 5: Accurate, fun and most detailed and easy instruction in hinglish"
+        "Step 6: Accurate, fun and most detailed and easy instruction in hinglish"
+        "Step 7: Accurate, fun and most detailed and easy instruction in hinglish"
+        "Step 8: Accurate, fun and most detailed and easy instruction in hinglish"
+        "Step 9: Accurate, fun and most detailed and easy instruction in hinglish"
+        "Step 10: Accurate, fun and most detailed and easy instruction in hinglish"
+    ],
+    "cookTime": "estimated time",
+    "tags": ["Comfort", "High-Protein", "Fusion", "etc"],
+    "goodbye": "Emotional Goodbye Message stay connected to GlobalBites",
+    "signature": [
+    {
+      "title": "Famous signature dish 1 with Emoji and graphical element",
+      "description": "2 - 3 lines desciption with emoji"
+    },
+    {
+      "title": "Famous signature dish 2 with Emoji and graphical element",
+      "description": "2 - 3 lines description with emoji"
+    },
+    {
+      "title": "Famous signature dish 3 with Emoji and graphical element",
+      "description": "2 - 3 lines discription with emoji"
+    },
+    {
+      "title": "Famous signature dish 4 with Emoji and graphical element",
+      "description": "2 - 3 lines discription with emoji"
+    },
+    {
+      "title": "Famous signature dish 5 with Emoji and graphical element",
+      "description": "2 - 3 lines discription with emoji"
+    },
+    {
+      "title": "Famous signature dish 6 with Emoji and graphical element",
+      "description": "2 - 3 lines discription with emoji"
+    },
+    {
+      "title": "Famous signature dish 7 with Emoji and graphical element",
+      "description": "2 - 3 lines discription with emoji"
+    },
+    {
+      "title": "Famous signature dish 8 with Emoji and graphical element",
+      "description": "2 - 3 lines discription with emoji"
+    },
+    {
+      "title": "Famous signature dish 9 with Emoji and graphical element",
+      "description": "2 - 3 lines discription with emoji"
+    },
+    {
+      "title": "Famous signature dish 10 with Emoji and graphical element",
+      "description": "2 - 3 linesdiscription with emoji"
+    }
+  ]
+    }
+
+    Respond only in JSON format. Keep it engaging and chef-style in Hinglish.
+    `;
+
+        const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+        const result = await model.generateContent(prompt);
+        const response = await result.response;
+        const text = response.text();
+        console.log(text);
+
+        let cleanedText = text.trim();
+        if (cleanedText.startsWith('```json')) {
+            cleanedText = cleanedText.replace(/```json\n?/, '').replace(/\n?```$/, '');
+
+        } else if (cleanedText.startsWith('```')) {
+            cleanedText = cleanedText.replace(/```\n?/, '').replace(/\n?```$/, '');
+
+        }
+        const parsedRecipe = JSON.parse(cleanedText);
 
 
-//     } catch (error) {
+        res.status(200).json({ recipe: parsedRecipe, success: true });
 
-//     }
-// }
+    } catch (error) {
+        console.error("AI Chef Error:", error.message);
+        res.status(500).json({ error: "Failed to generate recipe", details: error.message });
+    }
+};

@@ -63,7 +63,8 @@ const Chef = () => {
   const handleSelectedChef = (chef) => {
     // alert(chef.chefName);
     setSelectedChef(chef);
-    localStorage.setItem("storeLocalSelectedChef", chef);
+    localStorage.setItem("storeLocalSelectedChef", JSON.stringify(chef));
+    localStorage.removeItem("generatedChefRecipe");
     navigate("/selected-chef");
   };
 
@@ -132,7 +133,7 @@ const Chef = () => {
                   <img
                     src={chef.chefImg}
                     alt={chef.chefName}
-                    className="lg:w-full lg:h-54 w-1/2 m-auto h-30 object-cover aspect-square shadow-2xl"
+                    className="lg:w-full lg:h-54 w-1/2 m-auto h-30 object-cover rounded-lg border-green-300  aspect-square shadow-xl shadow-green-500/40"
                   />
                   <div
                     className="absolute -bottom-2 -right-2 w-8 h-8 rounded-full flex items-center justify-center text-white text-xs font-bold shadow-lg"

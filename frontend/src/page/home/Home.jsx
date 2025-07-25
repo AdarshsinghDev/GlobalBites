@@ -13,6 +13,7 @@ import axios from "axios";
 import { Link } from "react-router-dom";
 
 import { useUserContext } from "../../context/CreateContext";
+import Loading from "../../components/ui/Loading";
 
 const Home = () => {
   const { userContextData } = useUserContext();
@@ -221,40 +222,7 @@ const Home = () => {
       </section>
 
       {/* Loading State */}
-      {loading && (
-        <div className="text-center py-8 sm:py-16 animate-fadeIn px-4">
-          <div className="relative mx-auto w-16 h-16 sm:w-20 sm:h-20 mb-6">
-            <div
-              className="absolute inset-0 rounded-full border-4 border-t-transparent animate-spin"
-              style={{ borderColor: "#FFAAA5", borderTopColor: "transparent" }}
-            ></div>
-            <div
-              className="absolute inset-2 rounded-full border-4 border-b-transparent animate-spin"
-              style={{
-                borderColor: "#8EE4AF",
-                borderBottomColor: "transparent",
-                animationDirection: "reverse",
-              }}
-            ></div>
-            <div
-              className="absolute inset-4 rounded-full border-4 border-r-transparent animate-spin"
-              style={{
-                borderColor: "#FFD3B6",
-                borderRightColor: "transparent",
-              }}
-            ></div>
-          </div>
-          <p
-            className="text-lg sm:text-xl font-semibold"
-            style={{ color: "#3B2F2F" }}
-          >
-            Crafting perfect recipes for you...
-          </p>
-          <p className="text-sm mt-2" style={{ color: "#6A0572" }}>
-            Using AI magic ✨
-          </p>
-        </div>
-      )}
+      {loading && <Loading />}
 
       {/* AI Generated Recipes */}
       {!loading && recipes.length > 0 && (
