@@ -113,7 +113,7 @@ const SelectedChef = () => {
     e.preventDefault();
     try {
       const res = await axios.post(
-        "http://localhost:8080/api/recipe-ai/ai-chef",
+        "https://globalbites-production.up.railway.app/api/recipe-ai/ai-chef",
         {
           chefName: chef.chefName,
           generateRecipe: generatedRecipe,
