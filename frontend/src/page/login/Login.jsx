@@ -40,10 +40,13 @@ const Login = () => {
     setIsLoading(true);
 
     try {
-      const res = await axios.post("https://globalbites-production.up.railway.app/api/auth/login", {
-        email: userData.email,
-        password: userData.password,
-      });
+      const res = await axios.post(
+        "https://globalbites-production.up.railway.app/api/auth/login",
+        {
+          email: userData.email,
+          password: userData.password,
+        }
+      );
 
       if (res.data.success) {
         setMessage(
@@ -57,7 +60,7 @@ const Login = () => {
         localStorage.setItem("storedIsVerified", res.data.user.isVerified);
         console.log("Token mil gaya:", res.data.token);
         localStorage.setItem("token", res.data.token);
-        
+
         setUserContextData({
           email: localStorage.getItem("storedEmail"),
           fullname: localStorage.getItem("storedFullname"),
@@ -122,7 +125,7 @@ const Login = () => {
       </div>
 
       {/* Main Content */}
-      <div className="relative z-10 w-full max-w-md mx-4 lg:mt-0 mt-[-40%]">
+      <div className="relative z-10 w-full max-w-md mx-4  lg:mt-0 mt-[1vw]">
         {/* Header */}
         <div className="text-center mb-4 mt-8">
           <Logo />
