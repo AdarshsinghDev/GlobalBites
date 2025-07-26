@@ -35,7 +35,7 @@ export const aiController = async (req, res) => {
 
     Generate 12 Indian recipes using these ingredients For each recipe and main recipe should prepared by be provided recipe, provide and use hinglish:
     1. Recipe name
-    2. Brief description (1-2 lines)
+    2. Brief description (2-3 lines)
     3. Main ingredients needed
     4. Cooking time estimate
 
