@@ -33,7 +33,7 @@ export const aiController = async (req, res) => {
         // Create simple prompt for AI
         const prompt = `Available ingredients: ${cleanIngredients}
 
-    Generate 12 Indian recipes using these ingredients. For each recipe, provide and use hinglish:
+    Generate 12 Indian recipes using these ingredients if Ingredients are not valid or in the place of ingredients then generate This is not ingredients. For each recipe, provide and use hinglish:
     1. Recipe name
     2. Brief description (1-2 lines)
     3. Main ingredients needed
@@ -116,7 +116,7 @@ export const aiChefController = async (req, res) => {
     Dish: ${generateRecipe}
     Chef: ${chefName}
 
-    Assume you are legendary Chef ${chefName}. How would you make the dish "${generateRecipe}" in your own signature cooking style and how would you react to that dish? Try to entertain in accurately original style. Everything should be Perfect and Accurate and feel like you are real there.
+    Assume you are legendary Chef ${chefName}. How would you make the dish "${generateRecipe}" in your own signature cooking style and how would you react to that dish? Try to entertain in accurately original style. Everything should be Perfect and Accurate and feel like you are real there if give dish is not a dish or dish name not found then genrate message that is not a dish name.
 
     IMPORTANT: Please respond in JSON format with the following structure:
     {
