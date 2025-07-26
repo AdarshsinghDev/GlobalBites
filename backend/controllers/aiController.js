@@ -33,7 +33,7 @@ export const aiController = async (req, res) => {
         // Create simple prompt for AI
         const prompt = `Available ingredients: ${cleanIngredients}
 
-    Generate 12 Indian recipes using these ingredients if Ingredients are not valid or in the place of ingredients then generate This is not ingredients. For each recipe, provide and use hinglish:
+    Generate 12 Indian recipes using these ingredients For each recipe and main recipe should prepared by be provided recipe, provide and use hinglish:
     1. Recipe name
     2. Brief description (1-2 lines)
     3. Main ingredients needed
