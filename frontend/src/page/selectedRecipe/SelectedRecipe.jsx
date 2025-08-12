@@ -25,20 +25,22 @@ const SelectedRecipe = () => {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    const savedRecipe = localStorage.getItem("storeHomeRecipe");
-    if (savedRecipe) {
+    // Check for stored recipe data (full recipe object, not just name)
+    const savedRecipeData = localStorage.getItem("storeHomeRecipeData");
+    if (savedRecipeData) {
       try {
-        const parsed = JSON.parse(savedRecipe);
-        // Check if it's a valid recipe object
+        const parsed = JSON.parse(savedRecipeData);
+        // Check if it's a valid recipe object with required properties
         if (parsed && typeof parsed === 'object' && parsed.name) {
+          console.log("Loading recipe from localStorage:", parsed.name);
           setDishRecipe(parsed);
         } else {
-          // Clear invalid data
-          localStorage.removeItem("storeHomeRecipe");
+          console.log("Invalid recipe data in localStorage, clearing");
+          localStorage.removeItem("storeHomeRecipeData");
         }
       } catch (error) {
         console.log("Invalid JSON in localStorage, clearing:", error);
-        localStorage.removeItem("storeHomeRecipe");
+        localStorage.removeItem("storeHomeRecipeData");
         setError("Invalid recipe data found, please try again.");
       }
     }
@@ -48,36 +50,73 @@ const SelectedRecipe = () => {
     const fetchRecipe = async () => {
       if (!homeRecipe) return;
       
+      // Don't fetch if we already have the recipe data
+      if (dishRecipe && dishRecipe.name === homeRecipe) {
+        return;
+      }
+      
       setIsLoading(true);
       setError(null);
+      
       try {
+        console.log("Fetching recipe for:", homeRecipe);
+        
+        // Updated API endpoint URL - use your production URL
         const res = await axios.post(
-          "http://localhost:8080/api/recipe-ai/home-recipe",
-          { recipe: homeRecipe }
+          "https://globalbites-production.up.railway.app/api/recipe-ai/home-recipe",
+          { recipe: homeRecipe },
+          {
+            timeout: 10000, // 10 second timeout
+            headers: {
+              'Content-Type': 'application/json'
+            }
+          }
         );
+        
         const resRecipe = res.data.recipe;
-        console.log(resRecipe);
+        console.log("Received recipe data:", resRecipe);
         
         // Validate the recipe data before storing
-        if (resRecipe && typeof resRecipe === 'object') {
+        if (resRecipe && typeof resRecipe === 'object' && resRecipe.name) {
           setDishRecipe(resRecipe);
-          localStorage.setItem("storeHomeRecipe", JSON.stringify(resRecipe));
+          // Store the full recipe object with a different key
+          localStorage.setItem("storeHomeRecipeData", JSON.stringify(resRecipe));
+          console.log("Recipe stored successfully");
         } else {
           console.error("Invalid recipe data received:", resRecipe);
           setError("Invalid recipe data received from server.");
         }
       } catch (error) {
         console.error("Error fetching recipe:", error);
-        setError("Failed to generate recipe. Please try again.");
+        
+        // More specific error messages
+        if (error.code === 'ERR_NETWORK') {
+          setError("Unable to connect to server. Please check your internet connection and try again.");
+        } else if (error.code === 'ECONNABORTED') {
+          setError("Request timed out. Please try again.");
+        } else if (error.response?.status === 500) {
+          setError("Server error occurred. Please try again later.");
+        } else {
+          setError("Failed to generate recipe. Please try again.");
+        }
       } finally {
         setIsLoading(false);
       }
     };
 
-    if (homeRecipe && !dishRecipe) {
+    // Only fetch if we have a homeRecipe and don't have matching dishRecipe
+    if (homeRecipe && (!dishRecipe || dishRecipe.name !== homeRecipe)) {
       fetchRecipe();
     }
   }, [homeRecipe, dishRecipe]);
+
+  // Clear stored data function
+  const clearStoredData = () => {
+    localStorage.removeItem("storeHomeRecipe");
+    localStorage.removeItem("storeHomeRecipeData");
+    setDishRecipe(null);
+    setError(null);
+  };
 
   if (!homeRecipe && !dishRecipe) {
     return (
@@ -177,14 +216,16 @@ const SelectedRecipe = () => {
             <h3 className="text-xl font-bold text-red-800 mb-2">Oops! Something went wrong</h3>
             <p className="text-red-700 mb-4">{error}</p>
             <button 
-              onClick={() => {
-                setError(null);
-                localStorage.removeItem("storeHomeRecipe");
-                setDishRecipe(null);
-              }}
-              className="px-6 py-3 bg-gradient-to-r from-red-500 to-red-600 text-white rounded-full hover:from-red-600 hover:to-red-700 transition-all duration-300"
+              onClick={clearStoredData}
+              className="px-6 py-3 bg-gradient-to-r from-red-500 to-red-600 text-white rounded-full hover:from-red-600 hover:to-red-700 transition-all duration-300 mr-4"
             >
-              Try Again
+              Clear & Try Again
+            </button>
+            <button 
+              onClick={() => window.history.back()}
+              className="px-6 py-3 bg-gradient-to-r from-gray-500 to-gray-600 text-white rounded-full hover:from-gray-600 hover:to-gray-700 transition-all duration-300"
+            >
+              Go Back
             </button>
           </div>
         )}
@@ -194,6 +235,7 @@ const SelectedRecipe = () => {
           <div className="bg-white/60 backdrop-blur-xl rounded-3xl p-12 text-center shadow-xl border border-white/20">
             <div className="animate-spin h-12 w-12 border-4 border-orange-500 border-t-transparent rounded-full mx-auto mb-4"></div>
             <p className="text-lg text-gray-700">Generating your perfect recipe...</p>
+            <p className="text-sm text-gray-500 mt-2">Recipe: {homeRecipe}</p>
           </div>
         )}
 
@@ -333,38 +375,22 @@ const SelectedRecipe = () => {
 
               <button 
                 onClick={() => {
-                  localStorage.removeItem("storeHomeRecipe");
-                  setDishRecipe(null);
-                  // Trigger re-fetch
+                  // Clear stored data and trigger re-fetch
+                  clearStoredData();
+                  
+                  // Trigger re-fetch by setting homeRecipe again
                   if (homeRecipe) {
-                    const fetchRecipe = async () => {
+                    setTimeout(() => {
+                      setError(null);
                       setIsLoading(true);
-                      try {
-                        const res = await axios.post(
-                          "http://localhost:8080/api/recipe-ai/home-recipe",
-                          { recipe: homeRecipe }
-                        );
-                        const resRecipe = res.data.recipe;
-                        
-                        // Validate the recipe data before storing
-                        if (resRecipe && typeof resRecipe === 'object') {
-                          setDishRecipe(resRecipe);
-                          localStorage.setItem("storeHomeRecipe", JSON.stringify(resRecipe));
-                        } else {
-                          console.error("Invalid recipe data received:", resRecipe);
-                        }
-                      } catch (error) {
-                        console.error(error);
-                      } finally {
-                        setIsLoading(false);
-                      }
-                    };
-                    fetchRecipe();
+                      // The useEffect will handle the actual fetching
+                    }, 100);
                   }
                 }}
-                className="flex items-center justify-center gap-2 bg-gradient-to-r from-purple-500 to-purple-600 hover:from-purple-600 hover:to-purple-700 text-white px-6 py-3 rounded-xl font-semibold transition-all duration-300 transform hover:scale-105"
+                disabled={isLoading}
+                className="flex items-center justify-center gap-2 bg-gradient-to-r from-purple-500 to-purple-600 hover:from-purple-600 hover:to-purple-700 text-white px-6 py-3 rounded-xl font-semibold transition-all duration-300 transform hover:scale-105 disabled:opacity-50"
               >
-                <RefreshCw className="w-5 h-5" />
+                <RefreshCw className={`w-5 h-5 ${isLoading ? 'animate-spin' : ''}`} />
                 Regenerate
               </button>
             </div>
