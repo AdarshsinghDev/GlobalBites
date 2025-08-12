@@ -16,7 +16,7 @@ import { Link } from "react-router-dom";
 import { useUserContext } from "../../context/CreateContext";
 import Loading from "../../components/ui/Loading";
 import { useNavigate } from "react-router-dom";
-import { useHomeRecipeContext } from "../../context/HomeContext";
+import { useHomeRecipeContext } from "../../context/HomeRecipeContext";
 const Home = () => {
   const { userContextData } = useUserContext();
   const [fullname, setFullname] = useState("");
@@ -90,27 +90,26 @@ const Home = () => {
     setCloseMenu((prev) => !prev);
     console.log("workin");
   };
-//  const handleNavigate = (recipe) => {
-//     navigate("/recipe");
-//     console.log(recipe);
-//     setHomeRecipe(recipe);
-//     localStorage.setItem("storeHomeRecipe", recipe);
-//   };
+  //  const handleNavigate = (recipe) => {
+  //     navigate("/recipe");
+  //     console.log(recipe);
+  //     setHomeRecipe(recipe);
+  //     localStorage.setItem("storeHomeRecipe", recipe);
+  //   };
 
+  const handleNavigate = (recipeName) => {
+    console.log("Navigating to recipe:", recipeName);
 
-const handleNavigate = (recipeName) => {
-  console.log("Navigating to recipe:", recipeName);
-  
-  // Clear any existing stored recipe data to force fresh fetch
-  localStorage.removeItem("storeHomeRecipeData");
-  
-  // Set the recipe name in context and localStorage
-  setHomeRecipe(recipeName);
-  localStorage.setItem("storeHomeRecipe", recipeName); // Store just the name
-  
-  // Navigate to recipe page
-  navigate("/recipe");
-};
+    // Clear any existing stored recipe data to force fresh fetch
+    localStorage.removeItem("storeHomeRecipeData");
+
+    // Set the recipe name in context and localStorage
+    setHomeRecipe(recipeName);
+    localStorage.setItem("storeHomeRecipe", recipeName); // Store just the name
+
+    // Navigate to recipe page
+    navigate("/recipe");
+  };
 
   return (
     <div

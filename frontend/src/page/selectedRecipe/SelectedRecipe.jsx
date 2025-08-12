@@ -41,7 +41,7 @@ const SelectedRecipe = () => {
       } catch (error) {
         console.log("Invalid JSON in localStorage, clearing:", error);
         localStorage.removeItem("storeHomeRecipeData");
-        setError("Invalid recipe data found, please try again.");
+        // Don't set error here, just clear the invalid data
       }
     }
   }, []);
@@ -50,7 +50,7 @@ const SelectedRecipe = () => {
     const fetchRecipe = async () => {
       if (!homeRecipe) return;
       
-      // Don't fetch if we already have the recipe data
+      // Don't fetch if we already have the recipe data for this recipe
       if (dishRecipe && dishRecipe.name === homeRecipe) {
         return;
       }
@@ -61,12 +61,12 @@ const SelectedRecipe = () => {
       try {
         console.log("Fetching recipe for:", homeRecipe);
         
-        // Updated API endpoint URL - use your production URL
+        // Use the correct production URL
         const res = await axios.post(
           "https://globalbites-production.up.railway.app/api/recipe-ai/home-recipe",
           { recipe: homeRecipe },
           {
-            timeout: 10000, // 10 second timeout
+            timeout: 15000, // 15 second timeout
             headers: {
               'Content-Type': 'application/json'
             }
@@ -96,6 +96,8 @@ const SelectedRecipe = () => {
           setError("Request timed out. Please try again.");
         } else if (error.response?.status === 500) {
           setError("Server error occurred. Please try again later.");
+        } else if (error.response?.status === 400) {
+          setError("Invalid recipe request. Please try a different recipe.");
         } else {
           setError("Failed to generate recipe. Please try again.");
         }
@@ -116,6 +118,20 @@ const SelectedRecipe = () => {
     localStorage.removeItem("storeHomeRecipeData");
     setDishRecipe(null);
     setError(null);
+  };
+
+  // Regenerate recipe function
+  const regenerateRecipe = () => {
+    // Clear stored data
+    localStorage.removeItem("storeHomeRecipeData");
+    setDishRecipe(null);
+    setError(null);
+    
+    // Trigger re-fetch by clearing dishRecipe
+    // The useEffect will automatically trigger a new fetch
+    if (homeRecipe) {
+      setIsLoading(true);
+    }
   };
 
   if (!homeRecipe && !dishRecipe) {
@@ -215,18 +231,27 @@ const SelectedRecipe = () => {
             <div className="text-red-500 text-6xl mb-4">⚠️</div>
             <h3 className="text-xl font-bold text-red-800 mb-2">Oops! Something went wrong</h3>
             <p className="text-red-700 mb-4">{error}</p>
-            <button 
-              onClick={clearStoredData}
-              className="px-6 py-3 bg-gradient-to-r from-red-500 to-red-600 text-white rounded-full hover:from-red-600 hover:to-red-700 transition-all duration-300 mr-4"
-            >
-              Clear & Try Again
-            </button>
-            <button 
-              onClick={() => window.history.back()}
-              className="px-6 py-3 bg-gradient-to-r from-gray-500 to-gray-600 text-white rounded-full hover:from-gray-600 hover:to-gray-700 transition-all duration-300"
-            >
-              Go Back
-            </button>
+            <div className="flex flex-wrap gap-4 justify-center">
+              <button 
+                onClick={regenerateRecipe}
+                disabled={isLoading}
+                className="px-6 py-3 bg-gradient-to-r from-red-500 to-red-600 text-white rounded-full hover:from-red-600 hover:to-red-700 transition-all duration-300 disabled:opacity-50"
+              >
+                {isLoading ? "Regenerating..." : "Try Again"}
+              </button>
+              <button 
+                onClick={clearStoredData}
+                className="px-6 py-3 bg-gradient-to-r from-gray-500 to-gray-600 text-white rounded-full hover:from-gray-600 hover:to-gray-700 transition-all duration-300"
+              >
+                Clear & Reset
+              </button>
+              <button 
+                onClick={() => window.history.back()}
+                className="px-6 py-3 bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-full hover:from-blue-600 hover:to-blue-700 transition-all duration-300"
+              >
+                Go Back
+              </button>
+            </div>
           </div>
         )}
 
@@ -374,19 +399,7 @@ const SelectedRecipe = () => {
               </button>
 
               <button 
-                onClick={() => {
-                  // Clear stored data and trigger re-fetch
-                  clearStoredData();
-                  
-                  // Trigger re-fetch by setting homeRecipe again
-                  if (homeRecipe) {
-                    setTimeout(() => {
-                      setError(null);
-                      setIsLoading(true);
-                      // The useEffect will handle the actual fetching
-                    }, 100);
-                  }
-                }}
+                onClick={regenerateRecipe}
                 disabled={isLoading}
                 className="flex items-center justify-center gap-2 bg-gradient-to-r from-purple-500 to-purple-600 hover:from-purple-600 hover:to-purple-700 text-white px-6 py-3 rounded-xl font-semibold transition-all duration-300 transform hover:scale-105 disabled:opacity-50"
               >
