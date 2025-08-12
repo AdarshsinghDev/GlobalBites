@@ -485,16 +485,16 @@ const Home = () => {
         }
 
         ::-webkit-scrollbar-track {
-          background: #fafafa;
+        background: #f5f5f5;
         }
 
         ::-webkit-scrollbar-thumb {
-          background: linear-gradient(135deg, #ffaaa5, #6a0572);
+         background: linear-gradient(135deg, #1DB954, #21E065);
           border-radius: 10px;
         }
 
         ::-webkit-scrollbar-thumb:hover {
-          background: linear-gradient(135deg, #6a0572, #ffaaa5);
+           background: linear-gradient(135deg, #21E065, #1DB954);
         }
       `}</style>
     </div>
