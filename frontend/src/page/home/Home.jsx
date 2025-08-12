@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { CiSearch, CiCircleMore } from "react-icons/ci";
+
 import {
   ChefHat,
   Heart,
@@ -9,12 +10,13 @@ import {
   HeartHandshake,
   X,
 } from "lucide-react";
+
 import axios from "axios";
 import { Link } from "react-router-dom";
-
 import { useUserContext } from "../../context/CreateContext";
 import Loading from "../../components/ui/Loading";
-
+import { useNavigate } from "react-router-dom";
+import { useHomeRecipeContext } from "../../context/HomeContext";
 const Home = () => {
   const { userContextData } = useUserContext();
   const [fullname, setFullname] = useState("");
@@ -23,6 +25,8 @@ const Home = () => {
   const [loading, setLoading] = useState(false);
   const [searchedIngredients, setSearchedIngredients] = useState("");
   const [closeMenu, setCloseMenu] = useState(false);
+  const { setHomeRecipe } = useHomeRecipeContext();
+  const navigate = useNavigate();
 
   useEffect(() => {
     const storedFullame = localStorage.getItem("storedFullname");
@@ -85,6 +89,12 @@ const Home = () => {
   const handleCloseMenu = () => {
     setCloseMenu((prev) => !prev);
     console.log("workin");
+  };
+  const handleNavigate = (recipe) => {
+    navigate("/recipe");
+    console.log(recipe);
+    setHomeRecipe(recipe);
+    localStorage.setItem("storeHomeRecipe", recipe);
   };
 
   return (
@@ -340,7 +350,11 @@ const Home = () => {
                   </div>
 
                   {/* View Recipe Button */}
-                  <button className="w-full relative overflow-hidden text-white py-2 sm:py-3 px-4 sm:px-6 rounded-xl font-semibold shadow-lg hover:shadow-xl transform hover:scale-105 active:scale-95 transition-all duration-300 group mt-auto">
+                  <button
+                    type="button"
+                    onClick={() => handleNavigate(recipe.name)}
+                    className="w-full relative overflow-hidden text-white py-2 sm:py-3 px-4 sm:px-6 rounded-xl font-semibold shadow-lg hover:shadow-xl transform hover:scale-105 active:scale-95 transition-all duration-300 group mt-auto"
+                  >
                     <div
                       className="absolute inset-0 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left"
                       style={{
@@ -409,7 +423,7 @@ const Home = () => {
       )}
 
       {/* Custom Styles */}
-      <style jsx>{`
+      <style>{`
         @keyframes fadeInUp {
           from {
             opacity: 0;
