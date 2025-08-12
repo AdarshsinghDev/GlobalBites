@@ -210,3 +210,75 @@ export const aiChefController = async (req, res) => {
         res.status(500).json({ error: "Failed to generate recipe", details: error.message });
     }
 };
+
+
+//Home Recipe
+export const aiHomeRecipe = async (req, res) => {
+  const { recipe } = req.body;
+
+  try {
+    const prompt = `
+You are an expert recipe creator. Generate ONE recipe based on the dish name: ${recipe}.
+
+Respond ONLY in JSON, with this exact structure:
+{
+  "name": "Dish name",
+  "description": "Very short Hinglish description (max 10 words)",
+  "time": number,
+  "difficulty": "Easy | Medium | Hard",
+  "servings": number,
+  "calories": number,
+  "tags": ["#Healthy", "#Comfort", "#HighProtein", "#Spicy"],
+  "ingredients": [
+    { "name": "Ingredient name", "amount": number, "unit": "g/ml/tsp/etc" }
+  ],
+  "chefTip": "One short Hinglish tip for better taste",
+  "moodBooster": "One short Hinglish fun line about mood boost",
+  "nutritionPerServing": {
+    "calories": number,
+    "protein": number,
+    "carbs": number,
+    "fats": number
+  },
+  "steps": [
+    {
+      "stepNumber": 1,
+      "title": "Short step title",
+      "instruction": "Full Hinglish step instruction"
+    }
+  ]
+}
+
+Rules:
+- time should be number only (like 30, not "30 mins")
+- Use Hinglish for instructions, tips, and mood booster.
+- Respond only in JSON format. No extra text.
+`;
+
+    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+    const result = await model.generateContent(prompt);
+    const response = await result.response;
+    const text = response.text();
+    console.log("Raw AI Response:", text);
+
+    // aiChef style cleaning (same technique)
+    let cleanedText = text.trim();
+    if (cleanedText.startsWith('```json')) {
+      cleanedText = cleanedText.replace(/```json\n?/, '').replace(/\n?```$/, '');
+    } else if (cleanedText.startsWith('```')) {
+      cleanedText = cleanedText.replace(/```\n?/, '').replace(/\n?```$/, '');
+    }
+
+    // Parse JSON
+    const parsedRecipe = JSON.parse(cleanedText);
+
+    return res.status(200).json({ recipe: parsedRecipe });
+
+  } catch (error) {
+    console.error("AI Home Recipe Error:", error.message);
+    return res.status(500).json({ 
+      error: "Failed to generate recipe", 
+      details: error.message 
+    });
+  }
+};

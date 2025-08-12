@@ -15,6 +15,7 @@ import Mood from "./page/features/Mood";
 import ScienceBehind from "./page/features/ScienceBehind";
 import Health from "./page/features/Health";
 import SelectedChef from "./page/features/SelectedChef";
+import SelectedRecipe from "./page/selectedRecipe/SelectedRecipe";
 
 function App() {
   return (
@@ -26,6 +27,7 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/verify-otp" element={<VerifyOTP />} />
         <Route path="/home" element={<Home />} />
+        <Route path="/recipe" element={<SelectedRecipe />} />
         <Route path="/profile" element={<Profile />} />
         <Route path="/setting" element={<Settings />} />
         <Route path="/favourites" element={<Favourites />} />
