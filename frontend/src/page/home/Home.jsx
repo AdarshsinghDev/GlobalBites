@@ -16,7 +16,7 @@ import { Link } from "react-router-dom";
 import { useUserContext } from "../../context/CreateContext";
 import Loading from "../../components/ui/Loading";
 import { useNavigate } from "react-router-dom";
-import { useHomeRecipeContext } from "../../context/HomeContext";
+import { useHomeRecipeContext } from "../../context/HomeRecipeContext";
 const Home = () => {
   const { userContextData } = useUserContext();
   const [fullname, setFullname] = useState("");

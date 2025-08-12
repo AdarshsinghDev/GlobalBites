@@ -15,7 +15,7 @@ import {
   Sparkles,
 } from "lucide-react";
 
-import { useHomeRecipeContext } from "../../context/HomeContext";
+import { useHomeRecipeContext } from "../../context/HomeRecipeContext";
 import axios from "axios";
 
 const SelectedRecipe = () => {
@@ -30,7 +30,7 @@ const SelectedRecipe = () => {
       try {
         const parsed = JSON.parse(savedRecipe);
         // Check if it's a valid recipe object
-        if (parsed && typeof parsed === "object" && parsed.name) {
+        if (parsed && typeof parsed === 'object' && parsed.name) {
           setDishRecipe(parsed);
         } else {
           // Clear invalid data
@@ -47,19 +47,19 @@ const SelectedRecipe = () => {
   useEffect(() => {
     const fetchRecipe = async () => {
       if (!homeRecipe) return;
-
+      
       setIsLoading(true);
       setError(null);
       try {
         const res = await axios.post(
-          "https://globalbites-production.up.railway.app/api/recipe-ai/home-recipe",
+          "http://localhost:8080/api/recipe-ai/home-recipe",
           { recipe: homeRecipe }
         );
         const resRecipe = res.data.recipe;
         console.log(resRecipe);
-
+        
         // Validate the recipe data before storing
-        if (resRecipe && typeof resRecipe === "object") {
+        if (resRecipe && typeof resRecipe === 'object') {
           setDishRecipe(resRecipe);
           localStorage.setItem("storeHomeRecipe", JSON.stringify(resRecipe));
         } else {
@@ -125,9 +125,7 @@ const SelectedRecipe = () => {
                 <div className="flex items-center justify-center gap-3 mb-2">
                   <Clock className="w-6 h-6 text-orange-600" />
                 </div>
-                <p className="text-2xl font-bold text-gray-900">
-                  {dishRecipe?.time || 30}
-                </p>
+                <p className="text-2xl font-bold text-gray-900">{dishRecipe?.time || 30}</p>
                 <p className="text-sm text-gray-600">minutes</p>
               </div>
 
@@ -135,9 +133,7 @@ const SelectedRecipe = () => {
                 <div className="flex items-center justify-center gap-3 mb-2">
                   <Star className="w-6 h-6 text-orange-600 fill-current" />
                 </div>
-                <p className="text-lg font-bold text-gray-900">
-                  {dishRecipe?.difficulty || "Easy"}
-                </p>
+                <p className="text-lg font-bold text-gray-900">{dishRecipe?.difficulty || "Easy"}</p>
                 <p className="text-sm text-gray-600">difficulty</p>
               </div>
 
@@ -145,9 +141,7 @@ const SelectedRecipe = () => {
                 <div className="flex items-center justify-center gap-3 mb-2">
                   <Users className="w-6 h-6 text-orange-600" />
                 </div>
-                <p className="text-2xl font-bold text-gray-900">
-                  {dishRecipe?.servings || 4}
-                </p>
+                <p className="text-2xl font-bold text-gray-900">{dishRecipe?.servings || 4}</p>
                 <p className="text-sm text-gray-600">servings</p>
               </div>
 
@@ -155,9 +149,7 @@ const SelectedRecipe = () => {
                 <div className="flex items-center justify-center gap-3 mb-2">
                   <Utensils className="w-6 h-6 text-orange-600" />
                 </div>
-                <p className="text-2xl font-bold text-gray-900">
-                  {dishRecipe?.calories || 300}
-                </p>
+                <p className="text-2xl font-bold text-gray-900">{dishRecipe?.calories || 300}</p>
                 <p className="text-sm text-gray-600">calories</p>
               </div>
             </div>
@@ -182,11 +174,9 @@ const SelectedRecipe = () => {
         {error && (
           <div className="bg-red-50/80 backdrop-blur-xl rounded-3xl p-8 text-center shadow-xl border border-red-200/50 mb-8">
             <div className="text-red-500 text-6xl mb-4">⚠️</div>
-            <h3 className="text-xl font-bold text-red-800 mb-2">
-              Oops! Something went wrong
-            </h3>
+            <h3 className="text-xl font-bold text-red-800 mb-2">Oops! Something went wrong</h3>
             <p className="text-red-700 mb-4">{error}</p>
-            <button
+            <button 
               onClick={() => {
                 setError(null);
                 localStorage.removeItem("storeHomeRecipe");
@@ -203,9 +193,7 @@ const SelectedRecipe = () => {
         {isLoading && !error && (
           <div className="bg-white/60 backdrop-blur-xl rounded-3xl p-12 text-center shadow-xl border border-white/20">
             <div className="animate-spin h-12 w-12 border-4 border-orange-500 border-t-transparent rounded-full mx-auto mb-4"></div>
-            <p className="text-lg text-gray-700">
-              Generating your perfect recipe...
-            </p>
+            <p className="text-lg text-gray-700">Generating your perfect recipe...</p>
           </div>
         )}
 
@@ -217,11 +205,9 @@ const SelectedRecipe = () => {
               <div className="space-y-6">
                 <div className="flex items-center gap-3 mb-6">
                   <span className="text-3xl">🥘</span>
-                  <h3 className="text-2xl font-bold text-gray-800">
-                    Ingredients
-                  </h3>
+                  <h3 className="text-2xl font-bold text-gray-800">Ingredients</h3>
                 </div>
-
+                
                 <div className="space-y-3">
                   {dishRecipe.ingredients?.map((ingredient, index) => (
                     <div
@@ -248,9 +234,7 @@ const SelectedRecipe = () => {
                     <div className="flex items-start gap-3">
                       <ChefHat className="w-6 h-6 text-yellow-600 mt-1" />
                       <div>
-                        <h4 className="font-bold text-yellow-800 mb-2">
-                          Chef's Tip
-                        </h4>
+                        <h4 className="font-bold text-yellow-800 mb-2">Chef's Tip</h4>
                         <p className="text-yellow-700">{dishRecipe.chefTip}</p>
                       </div>
                     </div>
@@ -263,12 +247,8 @@ const SelectedRecipe = () => {
                     <div className="flex items-start gap-3">
                       <span className="text-2xl">💜</span>
                       <div>
-                        <h4 className="font-bold text-purple-800 mb-2">
-                          Mood Booster
-                        </h4>
-                        <p className="text-purple-700">
-                          {dishRecipe.moodBooster}
-                        </p>
+                        <h4 className="font-bold text-purple-800 mb-2">Mood Booster</h4>
+                        <p className="text-purple-700">{dishRecipe.moodBooster}</p>
                       </div>
                     </div>
                   </div>
@@ -277,32 +257,22 @@ const SelectedRecipe = () => {
                 {/* Nutrition */}
                 {dishRecipe.nutritionPerServing && (
                   <div className="bg-white/50 backdrop-blur-sm rounded-xl p-6 border border-gray-200/50">
-                    <h4 className="text-xl font-bold mb-4 text-gray-800">
-                      Nutrition (per serving)
-                    </h4>
+                    <h4 className="text-xl font-bold mb-4 text-gray-800">Nutrition (per serving)</h4>
                     <div className="grid grid-cols-2 gap-4">
                       <div className="text-center p-3 bg-blue-50/80 rounded-lg">
-                        <p className="text-2xl font-bold text-blue-600">
-                          {dishRecipe.nutritionPerServing.calories}
-                        </p>
+                        <p className="text-2xl font-bold text-blue-600">{dishRecipe.nutritionPerServing.calories}</p>
                         <p className="text-sm text-blue-800">Calories</p>
                       </div>
                       <div className="text-center p-3 bg-green-50/80 rounded-lg">
-                        <p className="text-2xl font-bold text-green-600">
-                          {dishRecipe.nutritionPerServing.protein}g
-                        </p>
+                        <p className="text-2xl font-bold text-green-600">{dishRecipe.nutritionPerServing.protein}g</p>
                         <p className="text-sm text-green-800">Protein</p>
                       </div>
                       <div className="text-center p-3 bg-yellow-50/80 rounded-lg">
-                        <p className="text-2xl font-bold text-yellow-600">
-                          {dishRecipe.nutritionPerServing.carbs}g
-                        </p>
+                        <p className="text-2xl font-bold text-yellow-600">{dishRecipe.nutritionPerServing.carbs}g</p>
                         <p className="text-sm text-yellow-800">Carbs</p>
                       </div>
                       <div className="text-center p-3 bg-red-50/80 rounded-lg">
-                        <p className="text-2xl font-bold text-red-600">
-                          {dishRecipe.nutritionPerServing.fats}g
-                        </p>
+                        <p className="text-2xl font-bold text-red-600">{dishRecipe.nutritionPerServing.fats}g</p>
                         <p className="text-sm text-red-800">Fats</p>
                       </div>
                     </div>
@@ -314,9 +284,7 @@ const SelectedRecipe = () => {
               <div className="space-y-6">
                 <div className="flex items-center gap-3 mb-6">
                   <span className="text-3xl">👨‍🍳</span>
-                  <h3 className="text-2xl font-bold text-gray-800">
-                    Cooking Instructions
-                  </h3>
+                  <h3 className="text-2xl font-bold text-gray-800">Cooking Instructions</h3>
                 </div>
 
                 <div className="space-y-4">
@@ -363,7 +331,7 @@ const SelectedRecipe = () => {
                 Cook with AI
               </button>
 
-              <button
+              <button 
                 onClick={() => {
                   localStorage.removeItem("storeHomeRecipe");
                   setDishRecipe(null);
@@ -377,19 +345,13 @@ const SelectedRecipe = () => {
                           { recipe: homeRecipe }
                         );
                         const resRecipe = res.data.recipe;
-
+                        
                         // Validate the recipe data before storing
-                        if (resRecipe && typeof resRecipe === "object") {
+                        if (resRecipe && typeof resRecipe === 'object') {
                           setDishRecipe(resRecipe);
-                          localStorage.setItem(
-                            "storeHomeRecipe",
-                            JSON.stringify(resRecipe)
-                          );
+                          localStorage.setItem("storeHomeRecipe", JSON.stringify(resRecipe));
                         } else {
-                          console.error(
-                            "Invalid recipe data received:",
-                            resRecipe
-                          );
+                          console.error("Invalid recipe data received:", resRecipe);
                         }
                       } catch (error) {
                         console.error(error);

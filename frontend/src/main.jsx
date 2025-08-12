@@ -5,7 +5,7 @@ import App from "./App.jsx";
 import { BrowserRouter } from "react-router-dom";
 import { UserProvider } from "./context/CreateContext.jsx";
 import { ChefProvider } from "./context/ChefContext.jsx";
-import { HomeRecipeProvider } from "./context/HomeContext.jsx";
+import { HomeRecipeProvider } from "./context/HomeRecipeContext.jsx";
 
 createRoot(document.getElementById("root")).render(
   <BrowserRouter>
