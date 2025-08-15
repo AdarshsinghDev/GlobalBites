@@ -122,8 +122,8 @@ export const aiChefController = async (req, res) => {
 
     IMPORTANT: Please respond in JSON format with the following structure:
     {
-    "greeting": "Accurate Greeting In ${chefName} style with his/her famous lines and tell something recent incident that happened with him in hinglish and in 3 lines and Make funny Jokes or lines on behalf of dish if chef never cooked that dish they directly told to user and say i am here by reason of GlobalBites WebApp in Hinglish format",
-    "ingredients": [
+    "greeting": "Act like a world-class chef ${chefName} and reveal your top pro cooking hacks for ${generateRecipe}—including time-saving techniques, flavor-boosting secrets, and plating tricks that make it look restaurant-worthy. End the response by giving a shoutout to GlobalBites (my web app where these results are shown) in a fun and unique Hinglish style."
+     "ingredients": [
         {"item": "ingredient name with emoji", "quantity": "amount"}
     ],
     "instructions": [
@@ -229,7 +229,7 @@ Respond ONLY in JSON, with this exact structure:
   "difficulty": "Easy | Medium | Hard",
   "servings": number,
   "calories": number,
-  "tags": ["#Healthy", "#Comfort", "#HighProtein", "#Spicy"],
+  "tags": ["#Healthy", "#Comfort", "#HighProtein", "#Spicy", "#FestiveSpecial", "#FamilyFavorite", "#StreetStyle", "#RestaurantStyle", "#Fusion", "#QuickMeals", "#BudgetFriendly", "#SeasonalSpecial"],
   "ingredients": [
     { "name": "Ingredient name", "amount": number, "unit": "g/ml/tsp/etc" }
   ],
@@ -261,7 +261,6 @@ Rules:
     const result = await model.generateContent(prompt);
     const response = await result.response;
     const text = response.text();
-    console.log("Raw AI Response:", text);
 
     // aiChef style cleaning (same technique)
     let cleanedText = text.trim();
