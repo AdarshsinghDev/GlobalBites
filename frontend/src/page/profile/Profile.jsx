@@ -6,10 +6,13 @@ const Profile = () => {
     localStorage.getItem("storedFullname")
   );
   const [email, setEmail] = useState(localStorage.getItem("storedEmail"));
+  const [loading, setLoading] = useState(false);
+
   const token = localStorage.getItem("token");
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
 
     try {
       const res = await axios.put(
@@ -28,6 +31,8 @@ const Profile = () => {
       }
     } catch (error) {
       console.log(error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -187,11 +192,22 @@ const Profile = () => {
 
                   <button className="group relative px-4 py-2 lg:px-8 lg:py-4 rounded-2xl bg-gradient-to-r from-green-600 to-lime-500 text-white font-semibold text-lg hover:from-green-700 hover:to-lime-600 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 active:translate-y-0">
                     <span className="flex items-center gap-1 justify-center ">
-                      <span className="text-xl">👨‍🍳</span>
-                      Save Profile
-                      <span className="text-xl group-hover:translate-x-1 transition-transform duration-200">
-                        →
-                      </span>
+                      {loading ? (
+                        <>
+                          <div className="text-center  flex items-center justify-center">
+                            <div className="animate-spin h-7 w-7 border-4  border-t-transparent rounded-full"> </div>
+                            <p className="text-xl">&nbsp; Saving...</p>
+                          </div>
+                        </>
+                      ) : (
+                        <>
+                          <span className="text-xl">👨‍🍳</span>
+                          Save Profile
+                          <span className="text-xl group-hover:translate-x-1 transition-transform duration-200">
+                            →
+                          </span>{" "}
+                        </>
+                      )}
                     </span>
                     <div className="absolute inset-0 rounded-2xl bg-white/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                   </button>
