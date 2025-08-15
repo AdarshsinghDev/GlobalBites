@@ -27,6 +27,7 @@ const Profile = () => {
 
       if (res.data.success) {
         localStorage.setItem("storedFullname", fullname);
+        setLoading(false);
         alert("Profile Update successfully!");
       }
     } catch (error) {
@@ -195,7 +196,9 @@ const Profile = () => {
                       {loading ? (
                         <>
                           <div className="text-center  flex items-center justify-center">
-                            <div className="animate-spin h-7 w-7 border-4  border-t-transparent rounded-full"> </div>
+                            <div className="animate-spin h-7 w-7 border-4  border-t-transparent rounded-full">
+                              {" "}
+                            </div>
                             <p className="text-xl">&nbsp; Saving...</p>
                           </div>
                         </>
