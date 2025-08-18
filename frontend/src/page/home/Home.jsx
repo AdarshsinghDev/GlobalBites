@@ -47,7 +47,7 @@ const Home = () => {
       setRecipes([]);
 
       const res = await axios.post(
-        "https://globalbites-production.up.railway.app/api/recipe-ai/get-recipes",
+        `${import.meta.env.VITE_BACKEND_URL}/api/recipe-ai/get-recipes`,
         {
           ingredients: trimmedIngredients,
         }

@@ -16,7 +16,7 @@ const Profile = () => {
 
     try {
       const res = await axios.put(
-        "https://globalbites-production.up.railway.app/api/auth/update-profile",
+       `${import.meta.env.VITE_BACKEND_URL}/api/auth/update-profile`,
         { fullname },
         {
           headers: {

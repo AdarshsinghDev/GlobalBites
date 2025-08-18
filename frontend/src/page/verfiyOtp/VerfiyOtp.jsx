@@ -19,13 +19,13 @@ import { useNavigate } from "react-router-dom";
 const VerifyOTP = () => {
   const [otp, setOtp] = useState("");
   const [message, setMessage] = useState("");
-  const [isLoading, setIsLoading] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
   const [email, setEmail] = useState();
 
   const { setUserContextData, userContextData } = useUserContext();
 
   console.log(localStorage.getItem("token"));
-  const handelChange = (e) => {
+  const handleChange = (e) => {
     setOtp(e.target.value);
   };
 
@@ -41,7 +41,7 @@ const VerifyOTP = () => {
 
     try {
       const res = await axios.post(
-        "https://globalbites-production.up.railway.app/api/auth/verify-otp",
+        `${import.meta.env.VITE_BACKEND_URL}/api/auth/verify-otp`,
         { email, otp }
       );
 
@@ -78,9 +78,6 @@ const VerifyOTP = () => {
       setIsLoading(false);
     }
   };
-  useEffect(async()=> {
-    const res = await axios.get(" ")
-  },[])
 
   return (
     <div className="min-h-screen w-full flex items-center justify-center bg-indigo-200 to-purple-50 relative overflow-hidden px-4">
@@ -114,7 +111,11 @@ const VerifyOTP = () => {
         {/* Verification Card */}
         <div className="bg-white/95 backdrop-blur-md rounded-2xl shadow-2xl border border-white/20 p-8 animate-fade-in">
           {/* GlobalBites Branding */}
-          <Logo logoStyle={"text-[18px]"} logoIconPad={"p-[5px]"} className="" />
+          <Logo
+            logoStyle={"text-[18px]"}
+            logoIconPad={"p-[5px]"}
+            className=""
+          />
 
           <div className="text-center my-6">
             <h2 className="text-xl font-bold text-gray-800 mb-2 flex items-center justify-center gap-2">
@@ -164,7 +165,7 @@ const VerifyOTP = () => {
                 <input
                   type="text"
                   placeholder="123456"
-                  onChange={handelChange}
+                  onChange={handleChange}
                   value={otp}
                   maxLength="6"
                   style={{ letterSpacing: "5px" }}

@@ -41,7 +41,7 @@ const Login = () => {
 
     try {
       const res = await axios.post(
-        "https://globalbites-production.up.railway.app/api/auth/login",
+        `${import.meta.env.VITE_BACKEND_URL}/api/auth/login`,
         {
           email: userData.email,
           password: userData.password,

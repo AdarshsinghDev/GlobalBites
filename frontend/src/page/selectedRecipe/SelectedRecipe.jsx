@@ -31,7 +31,7 @@ const SelectedRecipe = () => {
       try {
         const parsed = JSON.parse(savedRecipeData);
         // Check if it's a valid recipe object with required properties
-        if (parsed && typeof parsed === 'object' && parsed.name) {
+        if (parsed && typeof parsed === "object" && parsed.name) {
           console.log("Loading recipe from localStorage:", parsed.name);
           setDishRecipe(parsed);
         } else {
@@ -49,38 +49,41 @@ const SelectedRecipe = () => {
   useEffect(() => {
     const fetchRecipe = async () => {
       if (!homeRecipe) return;
-      
+
       // Don't fetch if we already have the recipe data for this recipe
       if (dishRecipe && dishRecipe.name === homeRecipe) {
         return;
       }
-      
+
       setIsLoading(true);
       setError(null);
-      
+
       try {
         console.log("Fetching recipe for:", homeRecipe);
-        
+
         // Use the correct production URL
         const res = await axios.post(
-          "https://globalbites-production.up.railway.app/api/recipe-ai/home-recipe",
+          `${import.meta.env.VITE_BACKEND_URL}/api/recipe-ai/home-recipe`,
           { recipe: homeRecipe },
           {
             timeout: 15000, // 15 second timeout
             headers: {
-              'Content-Type': 'application/json'
-            }
+              "Content-Type": "application/json",
+            },
           }
         );
-        
+
         const resRecipe = res.data.recipe;
         console.log("Received recipe data:", resRecipe);
-        
+
         // Validate the recipe data before storing
-        if (resRecipe && typeof resRecipe === 'object' && resRecipe.name) {
+        if (resRecipe && typeof resRecipe === "object" && resRecipe.name) {
           setDishRecipe(resRecipe);
           // Store the full recipe object with a different key
-          localStorage.setItem("storeHomeRecipeData", JSON.stringify(resRecipe));
+          localStorage.setItem(
+            "storeHomeRecipeData",
+            JSON.stringify(resRecipe)
+          );
           console.log("Recipe stored successfully");
         } else {
           console.error("Invalid recipe data received:", resRecipe);
@@ -88,11 +91,13 @@ const SelectedRecipe = () => {
         }
       } catch (error) {
         console.error("Error fetching recipe:", error);
-        
+
         // More specific error messages
-        if (error.code === 'ERR_NETWORK') {
-          setError("Unable to connect to server. Please check your internet connection and try again.");
-        } else if (error.code === 'ECONNABORTED') {
+        if (error.code === "ERR_NETWORK") {
+          setError(
+            "Unable to connect to server. Please check your internet connection and try again."
+          );
+        } else if (error.code === "ECONNABORTED") {
           setError("Request timed out. Please try again.");
         } else if (error.response?.status === 500) {
           setError("Server error occurred. Please try again later.");
@@ -126,7 +131,7 @@ const SelectedRecipe = () => {
     localStorage.removeItem("storeHomeRecipeData");
     setDishRecipe(null);
     setError(null);
-    
+
     // Trigger re-fetch by clearing dishRecipe
     // The useEffect will automatically trigger a new fetch
     if (homeRecipe) {
@@ -180,7 +185,9 @@ const SelectedRecipe = () => {
                 <div className="flex items-center justify-center gap-3 mb-2">
                   <Clock className="w-6 h-6 text-orange-600" />
                 </div>
-                <p className="text-2xl font-bold text-gray-900">{dishRecipe?.time || 30}</p>
+                <p className="text-2xl font-bold text-gray-900">
+                  {dishRecipe?.time || 30}
+                </p>
                 <p className="text-sm text-gray-600">minutes</p>
               </div>
 
@@ -188,7 +195,9 @@ const SelectedRecipe = () => {
                 <div className="flex items-center justify-center gap-3 mb-2">
                   <Star className="w-6 h-6 text-orange-600 fill-current" />
                 </div>
-                <p className="text-lg font-bold text-gray-900">{dishRecipe?.difficulty || "Easy"}</p>
+                <p className="text-lg font-bold text-gray-900">
+                  {dishRecipe?.difficulty || "Easy"}
+                </p>
                 <p className="text-sm text-gray-600">difficulty</p>
               </div>
 
@@ -196,7 +205,9 @@ const SelectedRecipe = () => {
                 <div className="flex items-center justify-center gap-3 mb-2">
                   <Users className="w-6 h-6 text-orange-600" />
                 </div>
-                <p className="text-2xl font-bold text-gray-900">{dishRecipe?.servings || 4}</p>
+                <p className="text-2xl font-bold text-gray-900">
+                  {dishRecipe?.servings || 4}
+                </p>
                 <p className="text-sm text-gray-600">servings</p>
               </div>
 
@@ -204,7 +215,9 @@ const SelectedRecipe = () => {
                 <div className="flex items-center justify-center gap-3 mb-2">
                   <Utensils className="w-6 h-6 text-orange-600" />
                 </div>
-                <p className="text-2xl font-bold text-gray-900">{dishRecipe?.calories || 300}</p>
+                <p className="text-2xl font-bold text-gray-900">
+                  {dishRecipe?.calories || 300}
+                </p>
                 <p className="text-sm text-gray-600">calories</p>
               </div>
             </div>
@@ -229,23 +242,25 @@ const SelectedRecipe = () => {
         {error && (
           <div className="bg-red-50/80 backdrop-blur-xl rounded-3xl p-8 text-center shadow-xl border border-red-200/50 mb-8">
             <div className="text-red-500 text-6xl mb-4">⚠️</div>
-            <h3 className="text-xl font-bold text-red-800 mb-2">Oops! Something went wrong</h3>
+            <h3 className="text-xl font-bold text-red-800 mb-2">
+              Oops! Something went wrong
+            </h3>
             <p className="text-red-700 mb-4">{error}</p>
             <div className="flex flex-wrap gap-4 justify-center">
-              <button 
+              <button
                 onClick={regenerateRecipe}
                 disabled={isLoading}
                 className="px-6 py-3 bg-gradient-to-r from-red-500 to-red-600 text-white rounded-full hover:from-red-600 hover:to-red-700 transition-all duration-300 disabled:opacity-50"
               >
                 {isLoading ? "Regenerating..." : "Try Again"}
               </button>
-              <button 
+              <button
                 onClick={clearStoredData}
                 className="px-6 py-3 bg-gradient-to-r from-gray-500 to-gray-600 text-white rounded-full hover:from-gray-600 hover:to-gray-700 transition-all duration-300"
               >
                 Clear & Reset
               </button>
-              <button 
+              <button
                 onClick={() => window.history.back()}
                 className="px-6 py-3 bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-full hover:from-blue-600 hover:to-blue-700 transition-all duration-300"
               >
@@ -259,7 +274,9 @@ const SelectedRecipe = () => {
         {isLoading && !error && (
           <div className="bg-white/60 backdrop-blur-xl rounded-3xl p-12 text-center shadow-xl border border-white/20">
             <div className="animate-spin h-12 w-12 border-4 border-orange-500 border-t-transparent rounded-full mx-auto mb-4"></div>
-            <p className="text-lg text-gray-700">Generating your perfect recipe...</p>
+            <p className="text-lg text-gray-700">
+              Generating your perfect recipe...
+            </p>
             <p className="text-sm text-gray-500 mt-2">Recipe: {homeRecipe}</p>
           </div>
         )}
@@ -272,9 +289,11 @@ const SelectedRecipe = () => {
               <div className="space-y-6">
                 <div className="flex items-center gap-3 mb-6">
                   <span className="text-3xl">🥘</span>
-                  <h3 className="text-2xl font-bold text-gray-800">Ingredients</h3>
+                  <h3 className="text-2xl font-bold text-gray-800">
+                    Ingredients
+                  </h3>
                 </div>
-                
+
                 <div className="space-y-3">
                   {dishRecipe.ingredients?.map((ingredient, index) => (
                     <div
@@ -301,7 +320,9 @@ const SelectedRecipe = () => {
                     <div className="flex items-start gap-3">
                       <ChefHat className="w-6 h-6 text-yellow-600 mt-1" />
                       <div>
-                        <h4 className="font-bold text-yellow-800 mb-2">Chef's Tip</h4>
+                        <h4 className="font-bold text-yellow-800 mb-2">
+                          Chef's Tip
+                        </h4>
                         <p className="text-yellow-700">{dishRecipe.chefTip}</p>
                       </div>
                     </div>
@@ -314,8 +335,12 @@ const SelectedRecipe = () => {
                     <div className="flex items-start gap-3">
                       <span className="text-2xl">💜</span>
                       <div>
-                        <h4 className="font-bold text-purple-800 mb-2">Mood Booster</h4>
-                        <p className="text-purple-700">{dishRecipe.moodBooster}</p>
+                        <h4 className="font-bold text-purple-800 mb-2">
+                          Mood Booster
+                        </h4>
+                        <p className="text-purple-700">
+                          {dishRecipe.moodBooster}
+                        </p>
                       </div>
                     </div>
                   </div>
@@ -324,22 +349,32 @@ const SelectedRecipe = () => {
                 {/* Nutrition */}
                 {dishRecipe.nutritionPerServing && (
                   <div className="bg-white/50 backdrop-blur-sm rounded-xl p-6 border border-gray-200/50">
-                    <h4 className="text-xl font-bold mb-4 text-gray-800">Nutrition (per serving)</h4>
+                    <h4 className="text-xl font-bold mb-4 text-gray-800">
+                      Nutrition (per serving)
+                    </h4>
                     <div className="grid grid-cols-2 gap-4">
                       <div className="text-center p-3 bg-blue-50/80 rounded-lg">
-                        <p className="text-2xl font-bold text-blue-600">{dishRecipe.nutritionPerServing.calories}</p>
+                        <p className="text-2xl font-bold text-blue-600">
+                          {dishRecipe.nutritionPerServing.calories}
+                        </p>
                         <p className="text-sm text-blue-800">Calories</p>
                       </div>
                       <div className="text-center p-3 bg-green-50/80 rounded-lg">
-                        <p className="text-2xl font-bold text-green-600">{dishRecipe.nutritionPerServing.protein}g</p>
+                        <p className="text-2xl font-bold text-green-600">
+                          {dishRecipe.nutritionPerServing.protein}g
+                        </p>
                         <p className="text-sm text-green-800">Protein</p>
                       </div>
                       <div className="text-center p-3 bg-yellow-50/80 rounded-lg">
-                        <p className="text-2xl font-bold text-yellow-600">{dishRecipe.nutritionPerServing.carbs}g</p>
+                        <p className="text-2xl font-bold text-yellow-600">
+                          {dishRecipe.nutritionPerServing.carbs}g
+                        </p>
                         <p className="text-sm text-yellow-800">Carbs</p>
                       </div>
                       <div className="text-center p-3 bg-red-50/80 rounded-lg">
-                        <p className="text-2xl font-bold text-red-600">{dishRecipe.nutritionPerServing.fats}g</p>
+                        <p className="text-2xl font-bold text-red-600">
+                          {dishRecipe.nutritionPerServing.fats}g
+                        </p>
                         <p className="text-sm text-red-800">Fats</p>
                       </div>
                     </div>
@@ -351,7 +386,9 @@ const SelectedRecipe = () => {
               <div className="space-y-6">
                 <div className="flex items-center gap-3 mb-6">
                   <span className="text-3xl">👨‍🍳</span>
-                  <h3 className="text-2xl font-bold text-gray-800">Cooking Instructions</h3>
+                  <h3 className="text-2xl font-bold text-gray-800">
+                    Cooking Instructions
+                  </h3>
                 </div>
 
                 <div className="space-y-4">
@@ -398,12 +435,14 @@ const SelectedRecipe = () => {
                 Cook with AI
               </button>
 
-              <button 
+              <button
                 onClick={regenerateRecipe}
                 disabled={isLoading}
                 className="flex items-center justify-center gap-2 bg-gradient-to-r from-purple-500 to-purple-600 hover:from-purple-600 hover:to-purple-700 text-white px-6 py-3 rounded-xl font-semibold transition-all duration-300 transform hover:scale-105 disabled:opacity-50"
               >
-                <RefreshCw className={`w-5 h-5 ${isLoading ? 'animate-spin' : ''}`} />
+                <RefreshCw
+                  className={`w-5 h-5 ${isLoading ? "animate-spin" : ""}`}
+                />
                 Regenerate
               </button>
             </div>

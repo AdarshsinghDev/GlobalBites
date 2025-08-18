@@ -46,66 +46,6 @@ const SelectedChef = () => {
 
   const chef = selectedChef || getStoredChef();
 
-  // Mock signature dishes
-  const signatureDishes = [
-    {
-      name: "Butter Chicken Masala",
-      emoji: "🍛",
-      description:
-        "Creamy tomato-based curry with tender chicken pieces, slow-cooked to perfection",
-      calories: 420,
-      protein: 32,
-      tags: ["Energy", "Comfort"],
-      cookTime: "45 min",
-    },
-    {
-      name: "Tandoori Paneer Tikka",
-      emoji: "🧀",
-      description:
-        "Grilled cottage cheese marinated in aromatic spices and yogurt",
-      calories: 280,
-      protein: 18,
-      tags: ["Light", "Protein-Rich"],
-      cookTime: "30 min",
-    },
-    {
-      name: "Biryani Royale",
-      emoji: "🍚",
-      description: "Fragrant basmati rice layered with spiced lamb and saffron",
-      calories: 520,
-      protein: 28,
-      tags: ["Hearty", "Traditional"],
-      cookTime: "90 min",
-    },
-    {
-      name: "Dal Makhani",
-      emoji: "🫘",
-      description: "Slow-cooked black lentils in rich, creamy gravy",
-      calories: 320,
-      protein: 22,
-      tags: ["Comfort", "Protein-Rich"],
-      cookTime: "60 min",
-    },
-    {
-      name: "Masala Chai Crème Brûlée",
-      emoji: "🍮",
-      description: "French dessert infused with traditional Indian tea flavors",
-      calories: 280,
-      protein: 6,
-      tags: ["Sweet", "Fusion"],
-      cookTime: "120 min",
-    },
-    {
-      name: "Samosa Chaat",
-      emoji: "🥟",
-      description: "Crispy samosas topped with tangy chutneys and fresh herbs",
-      calories: 380,
-      protein: 12,
-      tags: ["Snack", "Tangy"],
-      cookTime: "25 min",
-    },
-  ];
-
   //submit function
   const handleSubmit = async (e) => {
     setIsLoading(true);
@@ -113,7 +53,7 @@ const SelectedChef = () => {
     e.preventDefault();
     try {
       const res = await axios.post(
-        "https://globalbites-production.up.railway.app/api/recipe-ai/ai-chef",
+        `${import.meta.env.VITE_BACKEND_URL}/api/recipe-ai/ai-chef`,
         {
           chefName: chef.chefName,
           generateRecipe: generatedRecipe,
@@ -249,9 +189,7 @@ const SelectedChef = () => {
               ) : (
                 <div className="flex items-center justify-center space-x-2">
                   <CiSearch className="w-5 h-5 sm:w-6 sm:h-6" />
-                  <span className="text-sm text-center">
-                    Search
-                  </span>
+                  <span className="text-sm text-center">Search</span>
                 </div>
               )}
             </button>

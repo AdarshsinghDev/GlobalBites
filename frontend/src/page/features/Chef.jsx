@@ -6,9 +6,7 @@ import {
   Award,
   Leaf,
   MapPin,
-  ClockFading,
 } from "lucide-react";
-import Development from "../development/Development";
 import { useChefContext } from "../../context/ChefContext";
 import { useNavigate } from "react-router-dom";
 
