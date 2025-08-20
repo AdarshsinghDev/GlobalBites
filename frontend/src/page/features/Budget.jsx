@@ -7,7 +7,6 @@ import {
   Clock,
   Users,
 } from "lucide-react";
-import Development from "../development/Development";
 
 const Budget = () => {
   const [budget, setBudget] = useState("");
@@ -150,14 +149,6 @@ const Budget = () => {
 
   return (
     <div className="min-h-screen py-6 bg-gradient-to-br from-green-300 via-green-400 to-teal-400">
-      {/* <Development
-        title="🔥 Coming Soon"
-        subtitle="Amazing features in development"
-        variant="coding"
-        showProgress={false}
-        estimatedTime="Next Week"
-      /> */}
-
       <div className="max-w-6xl mx-auto px-6 pb-12">
         {/* Main Title */}
         <div className="text-center mb-12">
