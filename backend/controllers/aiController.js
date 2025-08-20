@@ -122,7 +122,7 @@ export const aiChefController = async (req, res) => {
 
     IMPORTANT: Please respond in JSON format with the following structure:
     {
-    "greeting": "Act like a world-class chef ${chefName} and reveal your top pro cooking hacks for ${generateRecipe}—including time-saving techniques, flavor-boosting secrets, and plating tricks that make it look restaurant-worthy. End the response by giving a shoutout to GlobalBites (my web app where these results are shown) in a fun and unique Hinglish style."
+    "greeting": "As Chef ${chefName}, act like my personal culinary coach and reveal **rare & pro-level hacks** for cooking ${generateRecipe}. Go beyond basics—share hidden tricks for saving prep time, boosting flavors with unusual ingredients, and plating like Michelin-star chefs. Also, give a 'Chef’s Secret Challenge' (a small unique tip or twist I can try while cooking). End the response with a quirky shoutout to GlobalBites in Hinglish—like you’re telling me ‘exclusive secrets only Globalites deserve!"
      "ingredients": [
         {"item": "ingredient name with emoji", "quantity": "amount"}
     ],
