@@ -17,7 +17,7 @@ export const signUpController = async (req, res) => {
         if (existingUser) {
             return res.status(400).json({ message: "Email already existed!", success: false });
         }
-        const salt = await bcrypt.genSalt(10);
+        const salt = await bcrypt.genSalt(8);
         const hashedPass = await bcrypt.hash(password, salt);
         const otp = Math.floor(10000 + Math.random() * 90000).toString();
 
@@ -32,25 +32,11 @@ export const signUpController = async (req, res) => {
             maxAge: 7 * 24 * 60 * 60 * 1000,
         });
 
-
-
+        res.status(201).json({ message: "Successfuly Created", success: true, newUser, token });
         console.log(newUser);
+        sendOTP(newUser.email, otp).then(() => console.log("OTP sent to", newUser.email))
+            .catch((err) => console.error("OTP send Failed: ", err));
 
-
-        // Send OTP email first (priority) - this is more time-sensitive
-        await sendOTP(newUser.email, otp);
-
-        // Send welcome email asynchronously (non-blocking)
-        // This prevents the welcome email from delaying the OTP
-
-        // setImmediate(() => {
-        //     sendWelcome(newUser.email, newUser.fullname).catch(error => {
-        //         console.error('Welcome email failed (non-critical):', error);
-        //     });
-        // });
-
-
-        return res.status(201).json({ message: "Successfuly Created", success: true, newUser, token });
 
     } catch (error) {
         console.log(`controller error ${error}`);
@@ -148,8 +134,8 @@ export const changePassword = async (req, res) => {
         if (!isMatch) {
             return res.status(400).json({ message: "Current password is incorrect", success: false });
         }
-        const salt = bcrypt.genSalt(10);
-        user.password = bcrypt.hash(newPassword, salt);
+        const salt = await bcrypt.genSalt(8);
+        user.password = await bcrypt.hash(newPassword, salt);
         await user.save();
         return res.status(200).json({ message: "Password updated successfully", success: true });
     } catch (error) {
@@ -163,7 +149,7 @@ export const updateProfile = async (req, res) => {
         const { fullname } = req.body;
         const user = await User.findByIdAndUpdate(req.user.id, { fullname }, { new: true });
         console.log(user);
-        return res.status(200).json({ message: "Profile Updtate successfully", success: true })
+        return res.status(200).json({ message: "Profile Update successfully", success: true })
     } catch (error) {
         res.status(500).json({ message: "Something went wrong", error });
     }
