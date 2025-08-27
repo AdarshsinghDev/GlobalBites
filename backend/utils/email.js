@@ -46,7 +46,7 @@ export const sendWelcome = async (email, fullname) => {
     try {
         const sendSmtpEmail = {
             sender: { email: "adarshwebofficial@gmail.com", name: "GlobalBites" },
-            to: email,
+            to: [{ email }],
             subject: `Welcome to GlobalBites ${fullname}`,
             htmlContent: emailWelcomeTemplate.replace("{USERNAME}", fullname),
             textContent: `Welcome ${fullname}! Your GlobalBites account has been created.`,

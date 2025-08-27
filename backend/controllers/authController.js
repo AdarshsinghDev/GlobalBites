@@ -40,13 +40,6 @@ export const signUpController = async (req, res) => {
             .then(() => console.log("OTP sent to", newUser.email))
             .catch((err) => console.error("OTP send Failed: ", err));
 
-        // Send Welcome Email
-        sendWelcome(newUser.email, newUser.fullname)
-            .then(() => console.log("Welcome Email sent to", newUser.email))
-            .catch((err) => console.error("Welcome Email Failed: ", err));
-
-
-
     } catch (error) {
         console.log(`controller error ${error}`);
         return res.status(500).json({ message: "Account creation failed, Try again", success: false });
@@ -67,10 +60,14 @@ export const verifyEmail = async (req, res) => {
         user.otp = undefined;
         await user.save();
 
-        return res.status(200).json({
+        res.status(200).json({
             message: "Email verified successfully!",
             success: true,
         });
+
+        sendWelcome(user.email, user.fullname)
+            .then(() => console.log("Welcome Email sent after verification"))
+            .catch(err => console.error("Welcome Email failed:", err));
 
     } catch (error) {
         console.log("Verification failed", error);
