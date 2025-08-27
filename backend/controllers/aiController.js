@@ -277,9 +277,126 @@ Rules:
 
   } catch (error) {
     console.error("AI Home Recipe Error:", error.message);
-    return res.status(500).json({ 
-      error: "Failed to generate recipe", 
-      details: error.message 
+    return res.status(500).json({
+      error: "Failed to generate recipe",
+      details: error.message
+    });
+  }
+};
+
+
+
+// Budget Recipe
+export const aiBudget = async (req, res) => {
+  const { budget, meal, frequency, prefrence } = req.body;
+
+  try {
+    const prompt = `
+You are an expert Indian recipe creator.
+
+TASK:
+Generate EXACTLY 16 unique Indian recipes based on the following user details:
+Budget: ${budget}
+Meal Type: ${meal}
+Frequency: ${frequency}
+Preference: ${prefrence}
+
+OUTPUT FORMAT RULES:
+- Output must be a valid JSON array ONLY. No explanations, no markdown, no text outside JSON.
+- The array must contain exactly 16 recipe objects.
+- Each object must strictly follow this schema: 
+
+Respond ONLY in pure JSON format, array of objects with this exact structure:
+[
+  {
+    "name": "Dish name",
+    "description": "Very short Hinglish description (max 10 words)",
+    "time": number,
+    "difficulty": "Easy | Medium | Hard",
+    "servings": number,
+    "calories": number,
+    "ingredients": [
+      {
+        "item": "ingredient name",
+        "quantity": "amount with unit",
+        "price": number
+      }
+    ],
+    "totalPrice": number,
+    "avgPricePerPerson": number,
+    "steps": [
+      "Step 1 in Hinglish",
+      "Step 2 in Hinglish",
+      "... (at least 8 steps)"
+    ],
+    "tips": [
+      "Cooking tip in Hinglish",
+      "Mood booster line in Hinglish"
+    ]
+  }
+]
+
+Rules:
+- Must return exactly 16 recipes (not less, not more).
+- Prices must be realistic INR (India market approx).
+- "totalPrice" must equal sum of ingredient prices.
+- "avgPricePerPerson" = totalPrice / servings.
+- Steps must have at least 8 entries, written in Hinglish and every step should be Detailed and Easy.
+- Tips must be fun + useful in Hinglish.
+- Output only valid JSON. No comments, no text outside the JSON array.
+`;
+
+    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+    const result = await model.generateContent(prompt);
+    const response = await result.response;
+    let text = response.text();
+
+    // --- Clean the response ---
+    let cleanedText = text.trim();
+
+    // Remove ```json ... ```
+    cleanedText = cleanedText.replace(/^```json\s*/, '').replace(/```$/, '');
+
+    // Remove ``` ... ```
+    cleanedText = cleanedText.replace(/^```\s*/, '').replace(/```$/, '');
+
+    // Remove any stray comments (// ... or /* ... */)
+    cleanedText = cleanedText.replace(/\/\/.*$/gm, '').replace(/\/\*[\s\S]*?\*\//g, '');
+
+    // Remove trailing commas before ] or }
+    cleanedText = cleanedText.replace(/,\s*([}\]])/g, '$1');
+
+    // --- Parse JSON safely ---
+    // --- Clean and Parse JSON ---
+    let parsedJson;
+    try {
+      // Keep only up to the last ']'
+      const lastBracket = cleanedText.lastIndexOf("]");
+      if (lastBracket !== -1) {
+        cleanedText = cleanedText.substring(0, lastBracket + 1);
+      }
+
+      // Remove trailing commas
+      cleanedText = cleanedText.replace(/,\s*([}\]])/g, "$1");
+
+      parsedJson = JSON.parse(cleanedText);
+    } catch (parseError) {
+      console.error("JSON Parse Error:", parseError.message);
+      return res.status(500).json({
+        error: "Failed to parse AI response",
+        raw: cleanedText,
+        details: parseError.message
+      });
+    }
+    // Return parsed JSON
+    return res.status(200).json({ recipes: parsedJson });
+
+
+  } catch (error) {
+    console.error("Budget Recipe Error:", error.message);
+    return res.status(500).json({
+      error: "Failed to generate recipe",
+      details: error.message
     });
   }
 };

@@ -1,18 +1,28 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   IndianRupee,
   Calendar,
-  Utensils,
   Star,
   Clock,
   Users,
+  Flame,
+  ChefHat,
+  CheckCircle,
+  Lightbulb,
+  X,
 } from "lucide-react";
+import { CiSearch } from "react-icons/ci";
+import axios from "axios";
 
 const Budget = () => {
   const [budget, setBudget] = useState("");
-  const [frequency, setFrequency] = useState("Monthly");
+  const [frequency, setFrequency] = useState("");
   const [selectedMealType, setSelectedMealType] = useState("");
   const [selectedPreferences, setSelectedPreferences] = useState([]);
+  const [recipes, setRecipes] = useState([]);
+  const [popUp, setPopUp] = useState(false);
+  const [selectedRecipe, setSelectedRecipe] = useState([]);
+  const [loading, setLoading] = useState(false);
 
   const frequencies = ["Daily", "Weekly", "Monthly"];
 
@@ -90,62 +100,76 @@ const Budget = () => {
     );
   };
 
-  const recipeCards = [
-    {
-      id: 1,
-      title: "Butter Chicken",
-      time: "30 min",
-      rating: 4.8,
-      people: 4,
-      image:
-        "https://images.unsplash.com/photo-1588166524941-3bf61a9c41db?w=200&h=150&fit=crop",
-    },
-    {
-      id: 2,
-      title: "Pasta Carbonara",
-      time: "25 min",
-      rating: 4.6,
-      people: 2,
-      image:
-        "https://static01.nyt.com/images/2021/02/14/dining/carbonara-horizontal/carbonara-horizontal-threeByTwoMediumAt2X-v2.jpg",
-    },
-    {
-      id: 3,
-      title: "Veggie Buddha Bowl",
-      time: "20 min",
-      rating: 4.7,
-      people: 1,
-      image:
-        "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=200&h=150&fit=crop",
-    },
-    {
-      id: 4,
-      title: "Chicken Biryani",
-      time: "45 min",
-      rating: 4.9,
-      people: 6,
-      image:
-        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQPyJ2vhJ3Uo5QtZ4NgNzlpZFMUEfpyqRhWWw&s",
-    },
-    {
-      id: 5,
-      title: "Margherita Pizza",
-      time: "35 min",
-      rating: 4.5,
-      people: 3,
-      image:
-        "https://images.unsplash.com/photo-1574071318508-1cdbab80d002?w=200&h=150&fit=crop",
-    },
-    {
-      id: 6,
-      title: "Thai Green Curry",
-      time: "40 min",
-      rating: 4.8,
-      people: 4,
-      image:
-        "https://images.unsplash.com/photo-1455619452474-d2be8b1e70cd?w=200&h=150&fit=crop",
-    },
-  ];
+  //LocalStorage Getting Stored Budget Recipe....
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    //Converting selected prefrence Array to string....
+    const strPref = selectedPreferences.toString();
+
+    try {
+      const res = await axios.post(
+        `${import.meta.env.VITE_BACKEND_URL}/api/recipe-ai/budget`,
+        { budget, meal: selectedMealType, frequency, prefrence: strPref }
+      );
+      if (res.status === 200) {
+        console.log("success");
+        console.log(res.data);
+        const budgetRecipeFromBackend = res.data.recipes;
+
+        //setting recipe to local Storage
+        localStorage.setItem(
+          "storedBudgetRecipe",
+          JSON.stringify(budgetRecipeFromBackend)
+        );
+
+        //Setting recipe to card from backend Response and also from Local Storage...
+        setRecipes(budgetRecipeFromBackend);
+      }
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // UseEffect START---
+  useEffect(() => {
+    try {
+      const stored = localStorage.getItem("storedBudgetRecipe");
+
+      if (stored) {
+        setRecipes(JSON.parse(stored));
+      }
+    } catch (error) {
+      console.error("Error parsing stored recipes", error);
+      localStorage.removeItem("storedBudgetRecipe");
+    }
+  }, []);
+  // END----
+
+  //function of Show and hide overlay on clicking recipe
+
+  const handleRecipePopUp = (recipe) => {
+    setPopUp(true);
+    setSelectedRecipe(recipe);
+  };
+
+  //Difficulty color
+
+  const getDifficultyColor = (difficulty) => {
+    switch (difficulty.toLowerCase()) {
+      case "easy":
+        return "bg-green-100 text-green-700 border-green-200";
+      case "medium":
+        return "bg-yellow-100 text-yellow-700 border-yellow-200";
+      case "hard":
+        return "bg-red-100 text-red-700 border-red-200";
+      default:
+        return "bg-gray-100 text-gray-700 border-gray-200";
+    }
+  };
 
   return (
     <div className="min-h-screen py-6 bg-gradient-to-br from-green-300 via-green-400 to-teal-400">
@@ -162,13 +186,14 @@ const Budget = () => {
 
         <div className="grid lg:grid-cols-2 gap-12 items-start">
           {/* Left Side - Budget Controls */}
-          <div className="space-y-8">
+          <form onSubmit={handleSubmit} className="space-y-8">
             {/* Budget Input Card */}
             <div className="bg-white/60 backdrop-blur-xl rounded-3xl p-8 shadow-2xl">
               <div className="text-center mb-6">
                 <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
                   <IndianRupee className="w-8 h-8 text-green-600" />
                 </div>
+
                 <h3 className="text-2xl font-bold text-gray-800 mb-2">
                   Your Budget
                 </h3>
@@ -247,12 +272,12 @@ const Budget = () => {
                   </h4>
                   <div className="grid grid-cols-2 gap-4">
                     {mealTypes.map((meal) => (
-                      <button
+                      <div
                         key={meal.id}
                         onClick={() => handleMealTypeSelect(meal.id)}
                         className={`
                           ${meal.bgColor} ${meal.textColor}
-                          rounded-2xl shadow-md p-4 font-medium text-md sm:text-lg
+                          rounded-2xl shadow-md p-4 font-medium text-md sm:text-lg cursor-pointer
                           hover:scale-105 transition-transform duration-200
                           ${
                             selectedMealType === meal.id
@@ -265,7 +290,7 @@ const Budget = () => {
                           <span className="text-2xl">{meal.emoji}</span>
                           <span>{meal.label}</span>
                         </div>
-                      </button>
+                      </div>
                     ))}
                   </div>
                 </div>
@@ -277,12 +302,12 @@ const Budget = () => {
                   </h4>
                   <div className="grid grid-cols-2 gap-4">
                     {foodPreferences.map((pref) => (
-                      <button
+                      <div
                         key={pref.id}
                         onClick={() => handlePreferenceToggle(pref.id)}
                         className={`
                           ${pref.bgColor} ${pref.textColor}
-                          rounded-2xl shadow-md p-4 font-medium text-md sm:text-lg
+                          rounded-2xl shadow-md p-4 font-medium text-md sm:text-lg cursor-pointer
                           hover:scale-105 transition-transform duration-200
                           ${
                             selectedPreferences.includes(pref.id)
@@ -295,7 +320,7 @@ const Budget = () => {
                           <span className="text-2xl">{pref.emoji}</span>
                           <span>{pref.label}</span>
                         </div>
-                      </button>
+                      </div>
                     ))}
                   </div>
                 </div>
@@ -303,51 +328,78 @@ const Budget = () => {
             </div>
 
             {/* Find Recipes Button */}
-            <button className="w-full py-6 px-8 bg-white text-green-600 rounded-3xl font-bold text-xl shadow-2xl hover:shadow-3xl transform hover:scale-105 transition-all duration-300 active:scale-95 flex items-center justify-center gap-3">
-              <span className="text-2xl">🔍</span>
-              Find Perfect Recipes
+            {/* <button
+              type="submit"
+              className="w-full py-6 px-8 bg-white text-green-600 rounded-3xl font-bold text-xl shadow-2xl hover:shadow-3xl transform hover:scale-105 transition-all duration-300 active:scale-95 flex items-center justify-center gap-3"
+            >
+              🔍 Find Perfect Recipes
+              <div className="animate-spin h-5 w-5 sm:h-6 sm:w-6 border-2 border-white border-t-transparent rounded-full">
+                he
+              </div>
+            </button> */}
+
+            <button
+              type="submit"
+              disabled={loading}
+              className="w-full py-6 bg-white text-green-600 rounded-3xl font-bold text-xl shadow-2xl hover:shadow-3xl flex items-center justify-center gap-3 px-4 sm:px-5 sm:py-4 hover:shadow-xl transform hover:scale-105 active:scale-95 transition-all duration-300 disabled:opacity-50 flex-shrink-0"
+            >
+              {loading ? (
+                <div className="animate-spin h-6 w-6 border-2 border-green-600 border-t-transparent rounded-full cursor-not-allowed"></div>
+              ) : (
+                <div className="flex items-center justify-center space-x-2">
+                  <CiSearch className="w-5 h-5 sm:w-6 sm:h-6" />
+                  <span className="text-sm sm:text-base">
+                    Find Perfect Recipes
+                  </span>
+                </div>
+              )}
             </button>
-          </div>
+          </form>
 
           {/* Right Side - Recipe Preview */}
           <div className="space-y-6">
             <div className="text-center mb-8">
-              <h3 className="text-3xl font-bold mb-2 bg-white  py-1bg-white text-slate-700 p-2 rounded-lg py-1">
+              <h3 className="text-3xl font-bold mb-2 bg-white text-slate-700 p-2 rounded-lg py-1">
                 🍳 Recipe Previews
               </h3>
               <p className="text-white/90">Here's what you could be cooking!</p>
             </div>
 
-            <div className="grid grid-cols-2 gap-6">
-              {recipeCards.map((recipe, index) => (
+            <div className="grid grid-cols-2 gap-4">
+              {recipes.map((recipe, index) => (
                 <div
-                  key={recipe.id}
-                  className="bg-white/20 backdrop-blur-md rounded-2xl p-4 shadow-xl transform transition-all duration-300 hover:scale-105"
+                  key={index}
+                  onClick={() => handleRecipePopUp(recipe)}
+                  className="bg-white/10 backdrop-blur-md cursor-pointer rounded-2xl p-4 shadow-xl transform transition-all duration-300 hover:scale-105 border border-b-4"
                 >
                   <div className="relative mb-3">
-                    <img
-                      src={recipe.image}
-                      alt={recipe.title}
-                      className="w-full h-24 object-cover rounded-xl"
-                    />
-                    <div className="absolute top-2 right-2 bg-white/90 backdrop-blur-sm rounded-full px-2 py-1 flex items-center gap-1">
+                    <div className="w-fit top-2 right-2 bg-white/90 backdrop-blur-sm rounded-full px-2 py-1 flex items-center gap-1">
                       <Star className="w-3 h-3 text-yellow-500 fill-current" />
-                      <span className="text-xs font-bold">{recipe.rating}</span>
+                      <span className="text-xs">{recipe.difficulty}</span>
                     </div>
                   </div>
 
-                  <h4 className="text-white font-bold text-sm mb-2 line-clamp-1">
-                    {recipe.title}
+                  <h4 className="text-white font-bold text-md mb-2 line-clamp-1 underline underline-offset-2">
+                    {recipe.name}
                   </h4>
-
+                  <div className="p-2 px-1 ">
+                    <p className="text-white">{recipe.description}</p>
+                  </div>
                   <div className="flex justify-between text-xs text-white/80">
-                    <div className="flex items-center gap-1">
-                      <Clock className="w-3 h-3" />
-                      <span>{recipe.time}</span>
+                    <div>
+                      <div className="flex items-center gap-1 bg-green-500 p-1 px-2 rounded-full">
+                        <Clock className="w-3 h-3" />
+                        <span className="pr-1">{recipe.time} Min</span>
+                        <div className="border-l-2 pl-2 ">
+                          {" "}
+                          Cost: {recipe.totalPrice}₹
+                        </div>
+                      </div>
                     </div>
+
                     <div className="flex items-center gap-1">
                       <Users className="w-3 h-3" />
-                      <span>{recipe.people}</span>
+                      <span>{recipe.servings}</span>
                     </div>
                   </div>
                 </div>
@@ -372,6 +424,195 @@ const Budget = () => {
           </div>
         </div>
       </div>
+
+      {/* Fixed Overlay of selected Recipe */}
+      {popUp && selectedRecipe && (
+        <div className="fixed inset-0 w-full h-screen bg-black/70 flex justify-center items-center z-50 p-4">
+          <div className="w-full max-w-4xl max-h-[90vh] bg-white rounded-2xl shadow-2xl overflow-hidden relative">
+            {/* Header with Close Button */}
+            <div className="bg-gradient-to-r from-green-500 to-teal-600 p-6 text-white relative">
+              <button
+                onClick={() => setPopUp(false)}
+                className="absolute top-4 right-4 bg-white/20 hover:bg-white/30 p-2 rounded-full transition-all duration-200 z-10"
+              >
+                <X className="w-5 h-5" />
+              </button>
+
+              <div className="flex flex-col md:flex-row md:items-center md:justify-between pr-12">
+                <div>
+                  <h1 className="text-2xl md:text-3xl font-bold mb-2">
+                    {selectedRecipe.name}
+                  </h1>
+                  <p className="text-green-100 text-sm md:text-lg">
+                    {selectedRecipe.description}
+                  </p>
+                </div>
+
+                <div className="mt-4 md:mt-0 flex items-center space-x-4">
+                  <div
+                    className={`px-3 py-1 rounded-full border ${getDifficultyColor(
+                      selectedRecipe.difficulty
+                    )} bg-white/90`}
+                  >
+                    <span className="font-medium text-sm">
+                      {selectedRecipe.difficulty}
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Scrollable Content */}
+            <div className="max-h-[calc(90vh-200px)] overflow-y-auto">
+              {/* Quick Stats */}
+              <div className="grid grid-cols-2 md:grid-cols-5 gap-2 md:gap-4 p-4 md:p-6 bg-gradient-to-r from-green-50 to-teal-50">
+                <div className="text-center">
+                  <div className="bg-white p-2 md:p-3 rounded-xl shadow-sm">
+                    <Clock className="w-4 h-4 md:w-6 md:h-6 text-green-600 mx-auto mb-1" />
+                    <p className="text-xs md:text-sm text-gray-600">Time</p>
+                    <p className="font-bold text-sm md:text-base text-green-700">
+                      {selectedRecipe.time} min
+                    </p>
+                  </div>
+                </div>
+
+                <div className="text-center">
+                  <div className="bg-white p-2 md:p-3 rounded-xl shadow-sm">
+                    <Users className="w-4 h-4 md:w-6 md:h-6 text-blue-600 mx-auto mb-1" />
+                    <p className="text-xs md:text-sm text-gray-600">Servings</p>
+                    <p className="font-bold text-sm md:text-base text-blue-700">
+                      {selectedRecipe.servings}
+                    </p>
+                  </div>
+                </div>
+
+                <div className="text-center">
+                  <div className="bg-white p-2 md:p-3 rounded-xl shadow-sm">
+                    <Flame className="w-4 h-4 md:w-6 md:h-6 text-orange-600 mx-auto mb-1" />
+                    <p className="text-xs md:text-sm text-gray-600">Calories</p>
+                    <p className="font-bold text-sm md:text-base text-orange-700">
+                      {selectedRecipe.calories}
+                    </p>
+                  </div>
+                </div>
+
+                <div className="text-center">
+                  <div className="bg-white p-2 md:p-3 rounded-xl shadow-sm">
+                    <IndianRupee className="w-4 h-4 md:w-6 md:h-6 text-green-600 mx-auto mb-1" />
+                    <p className="text-xs md:text-sm text-gray-600">
+                      Per Person
+                    </p>
+                    <p className="font-bold text-sm md:text-base text-green-700">
+                      ₹{selectedRecipe.avgPricePerPerson}
+                    </p>
+                  </div>
+                </div>
+
+                <div className="text-center">
+                  <div className="bg-white p-2 md:p-3 rounded-xl shadow-sm">
+                    <IndianRupee className="w-4 h-4 md:w-6 md:h-6 text-purple-600 mx-auto mb-1" />
+                    <p className="text-xs md:text-sm text-gray-600">
+                      Total Cost
+                    </p>
+                    <p className="font-bold text-sm md:text-base text-purple-700">
+                      ₹{selectedRecipe.totalPrice}
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="p-4 md:p-6 space-y-6 md:space-y-8">
+                {/* Ingredients Section */}
+                <div>
+                  <h2 className="text-xl md:text-2xl font-bold text-gray-800 mb-4 flex items-center">
+                    <ChefHat className="w-5 h-5 md:w-6 md:h-6 text-green-600 mr-2" />
+                    Ingredients
+                  </h2>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                    {selectedRecipe.ingredients.map((ingredient, index) => (
+                      <div
+                        key={index}
+                        className="bg-gradient-to-r from-green-50 to-teal-50 p-3 md:p-4 rounded-xl border border-green-200"
+                      >
+                        <div className="flex justify-between items-center">
+                          <div>
+                            <h3 className="font-semibold text-sm md:text-base text-gray-800">
+                              {ingredient.item}
+                            </h3>
+                            <p className="text-xs md:text-sm text-gray-600">
+                              {ingredient.quantity}
+                            </p>
+                          </div>
+                          <div className="text-right">
+                            <p className="font-bold text-sm md:text-base text-green-700">
+                              ₹{ingredient.price}
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Cooking Steps */}
+                <div>
+                  <h2 className="text-xl md:text-2xl font-bold text-gray-800 mb-4 flex items-center">
+                    <CheckCircle className="w-5 h-5 md:w-6 md:h-6 text-blue-600 mr-2" />
+                    Cooking Steps
+                  </h2>
+                  <div className="space-y-3">
+                    {selectedRecipe.steps.map((step, index) => (
+                      <div
+                        key={index}
+                        className="flex items-start space-x-3 md:space-x-4 p-3 md:p-4 bg-blue-50 rounded-xl border border-blue-200"
+                      >
+                        <div className="bg-blue-600 text-white rounded-full w-6 h-6 md:w-8 md:h-8 flex items-center justify-center font-bold text-xs md:text-sm flex-shrink-0">
+                          {index + 1}
+                        </div>
+                        <p className="text-sm md:text-base text-gray-700 leading-relaxed">
+                          {step}
+                        </p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Tips Section */}
+                {selectedRecipe.tips && selectedRecipe.tips.length > 0 && (
+                  <div>
+                    <h2 className="text-xl md:text-2xl font-bold text-gray-800 mb-4 flex items-center">
+                      <Lightbulb className="w-5 h-5 md:w-6 md:h-6 text-yellow-600 mr-2" />
+                      Pro Tips
+                    </h2>
+                    <div className="space-y-3">
+                      {selectedRecipe.tips.map((tip, index) => (
+                        <div
+                          key={index}
+                          className="bg-gradient-to-r from-yellow-50 to-orange-50 p-3 md:p-4 rounded-xl border border-yellow-200"
+                        >
+                          <p className="text-sm md:text-base text-gray-700 font-medium">
+                            💡 {tip}
+                          </p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* Footer */}
+            <div className="bg-gradient-to-r from-green-500 to-teal-600 p-1 md:p-2 text-center">
+              <p className="text-white text-base md:text-lg font-semibold">
+                Happy Cooking! 👨‍🍳
+              </p>
+              <p className="text-green-100 text-sm md:text-base">
+                Enjoy your delicious {selectedRecipe.name}
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
