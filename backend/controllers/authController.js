@@ -1,6 +1,6 @@
 import User from "../models/User.js";
 import bcrypt from "bcrypt";
-import { sendOTP } from "../utils/email.js";
+import { sendOTP, sendWelcome } from "../utils/email.js";
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
 dotenv.config();
@@ -34,8 +34,17 @@ export const signUpController = async (req, res) => {
 
         res.status(201).json({ message: "Successfuly Created", success: true, newUser, token });
         console.log(newUser);
-        sendOTP(newUser.email, otp).then(() => console.log("OTP sent to", newUser.email))
+
+        // Send OTP
+        sendOTP(newUser.email, otp)
+            .then(() => console.log("OTP sent to", newUser.email))
             .catch((err) => console.error("OTP send Failed: ", err));
+
+        // Send Welcome Email
+        sendWelcome(newUser.email, newUser.fullname)
+            .then(() => console.log("Welcome Email sent to", newUser.email))
+            .catch((err) => console.error("Welcome Email Failed: ", err));
+
 
 
     } catch (error) {
