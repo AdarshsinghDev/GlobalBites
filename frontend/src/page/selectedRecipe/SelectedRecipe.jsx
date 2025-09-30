@@ -66,7 +66,7 @@ const SelectedRecipe = () => {
           `${import.meta.env.VITE_BACKEND_URL}/api/recipe-ai/home-recipe`,
           { recipe: homeRecipe },
           {
-            timeout: 15000, // 15 second timeout
+            timeout: 60000, // 15 second timeout
             headers: {
               "Content-Type": "application/json",
             },
@@ -186,7 +186,7 @@ const SelectedRecipe = () => {
                   <Clock className="w-6 h-6 text-orange-600" />
                 </div>
                 <p className="text-2xl font-bold text-gray-900">
-                  {dishRecipe?.time || 30}
+                  {dishRecipe?.time || " "}
                 </p>
                 <p className="text-sm text-gray-600">minutes</p>
               </div>
@@ -196,7 +196,7 @@ const SelectedRecipe = () => {
                   <Star className="w-6 h-6 text-orange-600 fill-current" />
                 </div>
                 <p className="text-lg font-bold text-gray-900">
-                  {dishRecipe?.difficulty || "Easy"}
+                  {dishRecipe?.difficulty || " "}
                 </p>
                 <p className="text-sm text-gray-600">difficulty</p>
               </div>
@@ -206,7 +206,7 @@ const SelectedRecipe = () => {
                   <Users className="w-6 h-6 text-orange-600" />
                 </div>
                 <p className="text-2xl font-bold text-gray-900">
-                  {dishRecipe?.servings || 4}
+                  {dishRecipe?.servings || " "}
                 </p>
                 <p className="text-sm text-gray-600">servings</p>
               </div>
@@ -216,7 +216,7 @@ const SelectedRecipe = () => {
                   <Utensils className="w-6 h-6 text-orange-600" />
                 </div>
                 <p className="text-2xl font-bold text-gray-900">
-                  {dishRecipe?.calories || 300}
+                  {dishRecipe?.calories || ""}
                 </p>
                 <p className="text-sm text-gray-600">calories</p>
               </div>
