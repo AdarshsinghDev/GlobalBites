@@ -252,7 +252,7 @@ Respond ONLY in JSON, with this exact structure:
 
 Rules:
 - time should be number only (like 30, not "30 mins")
-- steps of instruction should be easy and in detailed and more than 8 steps of instruction of cooking.
+- steps of instruction should be easy and in detailed and less than 8 steps of instruction of cooking.
 - Use Hinglish for instructions, tips, and mood booster.
 - Respond only in JSON format. No extra text.
 `;
