@@ -48,7 +48,7 @@ export const aiController = async (req, res) => {
 
     Only provide the recipe information, no extra text.`;
 
-    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+    const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
     const result = await model.generateContent(prompt);
     const response = await result.response;
     const text = response.text();
@@ -188,7 +188,7 @@ export const aiChefController = async (req, res) => {
     Respond only in JSON format. Keep it engaging and chef-style in Hinglish.
     `;
 
-    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+    const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
     const result = await model.generateContent(prompt);
     const response = await result.response;
     const text = response.text();
@@ -252,12 +252,12 @@ Respond ONLY in JSON, with this exact structure:
 
 Rules:
 - time should be number only (like 30, not "30 mins")
-- steps of instruction should be easy and in detailed and more than 8 steps of instruction of cooking.
+- steps of instruction should be easy and in detailed and less than 8 steps of instruction of cooking.
 - Use Hinglish for instructions, tips, and mood booster.
 - Respond only in JSON format. No extra text.
 `;
 
-    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+    const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
     const result = await model.generateContent(prompt);
     const response = await result.response;
     const text = response.text();
@@ -346,7 +346,7 @@ Rules:
 - Output only valid JSON. No comments, no text outside the JSON array.
 `;
 
-    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+   const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
     const result = await model.generateContent(prompt);
     const response = await result.response;
     let text = response.text();
