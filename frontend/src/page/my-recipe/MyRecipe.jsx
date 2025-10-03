@@ -14,7 +14,7 @@ import {
 } from "lucide-react";
 import { useEffect, useState } from "react";
 import nonVeg from "../../assets/non-veg.jpg";
-import veg from "../../assets/veg.jpg";
+import veg from "../../assets/veg.jpg"
 import PopUpAlert from "../../components/ui/PopUpAlert.jsx";
 
 export default function MyRecipes() {
