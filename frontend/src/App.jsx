@@ -31,7 +31,7 @@ function App() {
         <Route path="/profile" element={<Profile />} />
         <Route path="/setting" element={<Settings />} />
         <Route path="/favourites" element={<Favourites />} />
-        <Route path="/my-recipes" element={<MyRecipes />} />
+        <Route path="/my-recipe" element={<MyRecipes />} />
         <Route path="/chef" element={<Chef />} />
         <Route path="/budget" element={<Budget />} />
         <Route path="/combo" element={<Combo />} />
