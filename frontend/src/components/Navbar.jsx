@@ -74,7 +74,7 @@ const Navbar = () => {
               {isLoggedIn && (
                 <>
                   <Link
-                    to="/my-recipe"
+                    to="/my-recipes"
                     className="flex items-center space-x-2 px-4 py-2 text-sm font-medium text-white bg-green-600 hover:bg-green-700 rounded-md transition-colors duration-200 shadow-sm hover:shadow-md"
                   >
                     <BookOpen className="w-4 h-4" />
