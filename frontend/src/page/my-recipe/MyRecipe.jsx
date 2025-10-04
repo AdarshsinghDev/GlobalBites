@@ -14,7 +14,7 @@ import {
 } from "lucide-react";
 import { useEffect, useState } from "react";
 import nonVeg from "../../assets/non-veg.jpg";
-import veg from "../../assets/veg.jpg"
+import veg from "../../assets/veg.jpg";
 import PopUpAlert from "../../components/ui/PopUpAlert.jsx";
 
 export default function MyRecipes() {
@@ -551,13 +551,15 @@ export default function MyRecipes() {
                           name="category"
                           value={userRecipeData.category}
                           onChange={handleChange}
-                          className="w-full px-4 py-3 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                          className="w-full px-4 py-3 border  border-gray-300 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
                         >
                           <option>Select Category</option>
                           <option value="Breakfast">Breakfast</option>
                           <option value="Lunch">Lunch</option>
                           <option value="Dinner">Dinner</option>
-                          <option value="Snacks">Snacks</option>
+                          <option valu e="Snacks">
+                            Snacks
+                          </option>
                           <option value="Dessert">Dessert</option>
                           <option value="Beverages">Beverages</option>
                         </select>

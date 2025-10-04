@@ -36,7 +36,7 @@ export const aiController = async (req, res) => {
 
     Generate 12 Indian recipes using these ingredients For each recipe and main recipe should prepared by be provided recipe, provide and use hinglish:
     1. Recipe name
-    2. Brief description (2-3 lines)
+    2. Brief description (2 lines)
     3. Main ingredients needed
     4. Cooking time estimate
 
@@ -134,9 +134,6 @@ export const aiChefController = async (req, res) => {
         "Step 5: Accurate, fun and most detailed and easy instruction in hinglish"
         "Step 6: Accurate, fun and most detailed and easy instruction in hinglish"
         "Step 7: Accurate, fun and most detailed and easy instruction in hinglish"
-        "Step 8: Accurate, fun and most detailed and easy instruction in hinglish"
-        "Step 9: Accurate, fun and most detailed and easy instruction in hinglish"
-        "Step 10: Accurate, fun and most detailed and easy instruction in hinglish"
     ],
     "cookTime": "estimated time",
     "tags": ["Comfort", "High-Protein", "Fusion", "etc"],
@@ -144,43 +141,23 @@ export const aiChefController = async (req, res) => {
     "signature": [
     {
       "title": "Famous signature dish 1 with Emoji and graphical element",
-      "description": "2 - 3 lines desciption with emoji"
+      "description": "2 lines desciption with emoji"
     },
     {
       "title": "Famous signature dish 2 with Emoji and graphical element",
-      "description": "2 - 3 lines description with emoji"
+      "description": "2 lines description with emoji"
     },
     {
       "title": "Famous signature dish 3 with Emoji and graphical element",
-      "description": "2 - 3 lines discription with emoji"
-    },
-    {
-      "title": "Famous signature dish 4 with Emoji and graphical element",
-      "description": "2 - 3 lines discription with emoji"
-    },
-    {
-      "title": "Famous signature dish 5 with Emoji and graphical element",
-      "description": "2 - 3 lines discription with emoji"
-    },
-    {
-      "title": "Famous signature dish 6 with Emoji and graphical element",
-      "description": "2 - 3 lines discription with emoji"
-    },
-    {
-      "title": "Famous signature dish 7 with Emoji and graphical element",
-      "description": "2 - 3 lines discription with emoji"
-    },
-    {
-      "title": "Famous signature dish 8 with Emoji and graphical element",
-      "description": "2 - 3 lines discription with emoji"
+      "description": "2  lines discription with emoji"
     },
     {
       "title": "Famous signature dish 9 with Emoji and graphical element",
-      "description": "2 - 3 lines discription with emoji"
+      "description": "2 lines discription with emoji"
     },
     {
       "title": "Famous signature dish 10 with Emoji and graphical element",
-      "description": "2 - 3 linesdiscription with emoji"
+      "description": "2 linesdiscription with emoji"
     }
   ]
     }
@@ -295,7 +272,7 @@ export const aiBudget = async (req, res) => {
 You are an expert Indian recipe creator.
 
 TASK:
-Generate EXACTLY 16 unique Indian recipes based on the following user details:
+Generate EXACTLY 10 unique Indian recipes based on the following user details:
 Budget: ${budget}
 Meal Type: ${meal}
 Frequency: ${frequency}
@@ -303,7 +280,7 @@ Preference: ${prefrence}
 
 OUTPUT FORMAT RULES:
 - Output must be a valid JSON array ONLY. No explanations, no markdown, no text outside JSON.
-- The array must contain exactly 16 recipe objects.
+- The array must contain exactly 10 recipe objects.
 - Each object must strictly follow this schema: 
 
 Respond ONLY in pure JSON format, array of objects with this exact structure:
