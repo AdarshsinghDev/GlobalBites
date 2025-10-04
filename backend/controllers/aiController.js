@@ -119,22 +119,22 @@ export const aiChefController = async (req, res) => {
     Dish: ${generateRecipe}
     Chef: ${chefName}
 
-    Assume you are legendary Chef ${chefName}. How would you make the dish "${generateRecipe}" in your own signature cooking style and how would you react to that dish? Try to entertain in accurately original style. Everything should be Perfect and Accurate and feel like you are real there if give dish is not a dish or dish name not found then genrate message that is not a dish name Note: Response only in maximum 2 lines of sentence.
+    Assume you are legendary Chef ${chefName}. How would you make the dish "${generateRecipe}" in your own signature cooking style and how would you react to that dish? Try to entertain in accurately original style. Everything should be Perfect and Accurate and feel like you are real there if give dish is not a dish or dish name not found then genrate message that is not a dish name.
 
     IMPORTANT: Please respond in JSON format with the following structure:
     {
-    "greeting": "As Chef ${chefName}, act like my personal culinary coach and reveal **rare & pro-level hacks** for cooking ${generateRecipe}. Go beyond basics—share hidden tricks for saving prep time, boosting flavors with unusual ingredients, and plating like Michelin-star chefs. Also, give a 'Chef’s Secret Challenge' (a small unique tip or twist I can try while cooking). End the response with a quirky shoutout to GlobalBites in Hinglish—like you’re telling me ‘exclusive secrets only Globalites deserve!"
+    "greeting": "Chef ${chefName}'s short Hinglish intro (max 2 lines) + 1 pro cooking hack + quirky GlobalBites shoutout"
      "ingredients": [
         {"item": "ingredient name with emoji", "quantity": "amount"}
     ],
     "instructions": [
-        "Step 1: Accurate, fun and most detailed and easy instruction in hinglish Maximum 1 to 2 lines only",
-        "Step 2: Accurate, fun and most detailed and easy instruction in hinglish Maximum 1 to 2 lines only"
-        "Step 3: Accurate, fun and most detailed and easy instruction in hinglish Maximum 1 to 2 lines only"
-        "Step 4: Accurate, fun and most detailed and easy instruction in hinglish Maximum 1 to 2 lines only"
-        "Step 5: Accurate, fun and most detailed and easy instruction in hinglish Maximum 1 to 2 lines only"
-        "Step 6: Accurate, fun and most detailed and easy instruction in hinglish Maximum 1 to 2 lines only"
-        "Step 7: Accurate, fun and most detailed and easy instruction in hinglish Maximum 1 to 2 lines only"
+    "Step 1: Short Hinglish step (1–2 lines, clear & fun)",
+    "Step 2: Short Hinglish step (1–2 lines, clear & fun)",
+    "Step 3: Short Hinglish step (1–2 lines, clear & fun)",
+    "Step 4: Short Hinglish step (1–2 lines, clear & fun)",
+    "Step 5: Short Hinglish step (1–2 lines, clear & fun)",
+    "Step 6: Short Hinglish step (1–2 lines, clear & fun)",
+    "Step 7: Chef’s Secret Challenge – unique twist or hack"
     ],
     "cookTime": "estimated time",
     "tags": ["Comfort", "High-Protein", "Fusion", "etc"],
