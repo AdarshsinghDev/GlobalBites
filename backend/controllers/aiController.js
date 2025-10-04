@@ -119,7 +119,7 @@ export const aiChefController = async (req, res) => {
     Dish: ${generateRecipe}
     Chef: ${chefName}
 
-    Assume you are legendary Chef ${chefName}. How would you make the dish "${generateRecipe}" in your own signature cooking style and how would you react to that dish? Try to entertain in accurately original style. Everything should be Perfect and Accurate and feel like you are real there if give dish is not a dish or dish name not found then genrate message that is not a dish name.
+    Assume you are legendary Chef ${chefName}. How would you make the dish "${generateRecipe}" in your own signature cooking style and how would you react to that dish? Try to entertain in accurately original style. Everything should be Perfect and Accurate and feel like you are real there if give dish is not a dish or dish name not found then genrate message that is not a dish name Note: Response only in maximum 2 lines of sentence.
 
     IMPORTANT: Please respond in JSON format with the following structure:
     {
@@ -128,13 +128,13 @@ export const aiChefController = async (req, res) => {
         {"item": "ingredient name with emoji", "quantity": "amount"}
     ],
     "instructions": [
-        "Step 1: Accurate, fun and most detailed and easy instruction in hinglish between 1 to 2 lines only",
-        "Step 2: Accurate, fun and most detailed and easy instruction in hinglish between 1 to 2 lines only"
-        "Step 3: Accurate, fun and most detailed and easy instruction in hinglish between 1 to 2 lines only"
-        "Step 4: Accurate, fun and most detailed and easy instruction in hinglish between 1 to 2 lines only"
-        "Step 5: Accurate, fun and most detailed and easy instruction in hinglish between 1 to 2 lines only"
-        "Step 6: Accurate, fun and most detailed and easy instruction in hinglish between 1 to 2 lines only"
-        "Step 7: Accurate, fun and most detailed and easy instruction in hinglish between 1 to 2 lines only"
+        "Step 1: Accurate, fun and most detailed and easy instruction in hinglish Maximum 1 to 2 lines only",
+        "Step 2: Accurate, fun and most detailed and easy instruction in hinglish Maximum 1 to 2 lines only"
+        "Step 3: Accurate, fun and most detailed and easy instruction in hinglish Maximum 1 to 2 lines only"
+        "Step 4: Accurate, fun and most detailed and easy instruction in hinglish Maximum 1 to 2 lines only"
+        "Step 5: Accurate, fun and most detailed and easy instruction in hinglish Maximum 1 to 2 lines only"
+        "Step 6: Accurate, fun and most detailed and easy instruction in hinglish Maximum 1 to 2 lines only"
+        "Step 7: Accurate, fun and most detailed and easy instruction in hinglish Maximum 1 to 2 lines only"
     ],
     "cookTime": "estimated time",
     "tags": ["Comfort", "High-Protein", "Fusion", "etc"],
