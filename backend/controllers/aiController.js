@@ -128,12 +128,12 @@ export const aiChefController = async (req, res) => {
         {"item": "ingredient name with emoji", "quantity": "amount"}
     ],
     "instructions": [
-    "Step 1: Short Hinglish step (1–2 lines, clear & fun)",
-    "Step 2: Short Hinglish step (1–2 lines, clear & fun)",
-    "Step 3: Short Hinglish step (1–2 lines, clear & fun)",
-    "Step 4: Short Hinglish step (1–2 lines, clear & fun)",
-    "Step 5: Short Hinglish step (1–2 lines, clear & fun)",
-    "Step 6: Short Hinglish step (1–2 lines, clear & fun)",
+    "Step 1: Short Hinglish step (1 lines, clear & fun)",
+    "Step 2: Short Hinglish step (1 lines, clear & fun)",
+    "Step 3: Short Hinglish step (1 lines, clear & fun)",
+    "Step 4: Short Hinglish step (1 lines, clear & fun)",
+    "Step 5: Short Hinglish step (1 lines, clear & fun)",
+    "Step 6: Short Hinglish step (1 lines, clear & fun)",
     "Step 7: Chef’s Secret Challenge – unique twist or hack"
     ],
     "cookTime": "estimated time",
