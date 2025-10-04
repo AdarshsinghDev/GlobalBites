@@ -105,6 +105,7 @@ export const aiController = async (req, res) => {
   }
 };
 
+
 //Chef AI
 export const aiChefController = async (req, res) => {
   const { chefName, generateRecipe } = req.body;
@@ -127,13 +128,13 @@ export const aiChefController = async (req, res) => {
         {"item": "ingredient name with emoji", "quantity": "amount"}
     ],
     "instructions": [
-        "Step 1: Accurate, fun and most detailed and easy instruction in hinglish",
-        "Step 2: Accurate, fun and most detailed and easy instruction in hinglish"
-        "Step 3: Accurate, fun and most detailed and easy instruction in hinglish"
-        "Step 4: Accurate, fun and most detailed and easy instruction in hinglish"
-        "Step 5: Accurate, fun and most detailed and easy instruction in hinglish"
-        "Step 6: Accurate, fun and most detailed and easy instruction in hinglish"
-        "Step 7: Accurate, fun and most detailed and easy instruction in hinglish"
+        "Step 1: Accurate, fun and most detailed and easy instruction in hinglish between 1 to 2 lines only",
+        "Step 2: Accurate, fun and most detailed and easy instruction in hinglish between 1 to 2 lines only"
+        "Step 3: Accurate, fun and most detailed and easy instruction in hinglish between 1 to 2 lines only"
+        "Step 4: Accurate, fun and most detailed and easy instruction in hinglish between 1 to 2 lines only"
+        "Step 5: Accurate, fun and most detailed and easy instruction in hinglish between 1 to 2 lines only"
+        "Step 6: Accurate, fun and most detailed and easy instruction in hinglish between 1 to 2 lines only"
+        "Step 7: Accurate, fun and most detailed and easy instruction in hinglish between 1 to 2 lines only"
     ],
     "cookTime": "estimated time",
     "tags": ["Comfort", "High-Protein", "Fusion", "etc"],
@@ -152,11 +153,15 @@ export const aiChefController = async (req, res) => {
       "description": "2  lines discription with emoji"
     },
     {
-      "title": "Famous signature dish 9 with Emoji and graphical element",
+      "title": "Famous signature dish 4 with Emoji and graphical element",
       "description": "2 lines discription with emoji"
     },
     {
-      "title": "Famous signature dish 10 with Emoji and graphical element",
+      "title": "Famous signature dish 5 with Emoji and graphical element",
+      "description": "2 lines discription with emoji"
+    },
+    {
+      "title": "Famous signature dish 6 with Emoji and graphical element",
       "description": "2 linesdiscription with emoji"
     }
   ]
@@ -323,7 +328,7 @@ Rules:
 - Output only valid JSON. No comments, no text outside the JSON array.
 `;
 
-   const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
+    const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
     const result = await model.generateContent(prompt);
     const response = await result.response;
     let text = response.text();
