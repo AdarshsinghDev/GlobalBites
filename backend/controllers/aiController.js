@@ -309,11 +309,10 @@ Respond ONLY in pure JSON format, array of objects with this exact structure:
     "steps": [
       "Step 1 in Hinglish",
       "Step 2 in Hinglish",
-      "... (at least 8 steps)"
+      "... (maximum 6 steps)"
     ],
     "tips": [
-      "Cooking tip in Hinglish",
-      "Mood booster line in Hinglish"
+      "Cooking tip in Hinglish"
     ]
   }
 ]
