@@ -277,7 +277,7 @@ export const aiBudget = async (req, res) => {
 You are an expert Indian recipe creator.
 
 TASK:
-Generate EXACTLY 5 unique Indian recipes based on the following user details:
+Generate EXACTLY 6 unique Indian recipes based on the following user details:
 Budget: ${budget}
 Meal Type: ${meal}
 Frequency: ${frequency}
@@ -318,12 +318,13 @@ Respond ONLY in pure JSON format, array of objects with this exact structure:
 ]
 
 Rules:
-- Must return exactly 5 recipes (not less, not more).
+- Must return exactly 6 recipes (not less, not more).
 - Prices must be realistic INR (India market approx).
 - "totalPrice" must equal sum of ingredient prices.
 - "avgPricePerPerson" = totalPrice / servings.
-- Steps must have at least 8 entries, written in Hinglish and every step should be Detailed and Easy.
+- Steps must have at least 6 entries, written in Hinglish and every step should be Detailed and Easy.
 - Tips must be fun + useful in Hinglish.
+- I want Quick response, so don't add any duplicate or unneccesary thing that can make response delay.
 - Output only valid JSON. No comments, no text outside the JSON array.
 `;
 
