@@ -309,7 +309,7 @@ Respond ONLY in pure JSON format, array of objects with this exact structure:
     "steps": [
       "Step 1 in Hinglish",
       "Step 2 in Hinglish",
-      "... (maximum 6 steps)"
+      "... (maximum 4 steps)"
     ],
     "tips": [
       "Cooking tip in Hinglish"
@@ -322,7 +322,7 @@ Rules:
 - Prices must be realistic INR (India market approx).
 - "totalPrice" must equal sum of ingredient prices.
 - "avgPricePerPerson" = totalPrice / servings.
-- Steps must have at least 6 entries, written in Hinglish and every step should be Detailed and Easy.
+- Steps must have at least 4 entries, written in Hinglish and every step should be very short and Easy.
 - Tips must be fun + useful in Hinglish.
 - I want Quick response, so don't add any duplicate or unneccesary thing that can make response delay.
 - Output only valid JSON. No comments, no text outside the JSON array.
