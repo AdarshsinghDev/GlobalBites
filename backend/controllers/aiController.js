@@ -318,7 +318,7 @@ Respond ONLY in pure JSON format, array of objects with this exact structure:
 ]
 
 Rules:
-- Must return exactly 16 recipes (not less, not more).
+- Must return exactly 5 recipes (not less, not more).
 - Prices must be realistic INR (India market approx).
 - "totalPrice" must equal sum of ingredient prices.
 - "avgPricePerPerson" = totalPrice / servings.
