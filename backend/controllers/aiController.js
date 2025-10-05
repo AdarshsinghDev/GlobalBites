@@ -277,7 +277,7 @@ export const aiBudget = async (req, res) => {
 You are an expert Indian recipe creator.
 
 TASK:
-Generate EXACTLY 10 unique Indian recipes based on the following user details:
+Generate EXACTLY 5 unique Indian recipes based on the following user details:
 Budget: ${budget}
 Meal Type: ${meal}
 Frequency: ${frequency}
