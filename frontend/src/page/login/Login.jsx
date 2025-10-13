@@ -13,8 +13,6 @@ import {
   EyeOff,
   Mail,
   Lock,
-  ChefHat,
-  Utensils,
 } from "lucide-react";
 import Logo from "../../components/ui/Logo";
 
@@ -115,22 +113,13 @@ const Login = () => {
         />
         <div className="absolute inset-0 bg-black/40 "></div>
       </div>
-
-      {/* Floating Food Icons */}
-      <div className="absolute top-[110px] right-[450px] text-white/100 z-[20]">
-        <div className="text-6xl">🍕</div>
-      </div>
-      <div className="absolute bottom-[45px] left-[420px] z-[20] text-white/100">
-        <div className="text-5xl">🍜</div>
-      </div>
-
       {/* Main Content */}
       <div className="relative z-10 w-full max-w-md mx-4  lg:mt-0 mt-[1vw]">
         {/* Header */}
         <div className="text-center mb-4 mt-8">
-          <Logo />
-          <p className="text-white/90 text-lg font-medium">
-            Welcome back, food lover! 🍽️
+          <Logo/>
+          <p className="text-white/90 text-lg font-medium mt-1">
+            Welcome back, food lover!
           </p>
         </div>
 
@@ -146,7 +135,7 @@ const Login = () => {
             <div className="space-y-2">
               <label
                 htmlFor="email"
-                className="text-sm font-semibold text-gray-700 flex items-center gap-2"
+                className=" text-gray-700 flex items-center gap-2"
               >
                 <Mail size={16} className="text-green-600" />
                 Email Address
@@ -171,7 +160,7 @@ const Login = () => {
             <div className="space-y-2">
               <label
                 htmlFor="password"
-                className="text-sm font-semibold text-gray-700 flex items-center gap-2"
+                className="text-gray-700 flex items-center gap-2"
               >
                 <Lock size={16} className="text-green-600" />
                 Password
@@ -227,7 +216,7 @@ const Login = () => {
                   to="/forgot-password"
                   className="text-green-600 hover:text-green-700 font-medium text-sm hover:underline transition-colors"
                 >
-                  Forgot your recipe? 🔐
+                  Forgot your password?🔐
                 </Link>
               </div>
 
@@ -239,7 +228,7 @@ const Login = () => {
                   to="/signup"
                   className="text-green-600 hover:text-green-700 font-semibold text-sm hover:underline transition-colors"
                 >
-                  Join the feast! 🍴
+                  Join GlobalBites!
                 </Link>
               </div>
             </div>
