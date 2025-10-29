@@ -273,7 +273,8 @@ const Signup = () => {
                   size={18}
                 />
                 <button
-                  type="submit"
+                  type="button"
+                  onClick={() => setConfShowPass(!confShowPass)}
                   className="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-teal-600 transition-colors"
                 >
                   {confShowPass ? <EyeOff size={18} /> : <Eye size={18} />}
@@ -305,6 +306,8 @@ const Signup = () => {
                     : "Join Our Culinary Family"
                 }
                 disabled={isLoading}
+                btnBgColor="green"
+                btnTextColor="white"
                 btnIcon={<UserPlus size={20} />}
                 className="w-full bg-gradient-to-r relative from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white font-semibold py-3 px-6 rounded-xl shadow-lg hover:shadow-xl transform hover:scale-[1.02] transition-all duration-300 "
               ></Button>
@@ -320,7 +323,7 @@ const Signup = () => {
                   to="/login"
                   className="text-green-600 hover:text-green-700 font-semibold text-sm hover:underline transition-colors"
                 >
-                  Welcome back! 🍴
+                  Welcome back!
                 </Link>
               </div>
             </div>
