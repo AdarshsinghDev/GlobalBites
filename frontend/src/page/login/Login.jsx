@@ -7,13 +7,7 @@ import { useNavigate } from "react-router-dom";
 import { BiSolidError, BiSolidCheckCircle } from "react-icons/bi";
 import { useUserContext } from "../../context/CreateContext";
 import Button from "../../components/ui/Button";
-import {
-  LogIn,
-  Eye,
-  EyeOff,
-  Mail,
-  Lock,
-} from "lucide-react";
+import { LogIn, Eye, EyeOff, Mail, Lock } from "lucide-react";
 import Logo from "../../components/ui/Logo";
 
 const Login = () => {
@@ -117,7 +111,7 @@ const Login = () => {
       <div className="relative z-10 w-full max-w-md mx-4  lg:mt-0 mt-[1vw]">
         {/* Header */}
         <div className="text-center mb-4 mt-8">
-          <Logo/>
+          <Logo />
           <p className="text-white/90 text-lg font-medium mt-1">
             Welcome back, food lover!
           </p>
@@ -204,8 +198,9 @@ const Login = () => {
                     ? "Cooking up your session..."
                     : "Start Your Culinary Journey"
                 }
+                btnBgColor="green"
+                btnTextColor="white"
                 btnIcon={<LogIn size={20} />}
-                className="w-full bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white font-semibold py-3 px-6 rounded-xl shadow-lg hover:shadow-xl transform hover:scale-[1.02] transition-all duration-300 "
               />
             </div>
 
