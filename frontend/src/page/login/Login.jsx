@@ -126,7 +126,7 @@ const Login = () => {
         {/* Login Form */}
         <div className="bg-white/95 backdrop-blur-md rounded-2xl shadow-2xl border border-white/20 p-8">
           <div className="text-center mb-6">
-            <h2 className="text-2xl font-bold text-gray-800 mb-2">Log In</h2>
+            <h2 className="text-2xl font-bold text-gray-800 mb-1">Log In</h2>
             <div className="w-16 h-1 bg-gradient-to-r from-green-400 to-green-600 mx-auto rounded-full"></div>
           </div>
 

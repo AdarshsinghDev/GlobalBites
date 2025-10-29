@@ -17,6 +17,7 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { useUserContext } from "../../context/CreateContext";
 import Logo from "../../components/ui/Logo";
+import Button from "../../components/ui/Button";
 const Signup = () => {
   const [userData, setUserData] = useState({
     email: "",
@@ -69,11 +70,14 @@ const Signup = () => {
     }
 
     try {
-      const res = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/api/auth/signup`, {
-        email: userData.email,
-        fullname: userData.fullname,
-        password: userData.password,
-      });
+      const res = await axios.post(
+        `${import.meta.env.VITE_BACKEND_URL}/api/auth/signup`,
+        {
+          email: userData.email,
+          fullname: userData.fullname,
+          password: userData.password,
+        }
+      );
 
       if (res.data.success) {
         setError((prev) => ({
@@ -85,15 +89,15 @@ const Signup = () => {
               </div>
             ) || "Signup successfully",
         }));
-        
+
         setUserContextData({
           email: userData.email,
           fullname: userData.fullname,
           isVerified: false,
         });
-        
-        console.log(res.data)
-        localStorage.setItem("token", res.data.token)
+
+        console.log(res.data);
+        localStorage.setItem("token", res.data.token);
         localStorage.setItem("storedEmail", userData.email);
         localStorage.setItem("storedFullname", userData.fullname);
 
@@ -144,37 +148,20 @@ const Signup = () => {
         <div className="absolute inset-0 bg-black/40 "></div>
       </div>
 
-      {/* Floating Food Icons with Different Animation */}
-      <div className="absolute top-[136px] right-[410px] z-[20] text-green-700 ">
-        <Coffee size={40} />
-      </div>
-      <div className="absolute bottom-[180px] left-[400px] z-[20] text-green-700 ">
-        <Cookie size={50} />
-      </div>
-      <div className="absolute bottom-32 left-1/4 text-white/10 text-4xl animate-bounce">
-        🍲
-      </div>
-      <div className="absolute top-1/2 left-12 text-white/10 text-3xl animate-pulse delay-700">
-        🧑‍🍳
-      </div>
-      <div className="absolute top-20 left-1/2 text-white/10 text-4xl animate-bounce delay-1000">
-        🍽️
-      </div>
-
       {/* Main Content */}
       <div className="relative z-10 w-full max-w-lg mx-4">
         {/* Header */}
         <div className="text-center  mb-4 mt-8">
           <Logo />
-          <p className="text-white text-lg font-medium drop-shadow">
-            Join our culinary community! 👨‍🍳
+          <p className="text-white text-lg font-medium drop-shadow mt-1">
+            Join our culinary community!
           </p>
         </div>
 
         {/* Signup Form */}
         <div className="bg-white/95 backdrop-blur-md rounded-2xl shadow-2xl border border-white/20 p-8">
           <div className="text-center mb-6">
-            <h2 className="text-2xl font-bold text-gray-800 mb-2">
+            <h2 className="text-2xl font-bold text-gray-800 mb-1">
               Create Account
             </h2>
             <div className="w-20 h-1 bg-gradient-to-r from-green-400 to-teal-500 mx-auto rounded-full"></div>
@@ -309,17 +296,18 @@ const Signup = () => {
             )}
 
             {/* Submit Button */}
-            <div className="pt-4">
-              <button
-                onClick={handleSubmit}
+            <div className="pt-2 text-center flex justify-center">
+              <Button
+                btnType="submit"
+                btnText={
+                  isLoading
+                    ? "Preparing your kitchen..."
+                    : "Join Our Culinary Family"
+                }
                 disabled={isLoading}
-                className="w-full bg-gradient-to-r from-green-500 via-teal-500 to-green-600 hover:from-green-600 hover:via-teal-600 hover:to-green-700 disabled:from-gray-400 disabled:to-gray-500 text-white font-semibold py-4 px-6 rounded-xl shadow-lg hover:shadow-xl transform hover:scale-[1.02] disabled:scale-100 transition-all duration-300 flex items-center justify-center gap-2"
-              >
-                <UserPlus size={20} />
-                {isLoading
-                  ? "Preparing your kitchen..."
-                  : "Join Our Culinary Family"}
-              </button>
+                btnIcon={<UserPlus size={20} />}
+                className="w-full bg-gradient-to-r relative from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white font-semibold py-3 px-6 rounded-xl shadow-lg hover:shadow-xl transform hover:scale-[1.02] transition-all duration-300 "
+              ></Button>
             </div>
 
             {/* Footer Links */}
