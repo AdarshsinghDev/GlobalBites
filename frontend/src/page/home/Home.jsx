@@ -384,7 +384,7 @@ const Home = () => {
                       }}
                     >
                       <span className="text-white text-sm sm:text-base">
-                        View Full Recipe 🍴
+                        View Full Recipe
                       </span>
                     </div>
                     <div
