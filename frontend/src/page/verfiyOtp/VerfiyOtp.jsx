@@ -1,11 +1,7 @@
 import React, { useState } from "react";
 import { BiSolidError, BiSolidCheckCircle } from "react-icons/bi";
 import { useEffect } from "react";
-import {
-  Mail,
-  KeyRound,
-  CheckCircle2,
-} from "lucide-react";
+import { Mail, KeyRound, CheckCircle2 } from "lucide-react";
 import axios from "axios";
 
 //Import Context for global access of User's data
@@ -73,27 +69,19 @@ const VerifyOTP = () => {
 
   return (
     <div className="min-h-screen w-full flex items-center justify-center bg-indigo-200 to-purple-50 relative overflow-hidden px-4">
-   
       {/* Main Content */}
       <div className="relative z-10 w-full max-w-md">
         {/* Header */}
-        <div className="text-center my-8">
-          <h1 className="text-2xl font-bold text-gray-800 mb-2">
-            Email Verification
-          </h1>
-          <p className="text-gray-600">
-            We've sent a special code to secure your culinary journey
-          </p>
-        </div>
 
         {/* Verification Card */}
-        <div className="bg-white/95 backdrop-blur-md rounded-2xl shadow-2xl border border-white/20 p-8 animate-fade-in">
-          <div className="text-center my-6">
-            <h2 className="text-xl font-bold text-gray-800 mb-1 flex items-center justify-center gap-2">
-              <KeyRound className="text-indigo-600" size={24} />
-              Verify Your Email
-            </h2>
-            <div className="w-16 h-1 bg-gradient-to-r from-blue-400 to-indigo-500 mx-auto rounded-full"></div>
+        <div className="bg-white/95 backdrop-blur-md rounded-2xl shadow-2xl border border-white/20 p-8 py-3 animate-fade-in">
+          <div className="text-center my-8">
+            <h1 className="text-2xl font-bold text-gray-800 mb-2">
+              Email Verification
+            </h1>
+            <p className="text-gray-600">
+              We've sent a special code to secure your culinary journey
+            </p>
           </div>
 
           {/* Email Display */}
