@@ -19,7 +19,6 @@ const Login = () => {
   const [showPass, setShowPass] = useState(false);
   const [isLoading, setIsLoading] = useState("");
   const { setUserContextData } = useUserContext();
-  console.log(localStorage.getItem("token"));
   const navigate = useNavigate();
 
   const handleChange = (e) => {
@@ -118,9 +117,9 @@ const Login = () => {
         </div>
 
         {/* Login Form */}
-        <div className="bg-white/95 backdrop-blur-md rounded-2xl shadow-2xl border border-white/20 p-8">
+        <div className="bg-white/95 backdrop-blur-md rounded-lg shadow-2xl border border-white/20 p-8">
           <div className="text-center mb-6">
-            <h2 className="text-2xl font-bold text-gray-800 mb-1">Log In</h2>
+            <h2 className="text-2xl font-bold text-gray-800">Log In</h2>
             <div className="w-16 h-1 bg-gradient-to-r from-green-400 to-green-600 mx-auto rounded-full"></div>
           </div>
 
@@ -141,7 +140,7 @@ const Login = () => {
                   placeholder="chef@globalbites.com"
                   onChange={handleChange}
                   value={userData.email}
-                  className="w-full px-4 py-3 min-h-[50px] pl-12 border-2 border-gray-200 rounded-xl focus:border-green-500 focus:ring-2 focus:ring-green-200 transition-all duration-300 outline-none bg-white/90"
+                  className="w-full px-4 py-3 min-h-[50px] pl-12 border-2 border-gray-200 rounded-lg focus:border-green-500 focus:ring-2 focus:ring-green-200 transition-all duration-300 outline-none bg-white/90"
                 />
                 <Mail
                   className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400"
@@ -166,7 +165,7 @@ const Login = () => {
                   placeholder="Enter your secret recipe"
                   onChange={handleChange}
                   value={userData.password}
-                  className="w-full px-4 py-3 min-h-[50px] pl-12 pr-12 border-2 border-gray-200 rounded-xl focus:border-green-500 focus:ring-2 focus:ring-green-200 transition-all duration-300 outline-none bg-white/90"
+                  className="w-full px-4 py-3 min-h-[50px] pl-12 pr-12 border-2 border-gray-200 rounded-lg focus:border-green-500 focus:ring-2 focus:ring-green-200 transition-all duration-300 outline-none bg-white/90"
                 />
                 <Lock
                   className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400"

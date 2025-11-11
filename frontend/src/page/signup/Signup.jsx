@@ -161,7 +161,7 @@ const Signup = () => {
         {/* Signup Form */}
         <div className="bg-white/95 backdrop-blur-md rounded-2xl shadow-2xl border border-white/20 p-8">
           <div className="text-center mb-6">
-            <h2 className="text-2xl font-bold text-gray-800 mb-1">
+            <h2 className="text-2xl font-bold text-gray-800">
               Create Account
             </h2>
             <div className="w-20 h-1 bg-gradient-to-r from-green-400 to-teal-500 mx-auto rounded-full"></div>
@@ -184,7 +184,7 @@ const Signup = () => {
                   placeholder="chef@globalbites.com"
                   value={userData.email}
                   onChange={handleChange}
-                  className="w-full px-4 min-h-[50px] py-3 pl-12 border-2 border-gray-200 rounded-xl focus:border-green-500 focus:ring-2 focus:ring-green-200 transition-all duration-300 outline-none bg-white/90 hover:shadow-md"
+                  className="w-full px-4 min-h-[50px] py-3 pl-12 border-2 border-gray-200 rounded-lg focus:border-green-500 focus:ring-2 focus:ring-green-200 transition-all duration-300 outline-none bg-white/90 hover:shadow-md"
                 />
                 <Mail
                   className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400"
@@ -209,7 +209,7 @@ const Signup = () => {
                   placeholder="Master Chef Gordon"
                   value={userData.fullname}
                   onChange={handleChange}
-                  className="w-full px-4 py-3 min-h-[50px] pl-12 border-2 border-gray-200 rounded-xl focus:border-green-500 focus:ring-2 focus:ring-green-200 transition-all duration-300 outline-none bg-white/90 hover:shadow-md"
+                  className="w-full px-4 py-3 min-h-[50px] pl-12 border-2 border-gray-200 rounded-lg focus:border-green-500 focus:ring-2 focus:ring-green-200 transition-all duration-300 outline-none bg-white/90 hover:shadow-md"
                 />
                 <User
                   className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400"
@@ -234,7 +234,7 @@ const Signup = () => {
                   placeholder="Create your secret recipe"
                   value={userData.password}
                   onChange={handleChange}
-                  className="w-full px-4 min-h-[50px] py-3 pl-12 pr-12 border-2 border-gray-200 rounded-xl focus:border-green-500 focus:ring-2 focus:ring-green-200 transition-all duration-300 outline-none bg-white/90 hover:shadow-md"
+                  className="w-full px-4 min-h-[50px] py-3 pl-12 pr-12 border-2 border-gray-200 rounded-lg focus:border-green-500 focus:ring-2 focus:ring-green-200 transition-all duration-300 outline-none bg-white/90 hover:shadow-md"
                 />
                 <Lock
                   className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400"
@@ -266,7 +266,7 @@ const Signup = () => {
                   placeholder="Confirm your secret recipe"
                   value={userData.confirmPassword}
                   onChange={handleChange}
-                  className="w-full px-4 py-3 min-h-[50px] pl-12 pr-12 border-2 border-gray-200 rounded-xl focus:border-teal-500 focus:ring-2 focus:ring-teal-200 transition-all duration-300 outline-none bg-white/90 hover:shadow-md"
+                  className="w-full px-4 py-3 min-h-[50px] pl-12 pr-12 border-2 border-gray-200 rounded-lg focus:border-teal-500 focus:ring-2 focus:ring-teal-200 transition-all duration-300 outline-none bg-white/90 hover:shadow-md"
                 />
                 <Lock
                   className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400"
@@ -300,11 +300,7 @@ const Signup = () => {
             <div className="pt-2 text-center flex justify-center">
               <Button
                 btnType="submit"
-                btnText={
-                  isLoading
-                    ? "Preparing your kitchen..."
-                    : "Join Our Culinary Family"
-                }
+                btnText={ isLoading ? "Preparing your kitchen..." : "Join Our Culinary Family"}
                 disabled={isLoading}
                 btnBgColor="green"
                 btnTextColor="white"

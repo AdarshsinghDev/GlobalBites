@@ -86,10 +86,10 @@ const VerifyOTP = () => {
 
           {/* Email Display */}
           <div className="w-fit  m-auto bg-gradient-to-r from-blue-100 to-indigo-200 rounded-xl p-4 mb-6 border  border-blue-300">
-            <div className="flex items-center justify-center gap-1 text-sm">
+            <div className="flex items-center justify-center gap-1 text-sm flex-wrap">
               <Mail className="text-blue-600" size={18} />
               <span className="text-gray-700">OTP sent to:</span>
-              <span className="font-semibold text-blue-700">
+              <span className="font-semibold text-blue-700 ">
                 {email || "your email"}
               </span>
             </div>

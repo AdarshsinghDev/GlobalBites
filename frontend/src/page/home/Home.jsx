@@ -76,29 +76,16 @@ const Home = () => {
     { id: 2, btnTitle: "Budget", btnIcon: DollarSign, to: "/budget" },
     { id: 3, btnTitle: "Dont Combo", btnIcon: X, to: "/combo" },
     { id: 4, btnTitle: "Mood Based", btnIcon: Heart, to: "/mood" },
-    {
-      id: 5,
-      btnTitle: "Science behind",
-      btnIcon: FlaskConicalOff,
-      to: "/science-behind",
-    },
+    { id: 5, btnTitle: "Science behind", btnIcon: FlaskConicalOff, to: "/science-behind"},
     { id: 6, btnTitle: "Health Goal", btnIcon: HeartHandshake, to: "/health" },
     { id: 7, btnTitle: "Weekly Meal", btnIcon: CalendarDays, to: "/chef" },
   ];
 
   const handleCloseMenu = () => {
     setCloseMenu((prev) => !prev);
-    console.log("workin");
   };
-  //  const handleNavigate = (recipe) => {
-  //     navigate("/recipe");
-  //     console.log(recipe);
-  //     setHomeRecipe(recipe);
-  //     localStorage.setItem("storeHomeRecipe", recipe);
-  //   };
 
   const handleNavigate = (recipeName) => {
-    console.log("Navigating to recipe:", recipeName);
 
     // Clear any existing stored recipe data to force fresh fetch
     localStorage.removeItem("storeHomeRecipeData");
@@ -207,7 +194,7 @@ const Home = () => {
             <div className="relative flex flex-col sm:flex-row gap-2 sm:gap-0 bg-white/90 backdrop-blur-sm border-2 border-white/50 rounded-2xl p-2 sm:p-3 shadow-2xl hover:shadow-3xl transition-all duration-500">
               <input
                 type="text"
-                placeholder="Enter ingredients...(e.g.paneer, curd, tomato)"
+                placeholder="Enter ingredients... (e.g.paneer, curd, tomato)"
                 value={ingredients}
                 onChange={(e) => setIngredients(e.target.value)}
                 onKeyPress={handleKeyPress}
