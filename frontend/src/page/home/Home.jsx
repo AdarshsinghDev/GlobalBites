@@ -76,7 +76,12 @@ const Home = () => {
     { id: 2, btnTitle: "Budget", btnIcon: DollarSign, to: "/budget" },
     { id: 3, btnTitle: "Dont Combo", btnIcon: X, to: "/combo" },
     { id: 4, btnTitle: "Mood Based", btnIcon: Heart, to: "/mood" },
-    { id: 5, btnTitle: "Science behind", btnIcon: FlaskConicalOff, to: "/science-behind"},
+    {
+      id: 5,
+      btnTitle: "Science behind",
+      btnIcon: FlaskConicalOff,
+      to: "/science-behind",
+    },
     { id: 6, btnTitle: "Health Goal", btnIcon: HeartHandshake, to: "/health" },
     { id: 7, btnTitle: "Weekly Meal", btnIcon: CalendarDays, to: "/chef" },
   ];
@@ -86,7 +91,6 @@ const Home = () => {
   };
 
   const handleNavigate = (recipeName) => {
-
     // Clear any existing stored recipe data to force fresh fetch
     localStorage.removeItem("storeHomeRecipeData");
 
@@ -103,24 +107,6 @@ const Home = () => {
       className="min-h-screen bg-gradient-to-br from-green-100 via-green-200 to-teal-300 overflow-hidden"
       style={{ backgroundColor: "#FAFAFA" }}
     >
-      {/* Animated Background Elements */}
-      <div className="relative inset-0 overflow-hidden">
-        <div className="absolute -inset-10 opacity-20">
-          <div
-            className="absolute top-1/4 left-1/4 w-72 h-72 rounded-full mix-blend-multiply filter blur-xl animate-pulse"
-            style={{ backgroundColor: "#FFAAA5" }}
-          ></div>
-          <div
-            className="absolute top-3/4 right-1/4 w-72 h-72 rounded-full mix-blend-multiply filter blur-xl animate-pulse delay-1000"
-            style={{ backgroundColor: "#8EE4AF" }}
-          ></div>
-          <div
-            className="absolute bottom-1/4 left-1/3 w-72 h-72 rounded-full mix-blend-multiply filter blur-xl animate-pulse delay-2000"
-            style={{ backgroundColor: "#FFD3B6" }}
-          ></div>
-        </div>
-      </div>
-
       {/* Modal Overlay - Fixed Logic */}
       {closeMenu && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 px-4 py-4 overflow-y-auto">
@@ -159,46 +145,30 @@ const Home = () => {
       )}
 
       {/* Hero Section */}
-      <section className="relative py-8 sm:py-12 md:py-16 px-4 text-center">
-        <div className="max-w-5xl mx-auto">
+      <section className="relative py-8 sm:py-12 md:py-16 px-4 text-center flex justify-center align-middle flex-col h-screen">
+        <div className="max-w-5xl mx-auto flex flex-col w-full gap-4 justify-around h-screen">
           <div className="animate-fadeInUp">
             <h2
-              className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-black mb-3 leading-tight"
+              className="text-3xl md:text-2xl lg:text-3xl xl:text-4xl font-black mb-3 leading-tight"
               style={{ color: "#3B2F2F" }}
             >
-              What's cooking
-              <span className="block mt-1 lg:mt-2" style={{ color: "#16a34a" }}>
+              What's cooking&nbsp;
+              <span className=" mt-1 lg:mt-2" style={{ color: "#16a34a" }}>
                 today?
               </span>
             </h2>
-            <p
-              className="text-base sm:text-lg md:text-xl mb-8 sm:mb-12 max-w-2xl mx-auto leading-relaxed px-4"
-              style={{ color: "#3B2F2F", opacity: 0.8 }}
-            >
-              Memories don't come in English only.
-              <br />
-              🗣️ English . हिन्दी . भोजपुरी . ગુજરાતી . తెలుగు . മലയാളം . मराठी
-              <br />
-              So we made GlobalBites understand your language too.
-            </p>
           </div>
 
           {/* Modern Search Bar - Fully Responsive */}
-          <div className="relative max-w-3xl mx-auto group animate-slideInUp px-4">
-            <div
-              className="absolute inset-0 rounded-2xl blur-lg opacity-60 group-hover:opacity-80 transition-all duration-500"
-              style={{
-                background: `linear-gradient(135deg, #FFAAA5, #FFD3B6, #8EE4AF)`,
-              }}
-            ></div>
-            <div className="relative flex flex-col sm:flex-row gap-2 sm:gap-0 bg-white/90 backdrop-blur-sm border-2 border-white/50 rounded-2xl p-2 sm:p-3 shadow-2xl hover:shadow-3xl transition-all duration-500">
+          <div className="relative w-full mx-auto group animate-slideInUp px-4">
+            <div className="relative  m-auto flex flex-col sm:flex-row gap-2 bg-white/90 backdrop-blur-sm border-2 border-white/50 p-2 shadow-2xl hover:shadow-3xl transition-all duration-500 rounded-xl lg:rounded-full">
               <input
                 type="text"
                 placeholder="Enter ingredients... (e.g.paneer, curd, tomato)"
                 value={ingredients}
                 onChange={(e) => setIngredients(e.target.value)}
                 onKeyPress={handleKeyPress}
-                className="flex-1 px-3 py-3 sm:py-4 h-[50px] bg-transparent text-base sm:text-lg lg:text-xl outline-none placeholder-gray-500 rounded-xl"
+                className="flex-1 px-3 py-3 sm  h-[50px] bg-transparent text-base  lg:text-xl border-none outline-none w-full placeholder-gray-500 rounded-full lg:rounded-full"
                 style={{ color: "#3B2F2F" }}
               />
               <div className="flex gap-2 sm:gap-1 justify-center">
@@ -212,7 +182,7 @@ const Home = () => {
                 <button
                   onClick={handleSearch}
                   disabled={loading}
-                  className="text-white px-4 sm:px-5 py-3 sm:py-4 rounded-xl font-semibold shadow-lg hover:shadow-xl transform hover:scale-105 active:scale-95 transition-all duration-300 disabled:opacity-50 flex-shrink-0"
+                  className="text-white px-2 sm:px-4 py-3 sm:py-4 rounded-full font-semibold shadow-lg hover:shadow-xl transform active:scale-95 transition-all duration-300 disabled:opacity-50"
                   style={{
                     background: `linear-gradient(135deg, #3dff84, #379683)`,
                   }}
