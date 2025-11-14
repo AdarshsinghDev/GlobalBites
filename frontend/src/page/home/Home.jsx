@@ -145,7 +145,7 @@ const Home = () => {
       )}
 
       {/* Hero Section */}
-      <section className="relative py-8 sm:py-12 md:py-16 px-4 text-center flex justify-center align-middle flex-col h-screen">
+      <section className="relative py-8 px-4 text-center flex justify-center align-middle flex-col h-screen">
         <div className="max-w-5xl mx-auto flex flex-col w-full gap-4 justify-around h-screen">
           <div className="animate-fadeInUp">
             <h2
