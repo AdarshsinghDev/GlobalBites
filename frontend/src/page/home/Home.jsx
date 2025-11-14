@@ -207,7 +207,7 @@ const Home = () => {
 
       {/* AI Generated Recipes */}
       {!loading && recipes.length > 0 && (
-        <section className="relative px-4 py-8 sm:py-12 max-w-7xl mx-auto">
+        <section className="relative p-4 max-w-7xl mx-auto">
           <div className="text-center mb-8 sm:mb-12 animate-fadeInUp">
             <h3
               className="text-2xl sm:text-3xl md:text-4xl font-bold mb-4"
