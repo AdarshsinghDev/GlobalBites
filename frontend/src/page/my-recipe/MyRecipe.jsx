@@ -7,7 +7,7 @@ import {
   Filter,
   Plus,
   BookOpen,
-  ChefHat,
+  CircleX,
   X,
   Upload,
   Minus,
@@ -22,7 +22,7 @@ export default function MyRecipes() {
   const [steps, setSteps] = useState([""]);
   const [showAlert, setShowAlert] = useState(false);
   const diets = ["Vegetarian", "Vegan", "Non-Veg", "Gluten-Free", "Dairy-Free"];
-  const [userRecipeData, setUserRecipeData] = useState({
+  const initialState = {
     recipeName: "",
     description: "",
     cookingTime: "",
@@ -31,10 +31,12 @@ export default function MyRecipes() {
     cuisine: "",
     diet: "",
     difficulty: "",
-    ingredients: [],
-    instruction: [],
+    ingredients: [""],
+    instruction: [""],
     tags: "",
-  });
+    recipeImage: "",
+  };
+  const [userRecipeData, setUserRecipeData] = useState(initialState);
 
   const handleChange = (e) => {
     const { value, name } = e.target;
@@ -43,6 +45,12 @@ export default function MyRecipes() {
       return;
     }
     setUserRecipeData((prev) => ({ ...prev, [name]: value }));
+  };
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    setUserRecipeData((prev) => ({ ...prev, recipeImage: file }));
+    setRecipeImage(file);
   };
 
   const handleRecipeArrayChange = (index, value, fieldName) => {
@@ -76,8 +84,6 @@ export default function MyRecipes() {
       console.error(error);
     }
   };
-
-  console.log("Main", showAlert);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-green-500 via-green-400 to-green-300">
@@ -425,6 +431,7 @@ export default function MyRecipes() {
           </button>
         </div>
       </div>
+
       <PopUpAlert
         message="Uploaded Successfully"
         recipeName={userRecipeData.recipeName}
@@ -440,9 +447,6 @@ export default function MyRecipes() {
             <div className="sticky top-0 bg-white border-b border-gray-200 p-6 rounded-t-3xl">
               <div className="flex items-center justify-between">
                 <div className="flex items-center space-x-3">
-                  <div className="w-10 h-10 bg-green-500 rounded-full flex items-center justify-center">
-                    <ChefHat className="w-6 h-6 text-white" />
-                  </div>
                   <div>
                     <h2 className="text-2xl font-bold text-gray-800">
                       🍳 Add Your Recipe
@@ -500,7 +504,7 @@ export default function MyRecipes() {
                       />
                     </div>
 
-                    <div className="grid grid-cols-2 gap-4">
+                    <div className="gap-4 flex flex-wrap w-full">
                       <div>
                         <label className="block text-sm font-medium text-gray-700 mb-2">
                           Cooking Time
@@ -512,7 +516,7 @@ export default function MyRecipes() {
                             placeholder="30"
                             value={userRecipeData.cookingTime}
                             onChange={handleChange}
-                            className="flex-1 w-[20px] px-4 py-3 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                            className="flex-1 w-[100px] px-4 py-3 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
                           />
                           <select className="px-4  border-l-0 border border-gray-300 rounded-r-xl focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent">
                             <option>Minutes</option>
@@ -557,9 +561,7 @@ export default function MyRecipes() {
                           <option value="Breakfast">Breakfast</option>
                           <option value="Lunch">Lunch</option>
                           <option value="Dinner">Dinner</option>
-                          <option valu e="Snacks">
-                            Snacks
-                          </option>
+                          <option value="Snacks">Snacks</option>
                           <option value="Dessert">Dessert</option>
                           <option value="Beverages">Beverages</option>
                         </select>
@@ -665,7 +667,7 @@ export default function MyRecipes() {
                   </div>
                 </div>
 
-                {/* Preview & Ingredients Section */}
+                {/* Ingredients Section */}
                 <div className="space-y-6">
                   {/* Ingredients */}
                   <div className="space-y-4">
@@ -800,35 +802,63 @@ export default function MyRecipes() {
                   </div>
 
                   {/* Image Upload */}
-                  <div className="space-y-4">
-                    <h3 className="text-lg font-semibold text-gray-800 border-b pb-2">
-                      Recipe Image
-                    </h3>
-                    <div className="border-2 border-dashed border-gray-300 rounded-xl p-8 text-center hover:border-green-500 transition-colors">
-                      <Upload className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-                      <p className="text-gray-600 mb-2">
-                        Click to upload or drag and drop
-                      </p>
-                      <p className="text-sm text-gray-500">
-                        PNG, JPG up to 5MB
-                      </p>
-                      <input type="file" className="hidden" accept="image/*" />
-                    </div>
+                  <div className="border-2 border-dashed border-gray-300 rounded-xl p-8 text-center hover:border-green-500 transition-colors relative cursor-pointer">
+                    {/* Visible UI */}
+                    <Upload className="w-12 h-12 text-gray-400 mx-auto mb-4" />
+                    <p className="text-gray-600 mb-2">
+                      Click to upload or drag and drop
+                    </p>
+                    <p className="text-sm text-gray-500">PNG, JPG up to 5MB</p>
+
+                    {/* Invisible Full-Size File Input */}
+                    <input
+                      type="file"
+                      accept="image/*"
+                      onChange={handleFileChange}
+                      className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                    />
                   </div>
+                  {userRecipeData.recipeImage && (
+                    <div className="relative">
+                      <button
+                        className="bg-white text-red-600 absolute right-5 p-1 rounded-full top-5 w-fit "
+                        onClick={() => {
+                          setUserRecipeData((prev) => ({
+                            ...prev,
+                            recipeImage: null,
+                          }));
+                        }}
+                      >
+                        <CircleX />
+                      </button>
+                      <img
+                        className="aspect-[3/2] object-contain bg-gradient-to-br from-green-500 via-green-400 to-green-300"
+                        src={URL.createObjectURL(userRecipeData.recipeImage)}
+                      />
+                    </div>
+                  )}
                 </div>
               </div>
 
               {/* Action Buttons */}
-              <div className="flex justify-end space-x-4 mt-8 pt-6 border-t">
+              <div className="flex justify-end space-x-4 mt-8 pt-6 ">
                 <button
                   onClick={() => setShowAddRecipe(false)}
-                  className="px-6 py-3 border border-gray-300 text-gray-700 rounded-xl hover:bg-gray-50 transition-colors"
+                  className="px-3 border border-gray-300 text-gray-700 rounded-xl hover:bg-gray-50 transition-colors"
                 >
                   Cancel
                 </button>
-                <button className="px-6 py-3 bg-gray-200 text-gray-600 rounded-xl hover:bg-gray-300 transition-colors">
+
+                <button
+                type="button"
+                  onClick={() => {
+                    setUserRecipeData(initialState);
+                  }}
+                  className="px-6 py-3 bg-gray-200 text-gray-600 rounded-xl hover:bg-gray-300 transition-colors"
+                >
                   Clear Form
                 </button>
+                
                 <button
                   type="submit"
                   className="px-8 py-3 bg-green-600 text-white rounded-xl hover:bg-green-700 transition-colors font-semibold"
