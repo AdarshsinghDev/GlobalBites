@@ -162,7 +162,7 @@ const Navbar = () => {
             {isLoggedIn && (
               <>
                 <Link
-                  to="my-recipe"
+                  to="my-recipes"
                   className="flex items-center space-x-3 w-full px-3 py-2 text-sm font-medium text-gray-700 hover:text-green-600 hover:bg-gray-50 rounded-md transition-colors duration-200"
                 >
                   <BookOpen className="w-4 h-4" />
