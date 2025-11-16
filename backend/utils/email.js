@@ -67,7 +67,7 @@ export const sendOTP = async (email, otp) => {
 };
 
 // Welcome email send karne ka function
-export const sendWelcomeEmail = async (email, userName) => {
+export const sendWelcome = async (email, userName) => {
     try {
         const sendSmtpEmail = new SibApiV3Sdk.SendSmtpEmail();
 
