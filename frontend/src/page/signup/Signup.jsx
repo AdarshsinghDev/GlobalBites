@@ -50,24 +50,124 @@ const Signup = () => {
     }
   };
 
+  // const handleSubmit = async (e) => {
+  //   e.preventDefault();
+  //   setIsLoading(true);
+
+  //   if (userData.password !== userData.confirmPassword) {
+  //     setIsLoading(false);
+  //     setError((prev) => ({
+  //       ...prev,
+  //       passwordMismatch: (
+  //         <div className="text-red-600 flex items-center gap-1 text-sm">
+  //           <BiSolidError /> Password not match!
+  //         </div>
+  //       ),
+  //     }));
+  //   } else {
+  //     setError((prev) => ({ ...prev, passwordMismatch: "" }));
+  //     setError((prev) => ({ ...prev, signupFailed: "" }));
+  //   }
+
+  //   try {
+  //     const res = await axios.post(
+  //       `${import.meta.env.VITE_BACKEND_URL}/api/auth/signup`,
+  //       {
+  //         email: userData.email,
+  //         fullname: userData.fullname,
+  //         password: userData.password,
+  //       }
+  //     );
+
+  //     if (res.data.success) {
+  //       setError((prev) => ({
+  //         ...prev,
+  //         signupFailed:
+  //           (
+  //             <div className="text-green-600 flex items-center gap-2 text-sm">
+  //               Signup successfully! <BiSolidCheckCircle size={20} />
+  //             </div>
+  //           ) || "Signup successfully",
+  //       }));
+
+  //       setUserContextData({
+  //         email: userData.email,
+  //         fullname: userData.fullname,
+  //         isVerified: false,
+  //       });
+
+  //       console.log(res.data);
+  //       localStorage.setItem("token", res.data.token);
+  //       localStorage.setItem("storedEmail", userData.email);
+  //       localStorage.setItem("storedFullname", userData.fullname);
+
+  //       setTimeout(() => {
+  //         navigate("/verify-otp");
+  //         setUserData({
+  //           email: "",
+  //           fullname: "",
+  //           password: "",
+  //           confirmPassword: "",
+  //         });
+  //       }, 2000);
+  //     } else {
+  //       setIsLoading(false);
+  //       setError((prev) => ({
+  //         ...prev,
+  //         signupFailed: (
+  //           <>
+  //             <BiSolidError /> {error.response.data.message}!
+  //           </>
+  //         ),
+  //       }));
+  //     }
+  //   } catch (error) {
+  //     setIsLoading(false);
+  //     setError((prev) => ({
+  //       ...prev,
+  //       signupFailed: (
+  //         <div className="text-red-600 flex items-center gap-1 text-sm mt-1">
+  //           <BiSolidError /> {error.response.data.message}
+  //         </div>
+  //       ),
+  //     }));
+  //   } finally {
+  //     setIsLoading(false);
+  //   }
+  // };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setIsLoading(true);
 
-    if (userData.password !== userData.confirmPassword) {
-      setIsLoading(false);
-      setError((prev) => ({
+    // Clear previous error
+    setError({ passwordMismatch: "", signupFailed: "" });
+
+    // Validate password length
+    if (userData.password.length < 6) {
+      return setError((prev) => ({
         ...prev,
         passwordMismatch: (
           <div className="text-red-600 flex items-center gap-1 text-sm">
-            <BiSolidError /> Password not match!
+            <BiSolidError /> Password should be at least 6 characters!
           </div>
         ),
       }));
-    } else {
-      setError((prev) => ({ ...prev, passwordMismatch: "" }));
-      setError((prev) => ({ ...prev, signupFailed: "" }));
     }
+
+    // Validate password match
+    if (userData.password !== userData.confirmPassword) {
+      return setError((prev) => ({
+        ...prev,
+        passwordMismatch: (
+          <div className="text-red-600 flex items-center gap-1 text-sm">
+            <BiSolidError /> Passwords do not match!
+          </div>
+        ),
+      }));
+    }
+
+    // Everything is valid → proceed
+    setIsLoading(true);
 
     try {
       const res = await axios.post(
@@ -82,12 +182,11 @@ const Signup = () => {
       if (res.data.success) {
         setError((prev) => ({
           ...prev,
-          signupFailed:
-            (
-              <div className="text-green-600 flex items-center gap-2 text-sm">
-                Signup successfully! <BiSolidCheckCircle size={20} />
-              </div>
-            ) || "Signup successfully",
+          signupFailed: (
+            <div className="text-green-600 flex items-center gap-2 text-sm">
+              Signup successfully! <BiSolidCheckCircle size={20} />
+            </div>
+          ),
         }));
 
         setUserContextData({
@@ -96,7 +195,6 @@ const Signup = () => {
           isVerified: false,
         });
 
-        console.log(res.data);
         localStorage.setItem("token", res.data.token);
         localStorage.setItem("storedEmail", userData.email);
         localStorage.setItem("storedFullname", userData.fullname);
@@ -110,24 +208,13 @@ const Signup = () => {
             confirmPassword: "",
           });
         }, 2000);
-      } else {
-        setIsLoading(false);
-        setError((prev) => ({
-          ...prev,
-          signupFailed: (
-            <>
-              <BiSolidError /> {error.response.data.message}!
-            </>
-          ),
-        }));
       }
     } catch (error) {
-      setIsLoading(false);
       setError((prev) => ({
         ...prev,
         signupFailed: (
           <div className="text-red-600 flex items-center gap-1 text-sm mt-1">
-            <BiSolidError /> {error.response.data.message}
+            <BiSolidError /> {error.response?.data?.message || "Signup failed"}
           </div>
         ),
       }));
@@ -135,7 +222,6 @@ const Signup = () => {
       setIsLoading(false);
     }
   };
-
   return (
     <div className="min-h-screen w-full flex items-center justify-center bg-gradient-to-br from-emerald-50 via-teal-50 to-green-50 relative overflow-hidden">
       {/* Background Image with Overlay */}
@@ -161,9 +247,7 @@ const Signup = () => {
         {/* Signup Form */}
         <div className="bg-white/95 backdrop-blur-md rounded-2xl shadow-2xl border border-white/20 p-8">
           <div className="text-center mb-6">
-            <h2 className="text-2xl font-bold text-gray-800">
-              Create Account
-            </h2>
+            <h2 className="text-2xl font-bold text-gray-800">Create Account</h2>
             <div className="w-20 h-1 bg-gradient-to-r from-green-400 to-teal-500 mx-auto rounded-full"></div>
           </div>
 
@@ -300,7 +384,11 @@ const Signup = () => {
             <div className="pt-2 text-center flex justify-center">
               <Button
                 btnType="submit"
-                btnText={ isLoading ? "Preparing your kitchen..." : "Join Our Culinary Family"}
+                btnText={
+                  isLoading
+                    ? "Preparing your kitchen..."
+                    : "Join Our Culinary Family"
+                }
                 disabled={isLoading}
                 btnBgColor="green"
                 btnTextColor="white"
