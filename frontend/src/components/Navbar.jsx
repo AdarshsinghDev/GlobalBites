@@ -1,235 +1,116 @@
-import React, { useEffect, useState } from "react";
-import {
-  Menu,
-  X,
-  Home,
-  User,
-  Settings,
-  LogIn,
-  UserPlus,
-  Heart,
-  BookOpen,
-  Utensils,
-} from "lucide-react";
+import { useMemo, useState } from 'react';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { motion } from 'framer-motion';
+import { List, X, ArrowRight } from '@phosphor-icons/react';
+import MotionButton from './ui/MotionButton';
+import Logo from './ui/Logo';
+import api, { getAuthToken, setAuthToken } from '../lib/api';
+import { useUserContext } from '../context/CreateContext';
 
-import { Link } from "react-router-dom";
-import { useUserContext } from "../context/CreateContext";
-import Logo from "./ui/Logo";
 const Navbar = () => {
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const location = useLocation();
+  const navigate = useNavigate();
+  const [open, setOpen] = useState(false);
+  const { userContextData, setUserContextData } = useUserContext();
 
-  const { userContextData } = useUserContext();
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [fullname, setFullname] = useState("");
+  const hidden = useMemo(() => ['/signup', '/login', '/verify-otp'].includes(location.pathname), [location.pathname]);
+  if (hidden) return null;
+  const isLoggedIn = Boolean(getAuthToken() || userContextData?.email);
 
-  useEffect(() => {
-    const storedIsVerified =
-      userContextData.isVerified || localStorage.getItem("storedIsVerified");
+  const links = [
+    { to: '/', label: 'Home' },
+    { to: '/home', label: 'Results' },
+    { to: '/chef', label: 'AI Chef' },
+    { to: '/budget', label: 'Budget' },
+    { to: '/knowledge', label: 'Knowledge' },
+    { to: '/profile', label: 'Profile' },
+  ];
 
-    const storedFullname =
-      userContextData.fullname || localStorage.getItem("storedFullname");
-
-    setIsLoggedIn(storedIsVerified);
-    setFullname(storedFullname);
-  }, []);
-  const toggleMobileMenu = () => {
-    setIsMobileMenuOpen(!isMobileMenuOpen);
-  };
-
-  const closeMobileMenu = () => {
-    setIsMobileMenuOpen(false);
-  };
-
-  const handleLinkClick = (path) => {
-    console.log(`Navigating to: ${path}`);
-    closeMobileMenu();
+  const handleLogout = async () => {
+    try {
+      await api.post('/api/auth/logout');
+    } catch (error) {
+      console.error('Logout failed:', error);
+    } finally {
+      setAuthToken(null);
+      localStorage.removeItem('storedFullname');
+      localStorage.removeItem('storedEmail');
+      localStorage.removeItem('storedIsVerified');
+      localStorage.removeItem('pendingVerifyEmail');
+      setUserContextData({ email: '', fullname: '', isVerified: false });
+      setOpen(false);
+      navigate('/login', { replace: true });
+    }
   };
 
   return (
-    <nav className="bg-white shadow-lg relative top-0 z-50 border-b border-gray-200">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center h-16">
-          {/* Logo */}
-          <div className="flex-shrink-0">
-            <Link
-              to="/home"
-              onClick={() => handleLinkClick("/")}
-              className="flex items-center space-x-2 group"
-            >
-            <Logo logoStyle="text-[20px]" logoIconSize={20} logoIconPad={"p-[5px]"} />
-            </Link>
-          </div>
+    <>
+      <motion.nav
+        style={{
+          position: 'sticky',
+          top: 0,
+          zIndex: 100,
+          height: 64,
+          background: 'rgba(247,244,239,0.85)',
+          backdropFilter: 'blur(16px) saturate(180%)',
+          borderBottom: '1px solid var(--border)',
+        }}
+      >
+        <div className="container" style={{ height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+          <Link to="/" style={{ display: 'inline-flex', alignItems: 'center', gap: 8 }}>
+            <Logo size={58} />
+          </Link>
 
-          {/* Desktop Menu */}
-          <div className="hidden md:block">
-            <div className="ml-10 flex items-baseline space-x-4">
-              <Link
-                to="/home"
-                className="flex items-center space-x-2 px-4 py-2 text-sm font-medium text-white bg-green-600 hover:bg-green-700 rounded-md transition-colors duration-200 shadow-sm hover:shadow-md"
-              >
-                <Home className="w-4 h-4" />
-                <span>Home</span>
+          <div className="desktop-links" style={{ display: 'none', gap: 24 }}>
+            {links.map((l) => (
+              <Link key={l.to} to={l.to} className={`nav-link ${location.pathname === l.to ? 'active' : ''}`}>
+                {l.label}
               </Link>
-
-              {isLoggedIn && (
-                <>
-                  <Link
-                    to="/my-recipes"
-                    className="flex items-center space-x-2 px-4 py-2 text-sm font-medium text-white bg-green-600 hover:bg-green-700 rounded-md transition-colors duration-200 shadow-sm hover:shadow-md"
-                  >
-                    <BookOpen className="w-4 h-4" />
-                    <span>My Recipes</span>
-                  </Link>
-
-                  <Link
-                    to="/favourites"
-                    className="flex items-center space-x-2 px-4 py-2 text-sm font-medium text-white bg-green-600 hover:bg-green-700 rounded-md transition-colors duration-200 shadow-sm hover:shadow-md"
-                  >
-                    <Heart className="w-4 h-4 text-red-500" />
-                    <span>Favourites</span>
-                  </Link>
-                </>
-              )}
-
-              {isLoggedIn ? (
-                <>
-                  <Link
-                    to="/profile"
-                    className="flex items-center space-x-2 px-4 py-2 text-sm font-medium text-white bg-green-600 hover:bg-green-700 rounded-md transition-colors duration-200 shadow-sm hover:shadow-md"
-                  >
-                    <User className="w-4 h-4" />
-                    <span className="max-w-24 truncate">{fullname}</span>
-                  </Link>
-
-                  <Link
-                    to="setting"
-                    className="flex items-center space-x-2 px-4 py-2 text-sm font-medium text-white bg-green-600 hover:bg-green-700 rounded-md transition-colors duration-200 shadow-sm hover:shadow-md"
-                  >
-                    <Settings className="w-4 h-4" />
-                    <span>Settings</span>
-                  </Link>
-                </>
-              ) : (
-                <>
-                  <Link
-                    to="/signup"
-                    className="flex items-center space-x-2 px-4 py-2 text-sm font-medium text-white bg-green-600 hover:bg-green-700 rounded-md transition-colors duration-200 shadow-sm hover:shadow-md"
-                  >
-                    <UserPlus className="w-4 h-4" />
-                    <span>Sign Up</span>
-                  </Link>
-
-                  <Link
-                    to="/login"
-                    className="flex items-center space-x-2 px-4 py-2 text-sm font-medium text-white bg-green-600 hover:bg-green-700 rounded-md transition-colors duration-200 shadow-sm hover:shadow-md"
-                  >
-                    <LogIn className="w-4 h-4" />
-                    <span>Login</span>
-                  </Link>
-                </>
-              )}
-            </div>
+            ))}
           </div>
 
-          {/* Mobile menu button */}
-          <div className="md:hidden">
-            <button
-              onClick={toggleMobileMenu}
-              className="inline-flex items-center justify-center p-2 rounded-md text-gray-700 hover:text-green-600 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-green-500 transition-colors duration-200"
-            >
-              {isMobileMenuOpen ? (
-                <X className="block h-6 w-6" />
-              ) : (
-                <Menu className="block h-6 w-6" />
-              )}
-            </button>
-          </div>
-        </div>
-      </div>
-
-      {/* Mobile Menu */}
-      {isMobileMenuOpen && (
-        <div className="md:hidden bg-white border-t border-gray-200 shadow-lg">
-          <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
-            <Link
-              to="/home"
-              className="flex items-center space-x-3 w-full px-3 py-2 text-sm font-medium text-gray-700 hover:text-green-600 hover:bg-gray-50 rounded-md transition-colors duration-200"
-            >
-              <Home className="w-4 h-4" />
-              <span>Home</span>
-            </Link>
-
-            {isLoggedIn && (
-              <>
-                <Link
-                  to="my-recipes"
-                  className="flex items-center space-x-3 w-full px-3 py-2 text-sm font-medium text-gray-700 hover:text-green-600 hover:bg-gray-50 rounded-md transition-colors duration-200"
-                >
-                  <BookOpen className="w-4 h-4" />
-                  <span>My Recipes</span>
-                </Link>
-
-                <Link
-                  to="/favourites"
-                  className="flex items-center space-x-3 w-full px-3 py-2 text-sm font-medium text-gray-700 hover:text-green-600 hover:bg-gray-50 rounded-md transition-colors duration-200"
-                >
-                  <Heart className="w-4 h-4 text-red-500" />
-                  <span>Favourites</span>
-                </Link>
-              </>
-            )}
-
+          <div className="desktop-actions" style={{ display: 'none', alignItems: 'center', gap: 12 }}>
             {isLoggedIn ? (
-              <>
-                <Link
-                  to="/profile"
-                  className="flex items-center space-x-3 w-full px-3 py-2 text-sm font-medium text-gray-700 hover:text-green-600 hover:bg-gray-50 rounded-md transition-colors duration-200"
-                >
-                  <User className="w-4 h-4" />
-                  <span className="truncate">{fullname}</span>
-                </Link>
-
-                <Link
-                  to="/setting"
-                  className="flex items-center space-x-3 w-full px-3 py-2 text-sm font-medium text-gray-700 hover:text-green-600 hover:bg-gray-50 rounded-md transition-colors duration-200"
-                >
-                  <Settings className="w-4 h-4" />
-                  <span>Settings</span>
-                </Link>
-              </>
+              <MotionButton variant="ghost" icon={null} onClick={handleLogout}>Logout</MotionButton>
             ) : (
               <>
-                <Link
-                  to="/setting"
-                  className="flex items-center space-x-3 w-full px-3 py-2 text-sm font-medium text-gray-700 hover:text-green-600 hover:bg-gray-50 rounded-md transition-colors duration-200"
-                >
-                  <UserPlus className="w-4 h-4" />
-                  <span>Sign Up</span>
-                </Link>
-
-                <Link
-                  to="/login"
-                  className="flex items-center space-x-3 w-full px-3 py-2 text-sm font-medium text-gray-700 hover:text-green-600 hover:bg-gray-50 rounded-md transition-colors duration-200"
-                >
-                  <LogIn className="w-4 h-4" />
-                  <span>Login</span>
-                </Link>
+                <Link to="/login"><MotionButton variant="ghost" icon={null}>Log in</MotionButton></Link>
+                <Link to="/signup"><MotionButton icon={ArrowRight}>Get Started</MotionButton></Link>
               </>
             )}
           </div>
 
-          {/* Demo Toggle Button */}
-          <div className="px-2 pb-3 border-t border-gray-200 mt-2">
-            <button
-              onClick={() => setIsLoggedIn(!isLoggedIn)}
-              className="w-full px-3 py-2 text-sm font-medium text-green-600 hover:bg-green-50 rounded-md transition-colors duration-200"
-            >
-              Toggle Login State (Demo)
-            </button>
+          <button type="button" onClick={() => setOpen(!open)} style={{ border: 0, background: 'transparent' }}>
+            {open ? <X size={24} /> : <List size={24} />}
+          </button>
+        </div>
+      </motion.nav>
+
+      {open ? (
+        <div style={{ borderBottom: '1px solid var(--border)', background: 'var(--bg-surface)' }}>
+          <div className="container" style={{ paddingTop: 16, paddingBottom: 16, display: 'grid', gap: 10 }}>
+            {links.map((l) => <Link key={l.to} to={l.to} onClick={() => setOpen(false)}>{l.label}</Link>)}
+            {isLoggedIn ? (
+              <button type="button" onClick={handleLogout} style={{ border: 0, background: 'transparent', padding: 0, textAlign: 'left', color: 'var(--terracotta)', fontWeight: 600 }}>
+                Logout
+              </button>
+            ) : (
+              <>
+                <Link to="/login" onClick={() => setOpen(false)}>Log in</Link>
+                <Link to="/signup" onClick={() => setOpen(false)}>Get Started</Link>
+              </>
+            )}
           </div>
         </div>
-      )}
-    </nav>
+      ) : null}
+
+      <style>{`
+        @media (min-width: 1024px) {
+          .desktop-links, .desktop-actions { display: flex !important; }
+          nav button { display: none; }
+        }
+      `}</style>
+    </>
   );
 };
 

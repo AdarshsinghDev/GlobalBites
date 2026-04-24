@@ -1,22 +1,52 @@
 import React from "react";
-import { Link } from "react-router-dom";
 
-const Button = ({ btnText, btnType, btnIcon, btnTextColor, btnBgColor }) => {
-  const bgColors = {
-    red: "bg-red-600 hover:bg-red-700",
-    green: "bg-green-600 hover:bg-green-700",
-    blue: "bg-blue-600 hover:bg-blue-700",
-  };
+const Button = ({
+  btnText,
+  btnType = "button",
+  btnIcon,
+  btnTextColor,
+  btnBgColor,
+  variant,
+  className = "",
+  disabled,
+  onClick,
+}) => {
+  const legacyVariant =
+    btnBgColor === "green"
+      ? "primary"
+      : btnBgColor === "red"
+      ? "danger"
+      : btnBgColor === "blue"
+      ? "secondary"
+      : null;
 
-  const textColors = {
-    white: "text-white",
-    black: "text-black",
-    gray: "text-gray-700",
-  };
+  const v = variant || legacyVariant || "primary";
+
+  const base = "gb-btn";
+  const styles =
+    v === "secondary"
+      ? "gb-btn-secondary"
+      : v === "ghost"
+      ? "gb-btn-ghost"
+      : v === "danger"
+      ? "inline-flex items-center justify-center gap-2 px-4 py-3 text-sm font-semibold rounded-gbBtn bg-gb-error text-white hover:opacity-90 transition-opacity"
+      : "gb-btn-primary";
+
+  const textOverride =
+    btnTextColor === "black"
+      ? "text-gb-text"
+      : btnTextColor === "gray"
+      ? "text-gb-muted"
+      : "";
+
   return (
     <button
       type={btnType}
-      className={`flex items-center text-center justify-center space-x-2 px-4 py-2 text-sm font-medium ${textColors[btnTextColor]} ${bgColors[btnBgColor]}  rounded-sm transition-colors duration-200 shadow-sm hover:shadow-md`}
+      disabled={disabled}
+      onClick={onClick}
+      className={`${base} ${styles} ${textOverride} ${className} ${
+        disabled ? "opacity-60 cursor-not-allowed" : ""
+      }`}
     >
       {btnIcon}
       <span>{btnText}</span>

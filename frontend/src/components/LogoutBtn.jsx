@@ -1,20 +1,19 @@
 import React from "react";
-import axios from "axios";
 import { useUserContext } from "../context/CreateContext";
+import api, { setAuthToken } from "../lib/api";
 
 const LogoutBtn = () => {
   const { setUserContextData } = useUserContext();
 
   const handleLogout = async () => {
     try {
-      const res = await axios.get("http://localhost:8080/api/auth/logout", {
-        withCredentials: true,
-      });
+      const res = await api.post("/api/auth/logout");
       if (res.data.success) {
-        localStorage.clear();
+        setAuthToken(null);
         localStorage.removeItem("storedFullname");
         localStorage.removeItem("storedEmail");
         localStorage.removeItem("storedIsVerified");
+        localStorage.removeItem("pendingVerifyEmail");
 
         setUserContextData({
           email: "",

@@ -1,16 +1,24 @@
 import React from "react";
 
-const Logo = ({ logoStyle}) => {
+const Logo = ({ logoStyle = "", size = 56, alt = "GlobalBites Logo" }) => {
   return (
-    <div className={`flex items-center justify-center`}>
-      <h1 className={`text-3xl font-bold ${logoStyle}`}>
-        <span className="bg-green-500 text-white pl-1 rounded-tl-xl">
-          Global
-        </span>
-        <span className="text-green-500 bg-white pr-1 rounded-br-xl">
-          Bites
-        </span>
-      </h1>
+    <div
+      className={`flex items-center ${logoStyle}`}
+      aria-label="GlobalBites"
+      style={{ width: size, height: size, flexShrink: 0 }}
+    >
+      <img
+        src="/logo.png"
+        alt={alt}
+        width={size}
+        height={size}
+        style={{
+          width: "100%",
+          height: "100%",
+          objectFit: "contain",
+          display: "block",
+        }}
+      />
     </div>
   );
 };

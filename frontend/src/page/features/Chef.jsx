@@ -1,230 +1,157 @@
-import React, { useEffect, useState } from "react";
-import {
-  Search,
-  Filter,
-  Star,
-  Award,
-  Leaf,
-  MapPin,
-} from "lucide-react";
-import { useChefContext } from "../../context/ChefContext";
-import { useNavigate } from "react-router-dom";
+import { useEffect, useMemo, useState } from 'react';
+import { motion } from 'framer-motion';
+import { Check, Sparkle } from '@phosphor-icons/react';
+import MotionButton from '../../components/ui/MotionButton';
+import TagPill from '../../components/ui/TagPill';
+import FluentEmoji from '../../components/ui/FluentEmoji';
+import { useChefContext } from '../../context/ChefContext';
+import api from '../../lib/api';
+
+const palette = [
+  'linear-gradient(135deg, #C0392B, #E74C3C)',
+  'linear-gradient(135deg, #2E4057, #5B8DB8)',
+  'linear-gradient(135deg, #F39C12, #E67E22)',
+  'linear-gradient(135deg, #27AE60, #2ECC71)',
+  'linear-gradient(135deg, #1A1A2E, #4A4A6E)',
+  'linear-gradient(135deg, #E91E63, #F48FB1)',
+];
+
+const getChefName = (chef) => chef?.chefName || chef?.name || 'Chef';
+const getChefCuisine = (chef) => chef?.chefCusine || chef?.cuisine || chef?.chefCountry || 'Global';
+const getChefTagline = (chef) => chef?.chefSpeciality || chef?.tagline || 'Signature culinary style';
+const getChefImage = (chef) => chef?.chefImg || chef?.image || '';
+const getChefGradient = (chef) => chef?.gradient || palette[Number(chef?.id || 0) % palette.length];
 
 const Chef = () => {
   const { chefContextData, selectedChef, setSelectedChef } = useChefContext();
-  const navigate = useNavigate();
+  const [dish, setDish] = useState('');
+  const [imageErrors, setImageErrors] = useState({});
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState('');
+  const [generatedRecipe, setGeneratedRecipe] = useState(null);
 
-  const [searchTerm, setSearchTerm] = useState("");
-  const [selectedFilter, setSelectedFilter] = useState("All");
+  const suggestions = useMemo(() => ['Paneer Tikka', 'Butter Chicken', 'Dal Makhani', 'Veg Biryani'], []);
+  const chefs = useMemo(() => (Array.isArray(chefContextData) && chefContextData.length > 0 ? chefContextData : []), [chefContextData]);
+  const effectiveSelectedChef = selectedChef || chefs[0];
 
-  const chefs = chefContextData;
-
-  const cuisineTypes = ["All", "Indian", "British", "Italian"];
-
-  const filteredChefs = chefs.filter((chef) => {
-    const matchesSearch =
-      chef.chefName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      chef.chefSpecialty.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesFilter =
-      selectedFilter === "All" || chef.chefCuisine === selectedFilter;
-    return matchesSearch && matchesFilter;
-  });
-
-  const getTagIcon = (tag) => {
-    switch (tag) {
-      case "Michelin Star":
-        return <Award className="w-3 h-3" />;
-      case "Vegan Expert":
-        return <Leaf className="w-3 h-3" />;
-      default:
-        return <Star className="w-3 h-3" />;
+  useEffect(() => {
+    if (!selectedChef && chefs.length > 0 && setSelectedChef) {
+      setSelectedChef(chefs[0]);
     }
-  };
+  }, [selectedChef, chefs, setSelectedChef]);
 
-  const getTagColor = (tag) => {
-    switch (tag) {
-      case "Michelin Star":
-        return "bg-yellow-200 text-yellow-900 border border-yellow-300";
-      case "MasterChef Judge":
-        return "bg-rose-200 text-rose-900 border border-rose-300";
-      case "Vegan Expert":
-        return "bg-emerald-200 text-emerald-900 border border-emerald-300";
-      case "Street Food Guru":
-        return "bg-orange-200 text-orange-900 border border-orange-300";
-      case "5-Star Hotel Experience":
-        return "bg-violet-200 text-violet-900 border border-violet-300";
-      default:
-        return "bg-emerald-200 text-emerald-900 border border-emerald-300";
+  const handleGenerate = async () => {
+    if (!dish.trim() || !effectiveSelectedChef) {
+      setError('Please choose chef and enter dish name.');
+      return;
     }
-  };
 
-  const handleSelectedChef = (chef) => {
-    // alert(chef.chefName);
-    setSelectedChef(chef);
-    localStorage.setItem("storeLocalSelectedChef", JSON.stringify(chef));
-    localStorage.removeItem("generatedChefRecipe");
-    navigate("/selected-chef");
+    try {
+      setIsLoading(true);
+      setError('');
+      const { data } = await api.post(
+        '/api/recipe-ai/ai-chef',
+        {
+          chefName: getChefName(effectiveSelectedChef),
+          generateRecipe: dish.trim(),
+        },
+        { timeout: 60000 }
+      );
+      setGeneratedRecipe(data?.recipe || null);
+      if (!data?.recipe) {
+        setError('No recipe returned from AI. Try again.');
+      }
+    } catch (apiError) {
+      setError(apiError?.response?.data?.error || 'Recipe generation failed.');
+      setGeneratedRecipe(null);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-green-100 via-green-200 to-teal-300">
-      {/* Header */}
-      <div className="text-center py-12 px-4">
-        <h1 className="lg:text-5xl text-3xl font-bold text-gray-800 mb-4">
-          🍳 Pick Your Culinary Legend
-        </h1>
-        <p className="lg:text-xl  text-gray-600 max-w-2xl mx-auto">
-          Choose the chef whose dishes feel like memories — explore legendary
-          flavors that feel like home on GlobalBites.
-        </p>
-      </div>
+    <div className="page section">
+      <div className="container">
+        <div className="text-label">AI Chef Personas</div>
+        <h1 className="text-h1" style={{ marginTop: 8 }}>Cook with a Legend</h1>
+        <p style={{ color: 'var(--text-secondary)', marginTop: 8 }}>Select a chef and generate chef-style recipe instructions.</p>
 
-      {/* Search and Filter Section */}
-      <div className="max-w-6xl mx-auto px-6 mb-12">
-        <div className="flex flex-col md:flex-row gap-6 items-center justify-center">
-          {/* Search Bar */}
-          <div className="relative flex-1 max-w-md w-full">
-            <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
-            <input
-              type="text"
-              placeholder="Search chefs or specialties..."
-              className="w-full  pl-12 pr-4 h-[50px] py-3 rounded-full border-2 border-gray-200 focus:border-green-300 focus:outline-none transition-colors"
-              style={{ backgroundColor: "white" }}
-            />
-          </div>
-
-          {/* Filter Tags */}
-          <div className="flex flex-wrap gap-3">
-            <Filter className="text-gray-500 w-5 h-5 mt-2" />
-            {cuisineTypes.map((type) => (
-              <button
-                key={type}
-                onClick={() => setSelectedFilter(type)}
-                className={`lg:px-6 lg:py-2  px-4 py-2 rounded-full font-medium transition-all duration-300 ${
-                  selectedFilter === type
-                    ? "text-white shadow-lg transform scale-105"
-                    : "bg-white text-gray-700 hover:shadow-md"
-                }`}
-                style={{
-                  backgroundColor:
-                    selectedFilter === type ? "#15bb7d" : "white",
-                }}
-              >
-                {type}
-              </button>
-            ))}
-          </div>
+        <div style={{ marginTop: 24 }} className="chef-grid">
+          {chefs.map((chef) => {
+            const on = String(effectiveSelectedChef?.id) === String(chef.id);
+            const chefName = getChefName(chef);
+            const chefCuisine = getChefCuisine(chef);
+            const chefTagline = getChefTagline(chef);
+            const chefGradient = getChefGradient(chef);
+            const chefImage = getChefImage(chef);
+            return (
+              <motion.button key={chef.id} type="button" whileHover={{ y: -6, boxShadow: 'var(--shadow-lg)' }} whileTap={{ scale: 0.98 }} onClick={() => setSelectedChef?.(chef)} className="card" style={{ textAlign: 'center', padding: 24, borderRadius: 'var(--radius-xl)', borderWidth: on ? 2.5 : 1.5, borderColor: on ? 'var(--green-700)' : 'var(--border)', background: on ? 'var(--green-50)' : '#fff', position: 'relative' }}>
+                {on ? <span style={{ position: 'absolute', right: 12, top: 12, width: 22, height: 22, borderRadius: '50%', background: 'var(--green-700)', display: 'grid', placeItems: 'center' }}><Check size={12} weight="bold" color="#fff" /></span> : null}
+                {chefImage && !imageErrors[chef.id] ? (
+                  <img src={chefImage} alt={chefName} loading="lazy" onError={() => setImageErrors((prev) => ({ ...prev, [chef.id]: true }))} style={{ width: 80, height: 80, borderRadius: '50%', margin: '0 auto', objectFit: 'cover', display: 'block' }} />
+                ) : (
+                  <div style={{ width: 80, height: 80, borderRadius: '50%', margin: '0 auto', background: chefGradient, color: '#fff', display: 'grid', placeItems: 'center', fontWeight: 700, fontSize: 24 }}>{chefName.slice(0, 1)}</div>
+                )}
+                <div style={{ marginTop: 12, fontWeight: 700 }}>{chefName}</div>
+                <TagPill style={{ marginTop: 8 }}>{chefCuisine}</TagPill>
+                <p style={{ marginTop: 6, color: 'var(--text-muted)', fontStyle: 'italic', fontSize: 13 }} className="clamp-2">{chefTagline}</p>
+              </motion.button>
+            );
+          })}
         </div>
-      </div>
 
-      {/* Chef Cards Grid */}
-      <div className="max-w-7xl mx-auto px-6 pb-16">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
-          {filteredChefs.map((chef) => (
-            <div
-              key={chef.id}
-              className="bg-white/70 backdrop-blur-xl rounded-3xl w-[80%] m-auto lg:w-full p-6 shadow-lg hover:shadow-2xl transform hover:scale-105 transition-all duration-300 border border-gray-100"
-            >
-              {/* Chef Image */}
-              <div className="flex justify-center mb-6 ">
-                <div className="relative">
-                  <img
-                    src={chef.chefImg}
-                    alt={chef.chefName}
-                    className="lg:w-full lg:h-54 w-1/2 m-auto h-30 object-cover rounded-lg border-green-300  aspect-square shadow-xl shadow-green-500/40"
-                  />
-                  <div
-                    className="absolute -bottom-2 -right-2 w-8 h-8 rounded-full flex items-center justify-center text-white text-xs font-bold shadow-lg"
-                    style={{ backgroundColor: "#15bb7d" }}
-                  >
-                    <MapPin className="w-4 h-4" />
-                  </div>
-                </div>
-              </div>
-
-              {/* Chef Info */}
-              <div className="text-center mb-4">
-                <h3 className="text-xl font-bold text-gray-800 mb-2">
-                  {chef.chefName}
-                </h3>
-                <p className="text-gray-600 font-medium">
-                  {chef.chefSpecialty}
-                </p>
-                <p className="text-sm text-gray-500">{chef.chefCountry}</p>
-              </div>
-
-              {/* Rating */}
-              <div className="flex items-center justify-center mb-4">
-                <div className="flex items-center gap-1">
-                  {[...Array(5)].map((_, i) => (
-                    <Star
-                      key={i}
-                      className={`w-4 h-4 ${
-                        i < Math.floor(chef.chefRating)
-                          ? "text-yellow-400 fill-current"
-                          : "text-gray-300"
-                      }`}
-                    />
-                  ))}
-                  <span className="ml-2 text-gray-700 font-semibold">
-                    {chef.chefRating}
-                  </span>
-                </div>
-              </div>
-
-              {/* Tags */}
-              <div className="flex flex-wrap justify-center gap-2 mb-6">
-                {chef.chefTags.map((tag, index) => (
-                  <span
-                    key={index}
-                    className={`inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-medium ${getTagColor(
-                      tag
-                    )}`}
-                  >
-                    {getTagIcon(tag)}
-                    {tag}
-                  </span>
-                ))}
-              </div>
-
-              {/* Choose Button */}
-              <button
-                type="button"
-                onClick={() => handleSelectedChef(chef)}
-                className="w-full py-3 px-6 rounded-full font-semibold text-white transition-all duration-300 hover:shadow-lg transform hover:scale-105 active:scale-95"
-                style={{
-                  backgroundColor: "#A8E6CF",
-                  backgroundImage:
-                    "linear-gradient(135deg, rgb(63 227 124) 0%, rgb(20 105 79) 100%)",
-                }}
-              >
-                Choose Chef 👨‍🍳
-              </button>
+        <div style={{ marginTop: 32, maxWidth: 720 }}>
+          <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
+            <div className="input-wrap" style={{ flex: 1 }}>
+              <span className="left-icon"><FluentEmoji name="fork_knife" size={18} /></span>
+              <input className="input" value={dish} onChange={(e) => setDish(e.target.value)} placeholder="Enter dish name..." />
             </div>
-          ))}
+            <MotionButton icon={Sparkle} onClick={handleGenerate}>
+              {isLoading ? 'Generating...' : 'Generate Recipe'}
+            </MotionButton>
+          </div>
+          <div style={{ marginTop: 10, display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+            {suggestions.map((s) => <motion.button key={s} whileTap={{ scale: 0.96 }} onClick={() => setDish(s)} className="pill pill-neutral" style={{ textTransform: 'none', letterSpacing: 0 }}>{s}</motion.button>)}
+          </div>
+          {error ? <p style={{ marginTop: 12, color: 'var(--terracotta)' }}>{error}</p> : null}
         </div>
 
-        {/* No Results */}
-        {filteredChefs.length === 0 && (
-          <div className="text-center py-16">
-            <div className="text-6xl mb-4">🔍</div>
-            <h3 className="text-2xl font-bold text-gray-700 mb-2">
-              No chefs found
-            </h3>
-            <p className="text-gray-500">
-              Try adjusting your search or filter criteria
-            </p>
-          </div>
-        )}
+        {generatedRecipe ? (
+          <section style={{ marginTop: 28, display: 'grid', gap: 14 }}>
+            <article className="card" style={{ padding: 18 }}>
+              <h3 style={{ fontSize: 22 }}>{generatedRecipe.greeting || 'Chef Recipe'}</h3>
+              <p style={{ color: 'var(--text-secondary)', marginTop: 8 }}>{generatedRecipe.cookTime}</p>
+              <div style={{ marginTop: 10, display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+                {(generatedRecipe.tags || []).slice(0, 6).map((tag) => <TagPill key={tag}>{tag}</TagPill>)}
+              </div>
+            </article>
+
+            <article className="card" style={{ padding: 18 }}>
+              <h4>Ingredients</h4>
+              <ul style={{ marginTop: 8, paddingLeft: 18 }}>
+                {(generatedRecipe.ingredients || []).map((item, index) => (
+                  <li key={`${item.item}-${index}`}>{item.item} - {item.quantity}</li>
+                ))}
+              </ul>
+            </article>
+
+            <article className="card" style={{ padding: 18 }}>
+              <h4>Instructions</h4>
+              <ol style={{ marginTop: 8, paddingLeft: 18 }}>
+                {(generatedRecipe.instructions || []).map((step, index) => (
+                  <li key={`${index}-${step}`} style={{ marginTop: 6 }}>{step}</li>
+                ))}
+              </ol>
+            </article>
+          </section>
+        ) : null}
       </div>
 
-      {/* Footer */}
-      <div className="text-center py-8 border-t border-gray-200">
-        <p className="text-gray-600">
-          ✨ Discover amazing recipes and culinary experiences with{" "}
-          <strong>GlobalBites</strong>
-        </p>
-      </div>
+      <style>{`
+        .chef-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+        @media (min-width: 768px) { .chef-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+        @media (min-width: 1200px) { .chef-grid { grid-template-columns: repeat(6, minmax(0, 1fr)); } }
+      `}</style>
     </div>
   );
 };

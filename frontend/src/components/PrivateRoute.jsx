@@ -1,10 +1,20 @@
-// // import { useUser } from "../context/UserContext";
-// import { Navigate } from "react-router-dom";
-// const PrivateRouter = ({ children }) => {
-//   const { user } = useUser();
-//   const isLoggedIn = user && user.email;
+import { Navigate, useLocation } from 'react-router-dom';
+import { getAuthToken } from '../lib/api';
 
-//   return isLoggedIn ? children : <Navigate to="/login" replace />;
-// };
+const PrivateRoute = ({ children }) => {
+  const location = useLocation();
+  const isLoggedIn = Boolean(getAuthToken());
+  const isVerified = localStorage.getItem('storedIsVerified') === 'true';
 
-// export default PrivateRouter;
+  if (!isLoggedIn) {
+    return <Navigate to="/login" replace state={{ from: location.pathname }} />;
+  }
+
+  if (!isVerified) {
+    return <Navigate to="/verify-otp" replace state={{ from: location.pathname }} />;
+  }
+
+  return children;
+};
+
+export default PrivateRoute;

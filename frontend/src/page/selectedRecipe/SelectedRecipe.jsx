@@ -1,483 +1,565 @@
-import React, { useState, useEffect } from "react";
+import { useCallback, useEffect, useMemo, useState } from 'react';
+import { AnimatePresence, motion } from 'framer-motion';
+import { Link, useLocation, useParams } from 'react-router-dom';
 import {
-  Heart,
-  Clock,
+  ArrowLeft,
+  Timer,
+  Fire,
   Users,
-  ChefHat,
-  Play,
-  Share2,
-  Download,
-  RefreshCw,
-  MessageCircle,
-  Eye,
-  Utensils,
-  Star,
-  Sparkles,
-} from "lucide-react";
+  ChartBar,
+  BookmarkSimple,
+  Bookmark,
+  ShoppingCart,
+  CookingPot,
+  Leaf,
+  Lightbulb,
+  Check,
+  Plus,
+  Minus,
+} from '@phosphor-icons/react';
+import FluentEmoji from '../../components/ui/FluentEmoji';
+import TagPill from '../../components/ui/TagPill';
+import MotionButton from '../../components/ui/MotionButton';
+import api from '../../lib/api';
+const HOME_RESULTS_CACHE_KEY = 'gb_home_results_cache_v2';
 
-import { useHomeRecipeContext } from "../../context/HomeRecipeContext";
-import axios from "axios";
+const normalizeIngredients = (value = '') =>
+  String(value)
+    .toLowerCase()
+    .split(',')
+    .map((item) => item.trim())
+    .filter(Boolean)
+    .join(',');
+
+const readHomeCache = () => {
+  try {
+    const raw = localStorage.getItem(HOME_RESULTS_CACHE_KEY);
+    if (!raw) return { lastIngredients: '', byIngredients: {} };
+    const parsed = JSON.parse(raw);
+    return {
+      lastIngredients: parsed?.lastIngredients || '',
+      byIngredients: parsed?.byIngredients || {},
+    };
+  } catch {
+    return { lastIngredients: '', byIngredients: {} };
+  }
+};
+
+const normalizeSteps = (steps) => {
+  if (!Array.isArray(steps)) return [];
+  return steps
+    .map((step) => {
+      if (typeof step === 'string') return step;
+      if (step?.instruction) return step.instruction;
+      if (step?.title) return step.title;
+      return null;
+    })
+    .filter(Boolean);
+};
 
 const SelectedRecipe = () => {
-  const { homeRecipe } = useHomeRecipeContext();
-  const [dishRecipe, setDishRecipe] = useState(null);
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState(null);
+  const location = useLocation();
+  const { id } = useParams();
+
+  const [saved, setSaved] = useState(false);
+  const [servings, setServings] = useState(2);
+  const [activeStep, setActiveStep] = useState(1);
+  const [checked, setChecked] = useState([]);
+  const [showMeta] = useState(true);
+  const [detailLoading, setDetailLoading] = useState(true);
+  const [detailError, setDetailError] = useState('');
+  const [detailedRecipe, setDetailedRecipe] = useState(null);
+
+  const cached = readHomeCache();
+  const preferredIngredients = location.state?.searchedIngredients || cached?.lastIngredients || '';
+  const preferredKey = normalizeIngredients(preferredIngredients);
+  const cachedBucket = preferredKey ? cached?.byIngredients?.[preferredKey] : null;
+  const cachedRecipes = Array.isArray(cachedBucket?.recipes) ? cachedBucket.recipes : [];
+  const summaryFromCache = cachedRecipes.find((item) => String(item.id) === String(id));
+  const summaryFromState = location.state?.recipeSummary;
+  const summaryRecipe = summaryFromState || summaryFromCache;
+  const recipeName = summaryRecipe?.title || '';
 
   useEffect(() => {
-    // Check for stored recipe data (full recipe object, not just name)
-    const savedRecipeData = localStorage.getItem("storeHomeRecipeData");
-    if (savedRecipeData) {
-      try {
-        const parsed = JSON.parse(savedRecipeData);
-        // Check if it's a valid recipe object with required properties
-        if (parsed && typeof parsed === "object" && parsed.name) {
-          console.log("Loading recipe from localStorage:", parsed.name);
-          setDishRecipe(parsed);
-        } else {
-          console.log("Invalid recipe data in localStorage, clearing");
-          localStorage.removeItem("storeHomeRecipeData");
-        }
-      } catch (error) {
-        console.log("Invalid JSON in localStorage, clearing:", error);
-        localStorage.removeItem("storeHomeRecipeData");
-        // Don't set error here, just clear the invalid data
-      }
+    if (summaryRecipe?.servings) {
+      setServings(summaryRecipe.servings);
     }
-  }, []);
+  }, [summaryRecipe]);
+
+  const fetchRecipeDetails = useCallback(async () => {
+    if (!recipeName) {
+      setDetailError('Recipe source missing hai. Please search results se dobara open karo.');
+      setDetailedRecipe(null);
+      setDetailLoading(false);
+      return;
+    }
+
+    try {
+      setDetailLoading(true);
+      setDetailError('');
+      const { data } = await api.post('/api/recipe-ai/home-recipe', {
+        recipe: recipeName,
+      });
+      setDetailedRecipe(data?.recipe || null);
+      if (!data?.recipe) {
+        setDetailError('Backend se recipe detail nahi aayi. Please retry karo.');
+      }
+    } catch (error) {
+      setDetailError(
+        error?.response?.data?.error ||
+          'Detailed recipe load nahi ho paayi. Please retry karo.'
+      );
+      setDetailedRecipe(null);
+    } finally {
+      setDetailLoading(false);
+    }
+  }, [recipeName]);
 
   useEffect(() => {
-    const fetchRecipe = async () => {
-      if (!homeRecipe) return;
+    fetchRecipeDetails();
+  }, [fetchRecipeDetails]);
 
-      // Don't fetch if we already have the recipe data for this recipe
-      if (dishRecipe && dishRecipe.name === homeRecipe) {
-        return;
-      }
+  const tagList = Array.isArray(detailedRecipe?.tags) ? detailedRecipe.tags : [];
+  const firstDietTag = tagList.find((tag) =>
+    /veg|vegetarian|protein|healthy|comfort/i.test(String(tag))
+  );
 
-      setIsLoading(true);
-      setError(null);
+  const recipe = useMemo(() => {
+    if (!detailedRecipe) return null;
 
-      try {
-        console.log("Fetching recipe for:", homeRecipe);
-
-        // Use the correct production URL
-        const res = await axios.post(
-          `${import.meta.env.VITE_BACKEND_URL}/api/recipe-ai/home-recipe`,
-          { recipe: homeRecipe },
-          {
-            timeout: 60000, // 15 second timeout
-            headers: {
-              "Content-Type": "application/json",
-            },
-          }
-        );
-
-        const resRecipe = res.data.recipe;
-        console.log("Received recipe data:", resRecipe);
-
-        // Validate the recipe data before storing
-        if (resRecipe && typeof resRecipe === "object" && resRecipe.name) {
-          setDishRecipe(resRecipe);
-          // Store the full recipe object with a different key
-          localStorage.setItem(
-            "storeHomeRecipeData",
-            JSON.stringify(resRecipe)
-          );
-          console.log("Recipe stored successfully");
-        } else {
-          console.error("Invalid recipe data received:", resRecipe);
-          setError("Invalid recipe data received from server.");
-        }
-      } catch (error) {
-        console.error("Error fetching recipe:", error);
-
-        // More specific error messages
-        if (error.code === "ERR_NETWORK") {
-          setError(
-            "Unable to connect to server. Please check your internet connection and try again."
-          );
-        } else if (error.code === "ECONNABORTED") {
-          setError("Request timed out. Please try again.");
-        } else if (error.response?.status === 500) {
-          setError("Server error occurred. Please try again later.");
-        } else if (error.response?.status === 400) {
-          setError("Invalid recipe request. Please try a different recipe.");
-        } else {
-          setError("Failed to generate recipe. Please try again.");
-        }
-      } finally {
-        setIsLoading(false);
-      }
+    return {
+      title: detailedRecipe.name || 'Recipe',
+      cuisine: summaryRecipe?.cuisine || 'Indian',
+      difficulty: detailedRecipe.difficulty || 'Medium',
+      diet: firstDietTag ? String(firstDietTag).replace('#', '') : 'Balanced',
+      time: Number(detailedRecipe.time) || 0,
+      calories: Number(detailedRecipe.calories) || 0,
+      people: Number(detailedRecipe.servings) || servings || 1,
+      nutrition: {
+        calories: Number(detailedRecipe?.nutritionPerServing?.calories) || 0,
+        protein: Number(detailedRecipe?.nutritionPerServing?.protein) || 0,
+        carbs: Number(detailedRecipe?.nutritionPerServing?.carbs) || 0,
+        fat: Number(detailedRecipe?.nutritionPerServing?.fats) || 0,
+      },
+      chefTip: detailedRecipe.chefTip || 'No tip available',
     };
+  }, [detailedRecipe, firstDietTag, servings, summaryRecipe?.cuisine]);
 
-    // Only fetch if we have a homeRecipe and don't have matching dishRecipe
-    if (homeRecipe && (!dishRecipe || dishRecipe.name !== homeRecipe)) {
-      fetchRecipe();
-    }
-  }, [homeRecipe, dishRecipe]);
+  const ingredients = useMemo(() => {
+    if (!Array.isArray(detailedRecipe?.ingredients)) return [];
+    return detailedRecipe.ingredients.map((item, index) => ({
+      id: index + 1,
+      qty: Number(item.amount) || 1,
+      unit: item.unit || '',
+      name: item.name || `Ingredient ${index + 1}`,
+    }));
+  }, [detailedRecipe?.ingredients]);
 
-  // Clear stored data function
-  const clearStoredData = () => {
-    localStorage.removeItem("storeHomeRecipe");
-    localStorage.removeItem("storeHomeRecipeData");
-    setDishRecipe(null);
-    setError(null);
-  };
+  const steps = useMemo(() => normalizeSteps(detailedRecipe?.steps), [detailedRecipe?.steps]);
+  const isContentLoading = detailLoading || (!detailedRecipe && !detailError);
 
-  // Regenerate recipe function
-  const regenerateRecipe = () => {
-    // Clear stored data
-    localStorage.removeItem("storeHomeRecipeData");
-    setDishRecipe(null);
-    setError(null);
-
-    // Trigger re-fetch by clearing dishRecipe
-    // The useEffect will automatically trigger a new fetch
-    if (homeRecipe) {
-      setIsLoading(true);
-    }
-  };
-
-  if (!homeRecipe && !dishRecipe) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-orange-300 via-orange-400 to-red-400">
-        <div className="text-center p-8 bg-white/70 backdrop-blur-xl rounded-3xl shadow-xl">
-          <h2 className="text-2xl font-bold text-gray-800 mb-4">
-            No Recipe Selected
-          </h2>
-          <p className="text-gray-600 mb-6">
-            Please go back and select a recipe first.
-          </p>
-          <button
-            onClick={() => window.history.back()}
-            className="px-6 py-3 bg-gradient-to-r from-orange-500 to-red-600 text-white rounded-full hover:from-orange-600 hover:to-red-700 transition-all duration-300"
-          >
-            Go Back
-          </button>
-        </div>
-      </div>
-    );
-  }
+  const backIngredients = preferredIngredients;
+  const backUrl = backIngredients
+    ? `/home?ingredients=${encodeURIComponent(backIngredients)}`
+    : '/home';
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-orange-300 via-orange-400 to-red-400 relative">
-      {/* Background Elements */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-gradient-to-r from-orange-100/20 to-red-100/20 rounded-full blur-3xl opacity-60"></div>
-        <div className="absolute bottom-1/3 right-1/4 w-80 h-80 bg-gradient-to-l from-red-100/30 to-orange-100/20 rounded-full blur-3xl opacity-40"></div>
-      </div>
+    <div className="page">
+      <section
+        className="hero-grain"
+        style={{
+          position: 'relative',
+          height: 300,
+          background: 'linear-gradient(135deg, #FDE8D0, #F5C6A0)',
+        }}
+      >
+        <div style={{ position: 'absolute', top: 20, left: 20 }}>
+          <Link to={backUrl}>
+            <motion.button
+              whileTap={{ scale: 0.96 }}
+              whileHover={{ y: -1 }}
+              style={{
+                borderRadius: 999,
+                border: '1px solid rgba(255,255,255,0.25)',
+                background: 'rgba(255,255,255,0.15)',
+                color: '#fff',
+                padding: '10px 14px',
+                backdropFilter: 'blur(8px)',
+              }}
+            >
+              <ArrowLeft size={16} /> All Recipes
+            </motion.button>
+          </Link>
+        </div>
+        <div style={{ position: 'absolute', inset: 0, display: 'grid', placeItems: 'center' }}>
+          <FluentEmoji name="curry" size={96} className="float" />
+        </div>
+        <h1
+          style={{
+            position: 'absolute',
+            left: 24,
+            bottom: 24,
+            color: '#fff',
+            textShadow: '0 2px 20px rgba(0,0,0,0.3)',
+            fontSize: 'var(--text-h1)',
+          }}
+        >
+          {detailedRecipe?.name || 'Loading recipe...'}
+        </h1>
+        <div style={{ position: 'absolute', right: 24, bottom: 24, display: 'flex', gap: 8 }}>
+          {detailedRecipe ? (
+            <>
+              <TagPill>{recipe?.cuisine}</TagPill>
+              <TagPill>{recipe?.difficulty}</TagPill>
+              <TagPill>{recipe?.diet}</TagPill>
+            </>
+          ) : (
+            <>
+              <div className="skeleton" style={{ width: 72, height: 28, borderRadius: 999 }} />
+              <div className="skeleton" style={{ width: 72, height: 28, borderRadius: 999 }} />
+              <div className="skeleton" style={{ width: 72, height: 28, borderRadius: 999 }} />
+            </>
+          )}
+        </div>
+      </section>
 
-      <div className="container mx-auto px-6 py-12 relative z-10 max-w-7xl">
-        {/* Recipe Header */}
-        <div className="bg-white/60 backdrop-blur-xl rounded-3xl p-8 mb-12 shadow-xl border border-white/20 hover:bg-white/70 transition-all duration-700">
-          <div className="text-center">
-            <h1 className="text-5xl font-bold bg-gradient-to-r from-orange-700 to-red-600 bg-clip-text text-transparent mb-4">
-              {dishRecipe?.name || homeRecipe}
-            </h1>
-            <p className="text-xl text-slate-600 mb-6 font-light leading-relaxed">
-              {dishRecipe?.description || "Delicious homemade recipe"}
-            </p>
-
-            {/* Quick Stats */}
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mt-8">
-              <div className="bg-white/50 backdrop-blur-sm rounded-2xl p-6 border border-white/30">
-                <div className="flex items-center justify-center gap-3 mb-2">
-                  <Clock className="w-6 h-6 text-orange-600" />
-                </div>
-                <p className="text-2xl font-bold text-gray-900">
-                  {dishRecipe?.time || " "}
-                </p>
-                <p className="text-sm text-gray-600">minutes</p>
+      <AnimatePresence>
+        {showMeta ? (
+          <motion.div
+            className="sticky-meta"
+            initial={{ y: -80, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            exit={{ y: -80, opacity: 0 }}
+          >
+            <div
+              className="container"
+              style={{
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+                padding: '12px 0',
+              }}
+            >
+              <div style={{ display: 'flex', gap: 20, flexWrap: 'wrap' }}>
+                <span className="number-text" style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}>
+                  <Timer size={18} weight="duotone" color="var(--green-700)" /> {recipe?.time ?? '--'} min
+                </span>
+                <span className="number-text" style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}>
+                  <Fire size={18} weight="duotone" color="var(--green-700)" /> {recipe?.calories ?? '--'} kcal
+                </span>
+                <span className="number-text" style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}>
+                  <Users size={18} weight="duotone" color="var(--green-700)" /> {recipe?.people ?? '--'} servings
+                </span>
+                <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}>
+                  <ChartBar size={18} weight="duotone" color="var(--green-700)" /> {recipe?.difficulty ?? '--'}
+                </span>
               </div>
-
-              <div className="bg-white/50 backdrop-blur-sm rounded-2xl p-6 border border-white/30">
-                <div className="flex items-center justify-center gap-3 mb-2">
-                  <Star className="w-6 h-6 text-orange-600 fill-current" />
-                </div>
-                <p className="text-lg font-bold text-gray-900">
-                  {dishRecipe?.difficulty || " "}
-                </p>
-                <p className="text-sm text-gray-600">difficulty</p>
-              </div>
-
-              <div className="bg-white/50 backdrop-blur-sm rounded-2xl p-6 border border-white/30">
-                <div className="flex items-center justify-center gap-3 mb-2">
-                  <Users className="w-6 h-6 text-orange-600" />
-                </div>
-                <p className="text-2xl font-bold text-gray-900">
-                  {dishRecipe?.servings || " "}
-                </p>
-                <p className="text-sm text-gray-600">servings</p>
-              </div>
-
-              <div className="bg-white/50 backdrop-blur-sm rounded-2xl p-6 border border-white/30">
-                <div className="flex items-center justify-center gap-3 mb-2">
-                  <Utensils className="w-6 h-6 text-orange-600" />
-                </div>
-                <p className="text-2xl font-bold text-gray-900">
-                  {dishRecipe?.calories || ""}
-                </p>
-                <p className="text-sm text-gray-600">calories</p>
-              </div>
+              <motion.button
+                whileTap={{ scale: 0.96 }}
+                whileHover={{ y: -1 }}
+                onClick={() => setSaved((s) => !s)}
+                className="btn btn-ghost"
+              >
+                {saved ? <Bookmark size={16} weight="fill" color="var(--green-700)" /> : <BookmarkSimple size={16} />}{' '}
+                Save Recipe
+              </motion.button>
             </div>
+          </motion.div>
+        ) : null}
+      </AnimatePresence>
 
-            {/* Tags */}
-            {dishRecipe?.tags && (
-              <div className="flex flex-wrap gap-3 justify-center mt-6">
-                {dishRecipe.tags.map((tag, index) => (
-                  <span
-                    key={index}
-                    className="px-4 py-2 bg-gradient-to-r from-orange-100/80 to-red-100/80 backdrop-blur-sm text-orange-700 rounded-full text-sm font-medium border border-orange-200/50"
-                  >
-                    {tag}
-                  </span>
-                ))}
+      <section className="section">
+        <div className="container recipe-layout" style={{ display: 'grid', gap: 24 }}>
+          <div style={{ display: 'grid', gap: 28 }}>
+            {detailError ? (
+              <div
+                className="card"
+                style={{
+                  padding: 14,
+                  borderRadius: 'var(--radius-md)',
+                  background: 'var(--error-bg)',
+                  borderColor: 'rgba(201,97,74,0.3)',
+                  color: 'var(--terracotta)',
+                }}
+              >
+                <p>{detailError}</p>
+                <div style={{ marginTop: 10 }}>
+                  <MotionButton onClick={fetchRecipeDetails}>Retry</MotionButton>
+                </div>
               </div>
+            ) : null}
+
+            {isContentLoading ? (
+              <div className="card" style={{ padding: 18 }}>
+                <div className="skeleton" style={{ width: 220, height: 24, borderRadius: 8 }} />
+                <div style={{ marginTop: 14, display: 'grid', gap: 10 }}>
+                  {Array.from({ length: 5 }).map((_, idx) => (
+                    <div key={idx} className="skeleton" style={{ height: 44, borderRadius: 10 }} />
+                  ))}
+                </div>
+              </div>
+            ) : (
+              <section>
+                <h2 style={{ display: 'flex', alignItems: 'center', gap: 8, fontStyle: 'italic', fontSize: 22 }}>
+                  <ShoppingCart size={22} weight="duotone" color="var(--green-700)" /> What You'll Need
+                </h2>
+                <div style={{ marginTop: 10, display: 'inline-flex', alignItems: 'center', gap: 10 }}>
+                  <span style={{ fontWeight: 500, fontSize: 14 }}>Servings:</span>
+                  <button
+                    type="button"
+                    onClick={() => setServings((s) => Math.max(1, s - 1))}
+                    style={{ width: 32, height: 32, borderRadius: '50%', border: '1px solid var(--border)', background: '#fff' }}
+                  >
+                    <Minus size={14} />
+                  </button>
+                  <span className="number-text" style={{ minWidth: 24, textAlign: 'center', color: 'var(--green-700)' }}>
+                    {servings}
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() => setServings((s) => s + 1)}
+                    style={{ width: 32, height: 32, borderRadius: '50%', border: '1px solid var(--border)', background: '#fff' }}
+                  >
+                    <Plus size={14} />
+                  </button>
+                </div>
+
+                <div style={{ marginTop: 16, display: 'grid', gap: 8 }}>
+                  {ingredients.map((item) => {
+                    const on = checked.includes(item.id);
+                    const adjusted = ((item.qty * servings) / Math.max(recipe?.people || 1, 1)).toFixed(
+                      item.qty % 1 ? 1 : 0
+                    );
+                    return (
+                      <motion.button
+                        type="button"
+                        key={item.id}
+                        whileHover={{ x: 2 }}
+                        onClick={() =>
+                          setChecked((prev) =>
+                            prev.includes(item.id)
+                              ? prev.filter((itemId) => itemId !== item.id)
+                              : [...prev, item.id]
+                          )
+                        }
+                        style={{ border: 0, background: 'transparent', padding: 0 }}
+                      >
+                        <div
+                          style={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: 10,
+                            borderRadius: 'var(--radius-md)',
+                            padding: '10px 12px',
+                            background: on ? 'var(--green-50)' : '#fff',
+                            border: '1px solid var(--border)',
+                          }}
+                        >
+                          <span
+                            style={{
+                              width: 20,
+                              height: 20,
+                              borderRadius: 6,
+                              border: '1px solid var(--border)',
+                              background: on ? 'var(--green-700)' : '#fff',
+                              display: 'grid',
+                              placeItems: 'center',
+                            }}
+                          >
+                            {on ? <Check size={12} weight="bold" color="#fff" /> : null}
+                          </span>
+                          <span className="number-text" style={{ color: 'var(--green-700)', fontSize: 14 }}>
+                            {adjusted}
+                            {item.unit ? ` ${item.unit}` : ''}
+                          </span>
+                          <span style={{ textDecoration: on ? 'line-through' : 'none', opacity: on ? 0.45 : 1 }}>
+                            {item.name}
+                          </span>
+                        </div>
+                      </motion.button>
+                    );
+                  })}
+                </div>
+              </section>
+            )}
+
+            {isContentLoading ? (
+              <div className="card" style={{ padding: 18 }}>
+                <div className="skeleton" style={{ width: 180, height: 24, borderRadius: 8 }} />
+                <div style={{ marginTop: 14, display: 'grid', gap: 10 }}>
+                  {Array.from({ length: 4 }).map((_, idx) => (
+                    <div key={idx} className="skeleton" style={{ height: 70, borderRadius: 10 }} />
+                  ))}
+                </div>
+              </div>
+            ) : (
+              <section>
+                <h2 style={{ display: 'flex', alignItems: 'center', gap: 8, fontStyle: 'italic', fontSize: 22 }}>
+                  <CookingPot size={22} weight="duotone" color="var(--green-700)" /> Let's Cook
+                </h2>
+                <div style={{ marginTop: 14, display: 'grid', gap: 12 }}>
+                  {steps.map((step, idx) => {
+                    const active = activeStep === idx + 1;
+                    return (
+                      <motion.button
+                        key={`${idx}-${step}`}
+                        type="button"
+                        onClick={() => setActiveStep(idx + 1)}
+                        whileTap={{ scale: 0.99 }}
+                        style={{ border: 0, background: 'transparent', textAlign: 'left', padding: 0 }}
+                      >
+                        <div
+                          style={{
+                            display: 'grid',
+                            gridTemplateColumns: '36px 1fr',
+                            gap: 10,
+                            alignItems: 'flex-start',
+                          }}
+                        >
+                          <motion.div
+                            animate={{ scale: active ? 1.1 : 1 }}
+                            style={{
+                              width: 36,
+                              height: 36,
+                              borderRadius: '50%',
+                              background: 'var(--green-700)',
+                              color: '#fff',
+                              display: 'grid',
+                              placeItems: 'center',
+                              fontWeight: 700,
+                            }}
+                          >
+                            {idx + 1}
+                          </motion.div>
+                          <div
+                            style={{
+                              border: '1px solid var(--border)',
+                              borderLeft: '3px solid var(--green-700)',
+                              borderRadius: 'var(--radius-md)',
+                              padding: 18,
+                              background: active ? 'var(--green-50)' : '#fff',
+                              boxShadow: active ? 'var(--shadow-md)' : 'var(--shadow-sm)',
+                            }}
+                          >
+                            {step}
+                          </div>
+                        </div>
+                      </motion.button>
+                    );
+                  })}
+                </div>
+              </section>
             )}
           </div>
+
+          <aside
+            style={{
+              display: 'grid',
+              gap: 12,
+              alignContent: 'start',
+              position: 'sticky',
+              top: 88,
+              height: 'max-content',
+            }}
+          >
+            {isContentLoading ? (
+              <div className="card" style={{ padding: 18 }}>
+                <div className="skeleton" style={{ width: '100%', height: 140, borderRadius: 12 }} />
+                <div className="skeleton" style={{ marginTop: 12, width: '100%', height: 80, borderRadius: 12 }} />
+              </div>
+            ) : (
+              <>
+                <div style={{ borderRadius: 'var(--radius-lg)', overflow: 'hidden' }}>
+                  <div
+                    style={{
+                      background: 'var(--green-700)',
+                      color: '#fff',
+                      padding: '16px 20px',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'space-between',
+                    }}
+                  >
+                    <span
+                      style={{
+                        fontWeight: 600,
+                        fontSize: 13,
+                        textTransform: 'uppercase',
+                        letterSpacing: '0.08em',
+                      }}
+                    >
+                      Nutrition Per Serving
+                    </span>
+                    <Leaf size={18} weight="duotone" />
+                  </div>
+                  <div className="card" style={{ borderTopLeftRadius: 0, borderTopRightRadius: 0, padding: 18 }}>
+                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
+                      {Object.entries(recipe?.nutrition || {}).map(([k, v]) => (
+                        <div key={k}>
+                          <div className="number-text" style={{ fontSize: 28, fontWeight: 700 }}>
+                            {v}
+                          </div>
+                          <div
+                            style={{ fontSize: 12, color: 'var(--text-muted)', textTransform: 'uppercase' }}
+                          >
+                            {k}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+
+                <div
+                  style={{
+                    background: 'var(--butter)',
+                    border: '1px solid rgba(212,168,67,0.3)',
+                    borderLeft: '4px solid var(--butter-dark)',
+                    borderRadius: 'var(--radius-lg)',
+                    padding: 18,
+                  }}
+                >
+                  <div
+                    style={{
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      gap: 6,
+                      color: 'var(--butter-dark)',
+                      textTransform: 'uppercase',
+                      fontWeight: 700,
+                      fontSize: 11,
+                    }}
+                  >
+                    <Lightbulb size={16} weight="duotone" color="var(--butter-dark)" /> Chef's Tip
+                  </div>
+                  <p style={{ marginTop: 8, color: 'var(--text-secondary)', fontStyle: 'italic', fontSize: 14 }}>
+                    {recipe?.chefTip}
+                  </p>
+                </div>
+              </>
+            )}
+
+            <div
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: 8,
+                borderRadius: 999,
+                background: 'var(--cream-pink)',
+                padding: '10px 18px',
+              }}
+            >
+              <FluentEmoji name="smiling_hearts" size={20} />{' '}
+              <span style={{ fontSize: 13, fontWeight: 500 }}>Perfect for a Cozy Evening</span>
+            </div>
+            <MotionButton icon={null}>Start Cook Mode</MotionButton>
+          </aside>
         </div>
-
-        {/* Error State */}
-        {error && (
-          <div className="bg-red-50/80 backdrop-blur-xl rounded-3xl p-8 text-center shadow-xl border border-red-200/50 mb-8">
-            <div className="text-red-500 text-6xl mb-4">⚠️</div>
-            <h3 className="text-xl font-bold text-red-800 mb-2">
-              Oops! Something went wrong
-            </h3>
-            <p className="text-red-700 mb-4">{error}</p>
-            <div className="flex flex-wrap gap-4 justify-center">
-              <button
-                onClick={regenerateRecipe}
-                disabled={isLoading}
-                className="px-6 py-3 bg-gradient-to-r from-red-500 to-red-600 text-white rounded-full hover:from-red-600 hover:to-red-700 transition-all duration-300 disabled:opacity-50"
-              >
-                {isLoading ? "Regenerating..." : "Try Again"}
-              </button>
-              <button
-                onClick={clearStoredData}
-                className="px-6 py-3 bg-gradient-to-r from-gray-500 to-gray-600 text-white rounded-full hover:from-gray-600 hover:to-gray-700 transition-all duration-300"
-              >
-                Clear & Reset
-              </button>
-              <button
-                onClick={() => window.history.back()}
-                className="px-6 py-3 bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-full hover:from-blue-600 hover:to-blue-700 transition-all duration-300"
-              >
-                Go Back
-              </button>
-            </div>
-          </div>
-        )}
-
-        {/* Loading State */}
-        {isLoading && !error && (
-          <div className="bg-white/60 backdrop-blur-xl rounded-3xl p-12 text-center shadow-xl border border-white/20">
-            <div className="animate-spin h-12 w-12 border-4 border-orange-500 border-t-transparent rounded-full mx-auto mb-4"></div>
-            <p className="text-lg text-gray-700">
-              Generating your perfect recipe...
-            </p>
-            <p className="text-sm text-gray-500 mt-2">Recipe: {homeRecipe}</p>
-          </div>
-        )}
-
-        {/* Recipe Content */}
-        {dishRecipe && !isLoading && !error && (
-          <div className="lg:bg-white/60 backdrop-blur-xl rounded-3xl lg:p-8 lg:shadow-xl mb-12 lg:border lg:border-white/20 transition-all duration-700">
-            <div className="grid lg:grid-cols-2 gap-8">
-              {/* Ingredients Section */}
-              <div className="space-y-6">
-                <div className="flex items-center gap-3 mb-6">
-                  <span className="text-3xl">🥘</span>
-                  <h3 className="text-2xl font-bold text-gray-800">
-                    Ingredients
-                  </h3>
-                </div>
-
-                <div className="space-y-3">
-                  {dishRecipe.ingredients?.map((ingredient, index) => (
-                    <div
-                      key={index}
-                      className="flex items-center justify-between p-4 bg-gradient-to-r from-orange-50/80 to-red-50/80 rounded-xl border border-orange-200/50 hover:shadow-md transition-all duration-300"
-                    >
-                      <span className="font-medium text-gray-700">
-                        {ingredient.name}
-                      </span>
-                      <span className="text-orange-600 font-semibold">
-                        {ingredient.amount} {ingredient.unit}
-                      </span>
-                    </div>
-                  )) || (
-                    <div className="p-4 bg-gray-100 rounded-xl">
-                      <p className="text-gray-600">Ingredients loading...</p>
-                    </div>
-                  )}
-                </div>
-
-                {/* Chef's Tip */}
-                {dishRecipe.chefTip && (
-                  <div className="bg-yellow-50/80 backdrop-blur-sm rounded-xl p-6 border border-yellow-200/50 mt-6">
-                    <div className="flex items-start gap-3">
-                      <ChefHat className="w-6 h-6 text-yellow-600 mt-1" />
-                      <div>
-                        <h4 className="font-bold text-yellow-800 mb-2">
-                          Chef's Tip
-                        </h4>
-                        <p className="text-yellow-700">{dishRecipe.chefTip}</p>
-                      </div>
-                    </div>
-                  </div>
-                )}
-
-                {/* Mood Booster */}
-                {dishRecipe.moodBooster && (
-                  <div className="bg-purple-50/80 backdrop-blur-sm rounded-xl p-6 border border-purple-200/50">
-                    <div className="flex items-start gap-3">
-                      <span className="text-2xl">💜</span>
-                      <div>
-                        <h4 className="font-bold text-purple-800 mb-2">
-                          Mood Booster
-                        </h4>
-                        <p className="text-purple-700">
-                          {dishRecipe.moodBooster}
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                )}
-
-                {/* Nutrition */}
-                {dishRecipe.nutritionPerServing && (
-                  <div className="bg-white/50 backdrop-blur-sm rounded-xl p-6 border border-gray-200/50">
-                    <h4 className="text-xl font-bold mb-4 text-gray-800">
-                      Nutrition (per serving)
-                    </h4>
-                    <div className="grid grid-cols-2 gap-4">
-                      <div className="text-center p-3 bg-blue-50/80 rounded-lg">
-                        <p className="text-2xl font-bold text-blue-600">
-                          {dishRecipe.nutritionPerServing.calories}
-                        </p>
-                        <p className="text-sm text-blue-800">Calories</p>
-                      </div>
-                      <div className="text-center p-3 bg-green-50/80 rounded-lg">
-                        <p className="text-2xl font-bold text-green-600">
-                          {dishRecipe.nutritionPerServing.protein}g
-                        </p>
-                        <p className="text-sm text-green-800">Protein</p>
-                      </div>
-                      <div className="text-center p-3 bg-yellow-50/80 rounded-lg">
-                        <p className="text-2xl font-bold text-yellow-600">
-                          {dishRecipe.nutritionPerServing.carbs}g
-                        </p>
-                        <p className="text-sm text-yellow-800">Carbs</p>
-                      </div>
-                      <div className="text-center p-3 bg-red-50/80 rounded-lg">
-                        <p className="text-2xl font-bold text-red-600">
-                          {dishRecipe.nutritionPerServing.fats}g
-                        </p>
-                        <p className="text-sm text-red-800">Fats</p>
-                      </div>
-                    </div>
-                  </div>
-                )}
-              </div>
-
-              {/* Instructions Section */}
-              <div className="space-y-6">
-                <div className="flex items-center gap-3 mb-6">
-                  <span className="text-3xl">👨‍🍳</span>
-                  <h3 className="text-2xl font-bold text-gray-800">
-                    Cooking Instructions
-                  </h3>
-                </div>
-
-                <div className="space-y-4">
-                  {dishRecipe.steps?.map((step, index) => (
-                    <div
-                      key={index}
-                      className="flex gap-4 p-6 bg-gradient-to-r from-blue-50/80 to-indigo-50/80 rounded-xl border border-blue-200/50 hover:shadow-md transition-all duration-300"
-                    >
-                      <div className="flex-shrink-0 w-10 h-10 bg-gradient-to-r from-blue-500 to-indigo-500 text-white rounded-full flex items-center justify-center text-lg font-bold shadow-lg">
-                        {step.stepNumber}
-                      </div>
-                      <div className="flex-1">
-                        <h4 className="text-lg font-bold text-gray-900 mb-2">
-                          {step.title}
-                        </h4>
-                        <p className="text-gray-700 leading-relaxed">
-                          {step.instruction}
-                        </p>
-                      </div>
-                    </div>
-                  )) || (
-                    <div className="p-6 bg-gray-100 rounded-xl">
-                      <p className="text-gray-600">Instructions loading...</p>
-                    </div>
-                  )}
-                </div>
-              </div>
-            </div>
-
-            {/* Action Buttons */}
-            <div className="mt-12 grid grid-cols-2 md:grid-cols-4 gap-4">
-              <button className="flex items-center justify-center gap-2 bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white px-6 py-3 rounded-xl font-semibold transition-all duration-300 transform hover:scale-105">
-                <Play className="w-5 h-5" />
-                Start Cooking
-              </button>
-
-              <button className="flex items-center justify-center gap-2 bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white px-6 py-3 rounded-xl font-semibold transition-all duration-300 transform hover:scale-105">
-                <Eye className="w-5 h-5" />
-                Watch Video
-              </button>
-
-              <button className="flex items-center justify-center gap-2 bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white px-6 py-3 rounded-xl font-semibold transition-all duration-300 transform hover:scale-105">
-                <MessageCircle className="w-5 h-5" />
-                Cook with AI
-              </button>
-
-              <button
-                onClick={regenerateRecipe}
-                disabled={isLoading}
-                className="flex items-center justify-center gap-2 bg-gradient-to-r from-purple-500 to-purple-600 hover:from-purple-600 hover:to-purple-700 text-white px-6 py-3 rounded-xl font-semibold transition-all duration-300 transform hover:scale-105 disabled:opacity-50"
-              >
-                <RefreshCw
-                  className={`w-5 h-5 ${isLoading ? "animate-spin" : ""}`}
-                />
-                Regenerate
-              </button>
-            </div>
-
-            {/* Download & Share */}
-            <div className="mt-6 grid grid-cols-1 md:grid-cols-2 gap-4">
-              <button className="flex items-center justify-center gap-2 bg-white/80 hover:bg-white/90 backdrop-blur-sm text-gray-800 px-6 py-3 rounded-xl font-semibold transition-all duration-300 border border-gray-200/50 hover:shadow-lg">
-                <Download className="w-5 h-5" />
-                Download Recipe
-              </button>
-
-              <button className="flex items-center justify-center gap-2 bg-white/80 hover:bg-white/90 backdrop-blur-sm text-gray-800 px-6 py-3 rounded-xl font-semibold transition-all duration-300 border border-gray-200/50 hover:shadow-lg">
-                <Share2 className="w-5 h-5" />
-                Share Recipe
-              </button>
-            </div>
-          </div>
-        )}
-      </div>
+      </section>
 
       <style>{`
-        @keyframes fade-in {
-          from {
-            opacity: 0;
-            transform: translateY(20px);
-          }
-          to {
-            opacity: 1;
-            transform: translateY(0);
-          }
-        }
-
-        .animate-fade-in {
-          animation: fade-in 0.6s ease-out forwards;
-        }
+        .recipe-layout { grid-template-columns: 1fr; }
+        @media (min-width: 1024px) { .recipe-layout { grid-template-columns: 60% 40%; align-items: start; } }
       `}</style>
     </div>
   );

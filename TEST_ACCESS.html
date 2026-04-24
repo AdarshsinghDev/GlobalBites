@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GlobalBites Test Access</title>
+    <style>
+        body {
+            font-family: 'Outfit', sans-serif;
+            background-color: #F7F4EF;
+            color: #1A1814;
+            margin: 0;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 12px 40px rgba(26,24,20,0.10), 0 2px 8px rgba(26,24,20,0.05);
+        }
+        h1 {
+            font-family: 'Lora', serif;
+            font-weight: 700;
+            color: #1A6B3C;
+            margin-bottom: 20px;
+        }
+        h2 {
+            font-family: 'Lora', serif;
+            font-weight: 600;
+            font-style: italic;
+            color: #1A1814;
+            margin-top: 30px;
+        }
+        .status {
+            padding: 12px 20px;
+            border-radius: 14px;
+            margin: 10px 0;
+            font-weight: 600;
+        }
+        .success {
+            background-color: #EDF7F1;
+            color: #1A6B3C;
+            border-left: 4px solid #2D9B5A;
+        }
+        .info {
+            background-color: #FDF6E3;
+            color: #9A6F00;
+            border-left: 4px solid #D4A843;
+        }
+        .button {
+            display: inline-block;
+            background-color: #1A6B3C;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 14px;
+            text-decoration: none;
+            font-weight: 600;
+            margin: 10px 5px;
+            transition: all 0.2s ease;
+        }
+        .button:hover {
+            background-color: #2D9B5A;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 16px rgba(26,24,20,0.08);
+        }
+        .button-ghost {
+            background-color: transparent;
+            border: 1.5px solid #C8C2B5;
+            color: #1A1814;
+        }
+        .button-ghost:hover {
+            border-color: #2D9B5A;
+            color: #1A6B3C;
+            background-color: #EDF7F1;
+        }
+        .tag {
+            display: inline-block;
+            background-color: #F5E6B2;
+            color: #D4A843;
+            padding: 4px 12px;
+            border-radius: 9999px;
+            font-size: 11px;
+            font-weight: 600;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+            margin: 5px;
+            border: 1px solid rgba(212,168,67,0.3);
+        }
+        .gradient-box {
+            height: 100px;
+            border-radius: 14px;
+            margin: 20px 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+        }
+        .gradient-indian {
+            background: linear-gradient(135deg, #FFF0D0, #F5D98A);
+        }
+        .gradient-italian {
+            background: linear-gradient(135deg, #FDE8D0, #F5C6A0);
+        }
+        .gradient-default {
+            background: linear-gradient(135deg, #EDF7F1, #D4EDDA);
+        }
+    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <h1>GlobalBites Ultra-Premium Redesign</h1>
+        
+        <div class="status success">
+            ✅ Development server running on: http://localhost:5174
+        </div>
+        
+        <div class="status info">
+            ℹ️ Vite cache cleared and dependencies reinstalled
+        </div>
+        
+        <h2>Quick Access Links</h2>
+        <div>
+            <a href="http://localhost:5174" class="button" target="_blank">Open Landing Page</a>
+            <a href="http://localhost:5174/signup" class="button button-ghost" target="_blank">Signup Page</a>
+            <a href="http://localhost:5174/home" class="button button-ghost" target="_blank">Recipe Results</a>
+            <a href="http://localhost:5174/chef" class="button button-ghost" target="_blank">AI Chef</a>
+            <a href="http://localhost:5174/budget" class="button button-ghost" target="_blank">Budget Module</a>
+        </div>
+        
+        <h2>Design System Preview</h2>
+        
+        <div class="tag">Typography System</div>
+        <div class="tag">Color Palette</div>
+        <div class="tag">Gradient Headers</div>
+        <div class="tag">Animations</div>
+        
+        <h3>Card Gradient Headers</h3>
+        <div class="gradient-box gradient-indian">Indian Cuisine</div>
+        <div class="gradient-box gradient-italian">Italian Cuisine</div>
+        <div class="gradient-box gradient-default">Default Gradient</div>
+        
+        <h2>Key Features Implemented</h2>
+        <ul>
+            <li>Complete "Organic Modern Editorial" design system</li>
+            <li>8 fully redesigned pages with premium aesthetics</li>
+            <li>Framer Motion animations on all interactive elements</li>
+            <li>Phosphor Icons + Fluent Emoji PNG system</li>
+            <li>Responsive design across all screen sizes</li>
+            <li>Grain overlay texture on hero sections</li>
+            <li>Cuisine-based gradient card headers</li>
+        </ul>
+        
+        <h2>Troubleshooting</h2>
+        <p>If you encounter "Outdated Optimize Dep" errors:</p>
+        <ol>
+            <li>Stop the development server</li>
+            <li>Run: <code>rm -rf node_modules/.vite</code></li>
+            <li>Run: <code>rm -rf node_modules && npm install</code></li>
+            <li>Restart: <code>npm run dev</code></li>
+        </ol>
+        
+        <p>The application should now be accessible at <a href="http://localhost:5174" target="_blank">http://localhost:5174</a></p>
+    </div>
+</body>
+</html>
