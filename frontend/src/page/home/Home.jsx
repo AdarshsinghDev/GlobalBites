@@ -125,7 +125,7 @@ const Home = () => {
 
       const { data } = await api.post('/api/recipe-ai/get-recipes', {
         ingredients: cleanIngredients,
-      });
+      }, { timeout: 90000 });
 
       const mapped = Array.isArray(data?.recipes) ? data.recipes.map(mapAiRecipeToCard) : [];
       const nextRecipes = mapped.length > 0 ? mapped : [];
@@ -140,7 +140,7 @@ const Home = () => {
       if (requestId !== latestRequestRef.current) return;
       setError(
         err?.response?.data?.error ||
-          'Recipe generate nahi ho paaya. Thodi der baad dobara try karo.'
+          'Could not generate recipes. Please try again shortly.'
       );
       setResultRecipes([]);
       setSearchedIngredients(cleanIngredients);
@@ -189,7 +189,7 @@ const Home = () => {
     const normalizedQuery = normalizeIngredients(cleanQuery);
     const normalizedUrlQuery = normalizeIngredients(ingredientsFromUrl);
 
-    // Same URL query pe setSearchParams no-op hota hai, isliye direct refetch karo.
+    // setSearchParams is a no-op for identical query; trigger direct refetch.
     if (normalizedQuery && normalizedQuery === normalizedUrlQuery) {
       fetchRecipes(cleanQuery);
       return;
@@ -232,7 +232,7 @@ const Home = () => {
                   runSearch();
                 }
               }}
-              placeholder="Ingredients daalo... e.g. eggs, tomato, onion"
+              placeholder="Enter ingredients... e.g. eggs, tomato, onion"
               style={{ border: 0, outline: 'none', background: 'transparent', flex: 1, fontSize: 14 }}
             />
             <MotionButton onClick={runSearch} icon={Sparkle} className="number-text">
@@ -266,7 +266,7 @@ const Home = () => {
           <AnimatePresence>
             {loading ? (
               <motion.div initial={{ opacity: 0, y: -8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} style={{ marginTop: 14, border: '1px solid var(--border)', borderRadius: 'var(--radius-md)', background: 'var(--green-50)', padding: '14px 16px', display: 'flex', alignItems: 'center', gap: 8, color: 'var(--green-700)', fontWeight: 500 }}>
-                <Sparkle size={18} weight="duotone" className="spin-slow" /> AI aapke liye recipes bana raha hai...
+                <Sparkle size={18} weight="duotone" className="spin-slow" /> AI is generating recipes for you...
               </motion.div>
             ) : null}
           </AnimatePresence>

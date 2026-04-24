@@ -81,7 +81,7 @@ const KnowledgeHub = () => {
     } catch (apiError) {
       const message =
         apiError?.response?.data?.error ||
-        'AI response generate nahi hua. Please retry karo.';
+        'Could not generate AI response. Please retry.';
       setTabError(mode, message);
     } finally {
       setTabLoading(mode, false);
@@ -102,7 +102,7 @@ const KnowledgeHub = () => {
   const handleScienceAsk = () => {
     const query = scienceQuery.trim();
     if (!query) {
-      setTabError('science', 'Pehle ingredient/combo query likho.');
+      setTabError('science', 'Please enter an ingredient or combo query first.');
       return;
     }
     askKnowledgeAI('science', { query }, setScienceResult);
@@ -111,7 +111,7 @@ const KnowledgeHub = () => {
   const handleComboAsk = () => {
     const combo = comboQuery.trim();
     if (!combo) {
-      setTabError('combo', 'Pehle combo likho jise verify karna hai.');
+      setTabError('combo', 'Please enter a combo to verify first.');
       return;
     }
     askKnowledgeAI('combo', { combo }, setComboResult);
@@ -153,7 +153,7 @@ const KnowledgeHub = () => {
         <div className="container">
           {tab === 'mood' ? (
             <>
-              <h2 className="text-h2">Mood ke according AI meal guidance</h2>
+              <h2 className="text-h2">AI meal guidance based on your mood</h2>
               <div style={{ marginTop: 20 }} className="mood-grid knowledge-mood-grid">
                 {moods.map((m, i) => (
                   <motion.button key={m.name} whileHover={{ y: -3, scale: 1.02 }} whileTap={{ scale: 0.98 }} initial={{ opacity: 0, y: 40 }} whileInView={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.08 }} onClick={() => setMood(m.name)} className="card" style={{ padding: '28px 20px', textAlign: 'center', borderRadius: 'var(--radius-xl)', borderColor: mood === m.name ? 'var(--green-500)' : 'var(--border)', background: mood === m.name ? 'var(--green-50)' : '#fff' }}>
@@ -162,10 +162,10 @@ const KnowledgeHub = () => {
                   </motion.button>
                 ))}
               </div>
-              <textarea className="input" value={moodNote} onChange={(e) => setMoodNote(e.target.value)} style={{ marginTop: 18, height: 90, padding: 14 }} placeholder="Apna exact mood details likho..." />
+              <textarea className="input" value={moodNote} onChange={(e) => setMoodNote(e.target.value)} style={{ marginTop: 18, height: 90, padding: 14 }} placeholder="Describe your mood in detail..." />
               <div style={{ marginTop: 10 }}>
                 <MotionButton onClick={handleMoodAsk} icon={loading.mood ? CircleNotch : Sparkle}>
-                  {loading.mood ? 'AI soch raha hai...' : 'Ask AI for Mood Plan'}
+                  {loading.mood ? 'AI is analyzing...' : 'Ask AI for Mood Plan'}
                 </MotionButton>
               </div>
               {error.mood ? <p style={{ marginTop: 10, color: 'var(--terracotta)' }}>{error.mood}</p> : null}
@@ -192,7 +192,7 @@ const KnowledgeHub = () => {
               </div>
               <div style={{ marginTop: 10 }}>
                 <MotionButton onClick={handleScienceAsk} icon={loading.science ? CircleNotch : Sparkle}>
-                  {loading.science ? 'AI check kar raha hai...' : 'Ask AI Science'}
+                  {loading.science ? 'AI is checking...' : 'Ask AI Science'}
                 </MotionButton>
               </div>
               {error.science ? <p style={{ marginTop: 10, color: 'var(--terracotta)' }}>{error.science}</p> : null}
@@ -219,10 +219,10 @@ const KnowledgeHub = () => {
             <div style={{ display: 'grid', gap: 12 }}>
               <div style={{ display: 'flex', gap: 10, alignItems: 'center', border: '1px solid var(--border)', borderRadius: 999, padding: '10px 14px', background: '#fff' }}>
                 <MagnifyingGlass size={18} color="var(--green-700)" />
-                <input value={comboQuery} onChange={(e) => setComboQuery(e.target.value)} placeholder="Combo likho, eg: fish + milk" style={{ border: 0, outline: 'none', flex: 1 }} />
+                <input value={comboQuery} onChange={(e) => setComboQuery(e.target.value)} placeholder="Enter a combo, e.g. fish + milk" style={{ border: 0, outline: 'none', flex: 1 }} />
               </div>
               <MotionButton onClick={handleComboAsk} icon={loading.combo ? CircleNotch : Sparkle}>
-                {loading.combo ? 'AI evaluate kar raha hai...' : "Ask AI Don't Combo"}
+                {loading.combo ? 'AI is evaluating...' : "Ask AI Don't Combo"}
               </MotionButton>
               {error.combo ? <p style={{ color: 'var(--terracotta)' }}>{error.combo}</p> : null}
               {comboResult ? (
@@ -248,11 +248,11 @@ const KnowledgeHub = () => {
               </div>
               <div style={{ marginTop: 10, display: 'grid', gap: 10 }}>
                 <input className="input" value={age} onChange={(e) => setAge(e.target.value)} placeholder="Age (optional)" />
-                <textarea className="input" value={healthGoal} onChange={(e) => setHealthGoal(e.target.value)} placeholder="Health goal likho: fat loss, digestion, muscle gain, sugar control..." style={{ minHeight: 90 }} />
+                <textarea className="input" value={healthGoal} onChange={(e) => setHealthGoal(e.target.value)} placeholder="Enter health goal: fat loss, digestion, muscle gain, sugar control..." style={{ minHeight: 90 }} />
               </div>
               <div style={{ marginTop: 10 }}>
                 <MotionButton onClick={handleHealthAsk} icon={loading.health ? CircleNotch : Sparkle}>
-                  {loading.health ? 'AI health plan bana raha hai...' : 'Ask AI Health Plan'}
+                  {loading.health ? 'AI is creating your health plan...' : 'Ask AI Health Plan'}
                 </MotionButton>
               </div>
               {error.health ? <p style={{ marginTop: 10, color: 'var(--terracotta)' }}>{error.health}</p> : null}
@@ -275,7 +275,7 @@ const KnowledgeHub = () => {
                   {healthResult.caution ? <p style={{ marginTop: 10, color: 'var(--warning-text)' }}>{healthResult.caution}</p> : null}
                 </motion.div>
               ) : (
-                <p style={{ marginTop: 12, color: 'var(--text-secondary)' }}>Details dalke AI health guidance generate karo.</p>
+                <p style={{ marginTop: 12, color: 'var(--text-secondary)' }}>Enter details to generate AI health guidance.</p>
               )}
             </div>
           ) : null}

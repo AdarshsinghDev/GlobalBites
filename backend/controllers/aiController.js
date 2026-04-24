@@ -4,13 +4,27 @@ const GEMINI_MODELS = (process.env.GEMINI_MODELS || "gemini-2.5-flash,gemini-2.0
   .split(",")
   .map((item) => item.trim())
   .filter(Boolean);
+const GEMINI_MODEL_FALLBACKS = ["gemini-2.5-flash", "gemini-2.0-flash"];
+const GEMINI_API_KEYS = (() => {
+  const single = String(process.env.GEMINI_API_KEY || "").trim();
+  const many = String(process.env.GEMINI_API_KEYS || "")
+    .split(",")
+    .map((item) => item.trim())
+    .filter(Boolean);
+  const merged = [single, ...many].filter(Boolean);
+  return [...new Set(merged)];
+})();
 const GEMINI_MAX_RETRIES = Number(process.env.GEMINI_MAX_RETRIES || 3);
-const HOME_SEARCH_MAX_RETRIES = Number(process.env.HOME_SEARCH_MAX_RETRIES || 1);
-const SEARCH_AI_TIMEOUT_MS = Number(process.env.SEARCH_AI_TIMEOUT_MS || 9000);
+const GEMINI_KEY_BLOCK_FALLBACK_MS = Number(process.env.GEMINI_KEY_BLOCK_FALLBACK_MS || 35_000);
+const HOME_SEARCH_MAX_RETRIES = Number(process.env.HOME_SEARCH_MAX_RETRIES || 2);
+const SEARCH_AI_TIMEOUT_MS = Number(process.env.SEARCH_AI_TIMEOUT_MS || 15000);
 const SEARCH_CACHE_TTL_MS = Number(process.env.SEARCH_CACHE_TTL_MS || 20 * 60 * 1000);
-const SEARCH_MAX_RECIPES = Number(process.env.SEARCH_MAX_RECIPES || 8);
+const SEARCH_MAX_RECIPES = Math.max(12, Number(process.env.SEARCH_MAX_RECIPES || 12));
+const SEARCH_CACHE_VERSION = 2;
 const RETRIABLE_HTTP_STATUS = new Set([408, 429, 500, 502, 503, 504]);
 const homeSearchCache = new Map();
+const geminiKeyBlockedUntil = new Map();
+let geminiKeyCursor = 0;
 
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
@@ -214,61 +228,137 @@ const isModelNotFoundError = (error) => {
   return statusCode === 404 && (message.includes("is not found") || message.includes("not supported"));
 };
 
-const generateGeminiText = async (prompt, options = {}) => {
-  const geminiApiKey = String(process.env.GEMINI_API_KEY || "").trim();
-  if (!geminiApiKey) {
-    throw new Error("GEMINI_API_KEY is missing");
+const isQuotaExceededGeminiError = (error) => {
+  const statusCode = getGeminiStatusCode(error);
+  const message = String(error?.message || "").toLowerCase();
+  return (
+    statusCode === 429 &&
+    (message.includes("quota exceeded") ||
+      message.includes("too many requests") ||
+      message.includes("rate limit"))
+  );
+};
+
+const maskApiKey = (key = "") => {
+  const value = String(key || "").trim();
+  if (value.length <= 8) return "****";
+  return `${value.slice(0, 4)}...${value.slice(-4)}`;
+};
+
+const getRetryDelayMsFromError = (error) => {
+  const message = String(error?.message || "");
+  const secMatch = message.match(/retry in\s+([\d.]+)s/i);
+  if (secMatch) return Math.max(1000, Math.ceil(Number(secMatch[1]) * 1000));
+  const retryInfoMatch = message.match(/"retryDelay":"(\d+)s"/i);
+  if (retryInfoMatch) return Math.max(1000, Number(retryInfoMatch[1]) * 1000);
+  return GEMINI_KEY_BLOCK_FALLBACK_MS;
+};
+
+const isGeminiKeyBlocked = (apiKey) => {
+  const blockedUntil = Number(geminiKeyBlockedUntil.get(apiKey) || 0);
+  if (!blockedUntil) return false;
+  if (Date.now() >= blockedUntil) {
+    geminiKeyBlockedUntil.delete(apiKey);
+    return false;
   }
-  const genAI = new GoogleGenerativeAI(geminiApiKey);
+  return true;
+};
+
+const blockGeminiKeyTemporarily = (apiKey, error) => {
+  const delayMs = getRetryDelayMsFromError(error);
+  geminiKeyBlockedUntil.set(apiKey, Date.now() + delayMs);
+  return delayMs;
+};
+
+const getOrderedGeminiApiKeys = () => {
+  if (GEMINI_API_KEYS.length === 0) return [];
+  const offset = ((geminiKeyCursor % GEMINI_API_KEYS.length) + GEMINI_API_KEYS.length) % GEMINI_API_KEYS.length;
+  const rotated = [
+    ...GEMINI_API_KEYS.slice(offset),
+    ...GEMINI_API_KEYS.slice(0, offset),
+  ];
+  const active = rotated.filter((key) => !isGeminiKeyBlocked(key));
+  return active.length > 0 ? active : rotated;
+};
+
+const generateGeminiText = async (prompt, options = {}) => {
+  if (GEMINI_API_KEYS.length === 0) {
+    throw new Error("GEMINI_API_KEY or GEMINI_API_KEYS is missing");
+  }
   const maxRetries = Math.max(1, Number(options.maxRetries || GEMINI_MAX_RETRIES));
   const requestTimeoutMs = Math.max(0, Number(options.timeoutMs || 0));
   const selectedModels =
     Array.isArray(options.models) && options.models.length > 0
       ? options.models
       : GEMINI_MODELS;
+  const modelsToTry = [...new Set([...selectedModels, ...GEMINI_MODEL_FALLBACKS])];
 
   let lastError;
-
   for (let attempt = 1; attempt <= maxRetries; attempt += 1) {
     let shouldRetryAttempt = false;
+    const orderedApiKeys = getOrderedGeminiApiKeys();
 
-    for (const modelName of selectedModels) {
-      try {
-        const model = genAI.getGenerativeModel({ model: modelName });
-        const requestPromise = model.generateContent(prompt);
-        const result =
-          requestTimeoutMs > 0
-            ? await Promise.race([
-                requestPromise,
-                sleep(requestTimeoutMs).then(() => {
-                  const timeoutError = new Error(`Gemini request timed out after ${requestTimeoutMs}ms`);
-                  timeoutError.code = "ETIMEDOUT";
-                  throw timeoutError;
-                }),
-              ])
-            : await requestPromise;
-        const response = await result.response;
-        return response.text();
-      } catch (error) {
-        lastError = error;
-        const statusCode = getGeminiStatusCode(error);
-        const retriable = isRetriableGeminiError(error);
-        console.error(
-          `Gemini request failed (attempt ${attempt}/${maxRetries}, model ${modelName})` +
-            `${statusCode ? ` [${statusCode}]` : ""}: ${error?.message || error}`
-        );
-        if (isInvalidGeminiKeyError(error)) {
+    for (const apiKey of orderedApiKeys) {
+      const genAI = new GoogleGenerativeAI(apiKey);
+      let moveToNextApiKey = false;
+
+      for (const modelName of modelsToTry) {
+        try {
+          const model = genAI.getGenerativeModel({ model: modelName });
+          const requestPromise = model.generateContent(prompt);
+          const result =
+            requestTimeoutMs > 0
+              ? await Promise.race([
+                  requestPromise,
+                  sleep(requestTimeoutMs).then(() => {
+                    const timeoutError = new Error(`Gemini request timed out after ${requestTimeoutMs}ms`);
+                    timeoutError.code = "ETIMEDOUT";
+                    throw timeoutError;
+                  }),
+                ])
+              : await requestPromise;
+          const response = await result.response;
+          return response.text();
+        } catch (error) {
+          lastError = error;
+          const statusCode = getGeminiStatusCode(error);
+          const retriable = isRetriableGeminiError(error);
+          console.error(
+            `Gemini request failed (attempt ${attempt}/${maxRetries}, model ${modelName}, key ${maskApiKey(apiKey)})` +
+              `${statusCode ? ` [${statusCode}]` : ""}: ${error?.message || error}`
+          );
+
+          if (isQuotaExceededGeminiError(error)) {
+            const blockedMs = blockGeminiKeyTemporarily(apiKey, error);
+            console.warn(
+              `Gemini key ${maskApiKey(apiKey)} temporarily blocked for ${Math.ceil(blockedMs / 1000)}s due to quota/rate limits.`
+            );
+            moveToNextApiKey = true;
+            break;
+          }
+          if (isInvalidGeminiKeyError(error)) {
+            moveToNextApiKey = true;
+            break;
+          }
+          if (isModelNotFoundError(error)) {
+            continue;
+          }
+          if (retriable) {
+            shouldRetryAttempt = true;
+            continue;
+          }
           throw error;
         }
-        if (isModelNotFoundError(error)) {
-          continue;
-        }
-        if (retriable) {
-          shouldRetryAttempt = true;
-          continue;
-        }
-        throw error;
       }
+
+      if (!moveToNextApiKey) {
+        const successIndex = GEMINI_API_KEYS.indexOf(apiKey);
+        if (successIndex >= 0) {
+          geminiKeyCursor = (successIndex + 1) % GEMINI_API_KEYS.length;
+        }
+      }
+
+      if (moveToNextApiKey) continue;
     }
 
     if (shouldRetryAttempt && attempt < maxRetries) {
@@ -329,13 +419,20 @@ const readSearchCache = (cacheKey) => {
     homeSearchCache.delete(cacheKey);
     return null;
   }
+  if (cached?.payload?.cacheVersion !== SEARCH_CACHE_VERSION) {
+    homeSearchCache.delete(cacheKey);
+    return null;
+  }
   return cached.payload;
 };
 
 const writeSearchCache = (cacheKey, payload) => {
   if (!cacheKey) return;
   homeSearchCache.set(cacheKey, {
-    payload,
+    payload: {
+      ...payload,
+      cacheVersion: SEARCH_CACHE_VERSION,
+    },
     savedAt: Date.now(),
   });
 };
@@ -345,47 +442,84 @@ const buildFastFallbackSearchRecipes = (ingredients = "") => {
   const focus = list[0] || "mix veg";
   const second = list[1] || "onion";
   const third = list[2] || "tomato";
+  const fourth = list[3] || "coriander";
 
   const defaults = [
     {
       name: `${focus} Masala Stir`,
-      description: `${focus} ko quick masala me toss karke tasty dish banao.`,
+      description: `Quick masala toss with bold home-style flavor.`,
       mainIngredients: `${focus}, ${second}, basic masala`,
       cookingTime: "20-25 mins",
     },
     {
       name: `${focus} Tawa Fry`,
-      description: `Crispy aur spicy ${focus} tawa style recipe.`,
+      description: `Crispy tawa-style version with light spice kick.`,
       mainIngredients: `${focus}, ${third}, oil, spices`,
       cookingTime: "18-22 mins",
     },
     {
       name: `${focus} Curry`,
-      description: `Ghar jaisi gravy wali easy ${focus} curry.`,
+      description: `Comforting gravy-style curry for everyday meals.`,
       mainIngredients: `${focus}, onion, tomato, ginger-garlic`,
       cookingTime: "28-35 mins",
     },
     {
       name: `${focus} Bhurji Style`,
-      description: `Fast protein-rich bhurji style combo with daily spices.`,
-      mainIngredients: `${focus}, onion, chilli, coriander`,
+      description: `Fast scrambled-style prep with punchy seasoning.`,
+      mainIngredients: `${focus}, onion, chilli, ${fourth}`,
       cookingTime: "15-20 mins",
     },
     {
       name: `${focus} Rice Bowl`,
-      description: `One-bowl filling meal with mild masala taste.`,
-      mainIngredients: `${focus}, rice, onion, peas`,
+      description: `Balanced one-bowl meal with soft spice profile.`,
+      mainIngredients: `${focus}, rice, ${second}, peas`,
       cookingTime: "25-30 mins",
     },
     {
       name: `${focus} Wrap Filling`,
-      description: `Rolls ya wraps ke liye perfect juicy filling.`,
-      mainIngredients: `${focus}, capsicum, onion, spices`,
+      description: `Juicy stuffing that works great in wraps or rolls.`,
+      mainIngredients: `${focus}, capsicum, ${second}, spices`,
       cookingTime: "16-20 mins",
+    },
+    {
+      name: `${focus} Jeera Roast`,
+      description: `Light cumin roast with crisp edges and aroma.`,
+      mainIngredients: `${focus}, cumin, ${second}, oil`,
+      cookingTime: "18-24 mins",
+    },
+    {
+      name: `${focus} Tomato Saute`,
+      description: `Tangy saute style dish with fresh tomato notes.`,
+      mainIngredients: `${focus}, ${third}, garlic, pepper`,
+      cookingTime: "17-22 mins",
+    },
+    {
+      name: `${focus} Dry Sabzi`,
+      description: `No-gravy everyday sabzi, easy and lunchbox-friendly.`,
+      mainIngredients: `${focus}, ${second}, turmeric, coriander`,
+      cookingTime: "20-26 mins",
+    },
+    {
+      name: `${focus} Spiced Mash`,
+      description: `Soft mashed texture with warm Indian tempering.`,
+      mainIngredients: `${focus}, butter, chilli, ${fourth}`,
+      cookingTime: "16-21 mins",
+    },
+    {
+      name: `${focus} Soup Bowl`,
+      description: `Mild and soothing broth-style preparation.`,
+      mainIngredients: `${focus}, ${second}, pepper, herbs`,
+      cookingTime: "24-30 mins",
+    },
+    {
+      name: `${focus} Skillet Mix`,
+      description: `Pan-cooked quick mix ideal for dinner sides.`,
+      mainIngredients: `${focus}, ${second}, ${third}, seasoning`,
+      cookingTime: "19-25 mins",
     },
   ];
 
-  return defaults.map((item, index) => ({
+  return defaults.slice(0, SEARCH_MAX_RECIPES).map((item, index) => ({
     id: index + 1,
     ...item,
   }));
@@ -452,6 +586,42 @@ const sanitizeHomeRecipes = (recipes = [], ingredients = "") => {
     .map(({ relevance, ...recipe }, index) => ({ ...recipe, id: index + 1 }));
 };
 
+const ensureHomeRecipesCount = (recipes = [], ingredients = "") => {
+  const selected = Array.isArray(recipes) ? recipes : [];
+  const normalized = selected
+    .filter((item) => item?.name && item?.mainIngredients)
+    .map((item) => ({
+      name: String(item.name).trim(),
+      description: String(item.description || "Simple ghar-style quick recipe idea.").trim(),
+      mainIngredients: String(item.mainIngredients).trim(),
+      cookingTime: String(item.cookingTime || "25-30 mins").trim(),
+    }))
+    .filter((item) => item.name && item.mainIngredients);
+
+  if (normalized.length >= SEARCH_MAX_RECIPES) {
+    return normalized.slice(0, SEARCH_MAX_RECIPES).map((item, index) => ({ ...item, id: index + 1 }));
+  }
+
+  const fallback = buildFastFallbackSearchRecipes(ingredients);
+  const seen = new Set(normalized.map((item) => item.name.toLowerCase()));
+  const merged = [...normalized];
+
+  for (const item of fallback) {
+    const key = String(item?.name || "").toLowerCase();
+    if (!key || seen.has(key)) continue;
+    seen.add(key);
+    merged.push({
+      name: item.name,
+      description: item.description,
+      mainIngredients: item.mainIngredients,
+      cookingTime: item.cookingTime,
+    });
+    if (merged.length >= SEARCH_MAX_RECIPES) break;
+  }
+
+  return merged.slice(0, SEARCH_MAX_RECIPES).map((item, index) => ({ ...item, id: index + 1 }));
+};
+
 //Home Controller
 export const aiController = async (req, res) => {
   let { ingredients } = req.body;
@@ -477,7 +647,7 @@ export const aiController = async (req, res) => {
 
     const cacheKey = getSearchCacheKey(cleanIngredients);
     const cachedPayload = readSearchCache(cacheKey);
-    if (cachedPayload) {
+    if (cachedPayload && Array.isArray(cachedPayload.recipes) && cachedPayload.recipes.length >= SEARCH_MAX_RECIPES) {
       return res.status(200).json({
         ...cachedPayload,
         cached: true,
@@ -503,11 +673,14 @@ No numbering, no bullet points, no extra text.`;
     });
 
     const parsedRecipes = parseHomeRecipesFromText(text);
-    const recipes = sanitizeHomeRecipes(parsedRecipes, cleanIngredients);
+    const recipes = ensureHomeRecipesCount(
+      sanitizeHomeRecipes(parsedRecipes, cleanIngredients),
+      cleanIngredients
+    );
 
     if (recipes.length === 0) {
       const payload = {
-        recipes: buildFastFallbackSearchRecipes(cleanIngredients),
+        recipes: ensureHomeRecipesCount([], cleanIngredients),
         searchedIngredients: cleanIngredients,
         fallback: true,
       };
@@ -540,7 +713,7 @@ No numbering, no bullet points, no extra text.`;
         .filter(Boolean)
         .join(", ");
       const payload = {
-        recipes: buildFastFallbackSearchRecipes(fallbackIngredients),
+        recipes: ensureHomeRecipesCount([], fallbackIngredients),
         searchedIngredients: fallbackIngredients || String(ingredients || ""),
         fallback: true,
       };

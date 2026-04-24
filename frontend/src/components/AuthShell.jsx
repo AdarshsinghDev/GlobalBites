@@ -193,7 +193,7 @@ const AuthPage = ({ mode = 'signup' }) => {
   const resendOtp = async () => {
     if (countdown > 0) return;
     if (!pendingEmail || !form.password || !form.fullName) {
-      setServerError('Resend ke liye signup details dubara fill karo.');
+      setServerError('Please refill signup details to resend OTP.');
       return;
     }
 

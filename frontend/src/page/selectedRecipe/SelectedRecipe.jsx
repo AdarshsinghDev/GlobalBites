@@ -88,7 +88,7 @@ const SelectedRecipe = () => {
 
   const fetchRecipeDetails = useCallback(async () => {
     if (!recipeName) {
-      setDetailError('Recipe source missing hai. Please search results se dobara open karo.');
+      setDetailError('Recipe source is missing. Please reopen from search results.');
       setDetailedRecipe(null);
       setDetailLoading(false);
       return;
@@ -102,12 +102,12 @@ const SelectedRecipe = () => {
       });
       setDetailedRecipe(data?.recipe || null);
       if (!data?.recipe) {
-        setDetailError('Backend se recipe detail nahi aayi. Please retry karo.');
+        setDetailError('Recipe details were not returned from the backend. Please retry.');
       }
     } catch (error) {
       setDetailError(
         error?.response?.data?.error ||
-          'Detailed recipe load nahi ho paayi. Please retry karo.'
+          'Could not load detailed recipe. Please retry.'
       );
       setDetailedRecipe(null);
     } finally {
