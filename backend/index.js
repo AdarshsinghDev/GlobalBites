@@ -24,13 +24,21 @@ app.use(
 );
 app.use(
   cors({
-    origin(origin, callback) {
-      if (!origin || allowedOrigins.includes(origin)) {
-        return callback(null, true);
+    origin: function (origin, callback) {
+      // Allow requests with no origin (like mobile apps or curl)
+      if (!origin) return callback(null, true);
+      
+      if (allowedOrigins.indexOf(origin) !== -1) {
+        callback(null, true);
+      } else {
+        // Log this to your Render logs so you can see what origin is actually being blocked
+        console.error(`CORS blocked for origin: ${origin}`);
+        callback(new Error("Not allowed by CORS"));
       }
-      return callback(new Error("CORS origin not allowed"));
     },
     credentials: true,
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"]
   })
 );
 app.use(cookieParser());
