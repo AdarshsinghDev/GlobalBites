@@ -221,7 +221,7 @@ const Home = () => {
             {resultRecipes.length} Recipes Found
           </h1>
 
-          <div style={{ marginTop: 16, borderRadius: 999, height: 52, background: '#fff', border: '1.5px solid var(--border)', boxShadow: 'var(--shadow-sm)', display: 'flex', alignItems: 'center', padding: '0 8px 0 14px', gap: 8, maxWidth: 700 }}>
+          <div className="results-search" style={{ marginTop: 16, borderRadius: 999, height: 52, background: '#fff', border: '1.5px solid var(--border)', boxShadow: 'var(--shadow-sm)', display: 'flex', alignItems: 'center', padding: '0 8px 0 14px', gap: 8, maxWidth: 700 }}>
             <MagnifyingGlass size={18} color="var(--green-700)" />
             <input
               value={query}

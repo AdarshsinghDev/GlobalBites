@@ -252,8 +252,8 @@ const AuthPage = ({ mode = 'signup' }) => {
         </div>
       </aside>
 
-      <main style={{ background: 'var(--bg-surface)', padding: 48, display: 'flex', justifyContent: 'center' }}>
-        <div style={{ width: '100%', maxWidth: 440 }}>
+      <main className="auth-main" style={{ background: 'var(--bg-surface)', padding: 48, display: 'flex', justifyContent: 'center' }}>
+        <div className="auth-inner" style={{ width: '100%', maxWidth: 440 }}>
           <Link to="/" style={{ display: 'inline-flex', alignItems: 'center', gap: 6, color: 'var(--text-secondary)', fontSize: 13, fontWeight: 500 }}><ArrowLeft size={16} /> Back to home</Link>
 
           <AnimatePresence mode="wait">

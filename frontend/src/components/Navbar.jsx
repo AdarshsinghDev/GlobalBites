@@ -56,7 +56,7 @@ const Navbar = () => {
           borderBottom: '1px solid var(--border)',
         }}
       >
-        <div className="container" style={{ height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+        <div className="container" style={{ height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 10 }}>
           <Link to="/" style={{ display: 'inline-flex', alignItems: 'center', gap: 8 }}>
             <Logo size={58} />
           </Link>
@@ -80,7 +80,7 @@ const Navbar = () => {
             )}
           </div>
 
-          <button type="button" onClick={() => setOpen(!open)} style={{ border: 0, background: 'transparent' }}>
+          <button type="button" onClick={() => setOpen(!open)} style={{ border: 0, background: 'transparent', padding: 6, borderRadius: 10 }}>
             {open ? <X size={24} /> : <List size={24} />}
           </button>
         </div>
@@ -89,7 +89,7 @@ const Navbar = () => {
       {open ? (
         <div style={{ borderBottom: '1px solid var(--border)', background: 'var(--bg-surface)' }}>
           <div className="container" style={{ paddingTop: 16, paddingBottom: 16, display: 'grid', gap: 10 }}>
-            {links.map((l) => <Link key={l.to} to={l.to} onClick={() => setOpen(false)}>{l.label}</Link>)}
+            {links.map((l) => <Link className="mobile-nav-link" key={l.to} to={l.to} onClick={() => setOpen(false)}>{l.label}</Link>)}
             {isLoggedIn ? (
               <button type="button" onClick={handleLogout} style={{ border: 0, background: 'transparent', padding: 0, textAlign: 'left', color: 'var(--terracotta)', fontWeight: 600 }}>
                 Logout

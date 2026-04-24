@@ -77,7 +77,7 @@ const Budget = () => {
         <h1 className="text-h1" style={{ marginTop: 8 }}>Eat Well. Spend Less.</h1>
         <p style={{ color: 'var(--text-secondary)', marginTop: 6 }}>Smart meal planning within any budget.</p>
 
-        <div className="card" style={{ maxWidth: 580, margin: '28px auto 0', borderRadius: 'var(--radius-xl)', boxShadow: 'var(--shadow-lg)', padding: 40, textAlign: 'left' }}>
+        <div className="card budget-panel" style={{ maxWidth: 580, margin: '28px auto 0', borderRadius: 'var(--radius-xl)', boxShadow: 'var(--shadow-lg)', padding: 40, textAlign: 'left' }}>
           <div>
             <div className="text-label">Your Budget</div>
             <div style={{ marginTop: 8, border: '1.5px solid var(--border)', borderRadius: 'var(--radius-md)', height: 56, display: 'flex', overflow: 'hidden' }}>
@@ -128,7 +128,7 @@ const Budget = () => {
           <p style={{ marginTop: 8, textAlign: 'center', color: 'var(--text-muted)', fontSize: 12 }}>Prices are estimates based on average Indian market rates.</p>
         </div>
 
-        <div style={{ marginTop: 24, border: '1px solid var(--green-100)', background: 'var(--green-50)', borderRadius: 'var(--radius-md)', padding: '12px 20px', textAlign: 'left' }}>
+        <div className="budget-summary" style={{ marginTop: 24, border: '1px solid var(--green-100)', background: 'var(--green-50)', borderRadius: 'var(--radius-md)', padding: '12px 20px', textAlign: 'left' }}>
           Showing meals under Rs {budget} - {frequency} - {mealType} - {prefs.join(', ')}
         </div>
 

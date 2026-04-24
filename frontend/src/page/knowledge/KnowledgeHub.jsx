@@ -154,7 +154,7 @@ const KnowledgeHub = () => {
           {tab === 'mood' ? (
             <>
               <h2 className="text-h2">Mood ke according AI meal guidance</h2>
-              <div style={{ marginTop: 20 }} className="mood-grid">
+              <div style={{ marginTop: 20 }} className="mood-grid knowledge-mood-grid">
                 {moods.map((m, i) => (
                   <motion.button key={m.name} whileHover={{ y: -3, scale: 1.02 }} whileTap={{ scale: 0.98 }} initial={{ opacity: 0, y: 40 }} whileInView={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.08 }} onClick={() => setMood(m.name)} className="card" style={{ padding: '28px 20px', textAlign: 'center', borderRadius: 'var(--radius-xl)', borderColor: mood === m.name ? 'var(--green-500)' : 'var(--border)', background: mood === m.name ? 'var(--green-50)' : '#fff' }}>
                     <FluentEmoji name={m.emoji} size={72} />
@@ -242,7 +242,7 @@ const KnowledgeHub = () => {
 
           {tab === 'health' ? (
             <div className="card" style={{ borderRadius: 'var(--radius-xl)', padding: 22 }}>
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
+              <div className="knowledge-health-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
                 <input className="input" value={height} onChange={(e) => setHeight(e.target.value)} placeholder="Height (cm)" />
                 <input className="input" value={weight} onChange={(e) => setWeight(e.target.value)} placeholder="Weight (kg)" />
               </div>

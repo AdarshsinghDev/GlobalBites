@@ -12,9 +12,9 @@ const Profile = () => {
   return (
     <div className="page section">
       <div className="container" style={{ display: 'grid', gap: 20 }}>
-        <section className="card" style={{ borderRadius: 'var(--radius-xl)', padding: 32, position: 'relative' }}>
-          <motion.button whileTap={{ scale: 0.96 }} className="btn btn-ghost" style={{ position: 'absolute', top: 22, right: 22 }}><PencilSimple size={16} /> Edit Profile</motion.button>
-          <div style={{ display: 'grid', gridTemplateColumns: '80px 1fr', gap: 14, alignItems: 'center' }}>
+        <section className="card profile-head" style={{ borderRadius: 'var(--radius-xl)', padding: 32, position: 'relative' }}>
+          <motion.button whileTap={{ scale: 0.96 }} className="btn btn-ghost profile-edit-btn" style={{ position: 'absolute', top: 22, right: 22 }}><PencilSimple size={16} /> Edit Profile</motion.button>
+          <div className="profile-identity" style={{ display: 'grid', gridTemplateColumns: '80px 1fr', gap: 14, alignItems: 'center' }}>
             <div style={{ width: 80, height: 80, borderRadius: '50%', background: 'linear-gradient(135deg, var(--green-700), var(--green-500))', color: '#fff', display: 'grid', placeItems: 'center', fontFamily: 'Lora, serif', fontWeight: 700, fontSize: 28, position: 'relative' }}>
               A
               <span style={{ position: 'absolute', right: 3, bottom: 3, width: 12, height: 12, borderRadius: '50%', background: 'var(--green-500)', border: '2px solid #fff' }} />
@@ -32,7 +32,7 @@ const Profile = () => {
           {[{ icon: CookingPot, label: 'Recipes Generated', value: 142, bg: 'var(--green-100)' }, { icon: BookmarkSimple, label: 'Saved Recipes', value: 38, bg: 'var(--butter)' }, { icon: CurrencyDollar, label: 'Budget Meals', value: 54, bg: 'var(--cream-pink)' }].map((s) => {
             const StatIcon = s.icon;
             return (
-            <motion.article key={s.label} whileHover={{ y: -4, boxShadow: 'var(--shadow-hover)' }} className="card" style={{ padding: 24, borderRadius: 'var(--radius-lg)' }}>
+            <motion.article key={s.label} whileHover={{ y: -4, boxShadow: 'var(--shadow-hover)' }} className="card profile-stat-card" style={{ padding: 24, borderRadius: 'var(--radius-lg)' }}>
               <div style={{ width: 48, height: 48, borderRadius: '50%', background: s.bg, display: 'grid', placeItems: 'center' }}><StatIcon size={28} weight="duotone" color="var(--green-700)" /></div>
               <div className="number-text" style={{ marginTop: 12, fontSize: 32 }}>{s.value}</div>
               <div style={{ color: 'var(--text-muted)', textTransform: 'uppercase', fontSize: 13, fontWeight: 500 }}>{s.label}</div>

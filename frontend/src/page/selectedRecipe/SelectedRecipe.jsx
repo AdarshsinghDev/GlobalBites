@@ -166,14 +166,14 @@ const SelectedRecipe = () => {
   return (
     <div className="page">
       <section
-        className="hero-grain"
+        className="recipe-hero hero-grain"
         style={{
           position: 'relative',
           height: 300,
           background: 'linear-gradient(135deg, #FDE8D0, #F5C6A0)',
         }}
       >
-        <div style={{ position: 'absolute', top: 20, left: 20 }}>
+        <div className="recipe-back" style={{ position: 'absolute', top: 20, left: 20 }}>
           <Link to={backUrl}>
             <motion.button
               whileTap={{ scale: 0.96 }}
@@ -195,6 +195,7 @@ const SelectedRecipe = () => {
           <FluentEmoji name="curry" size={96} className="float" />
         </div>
         <h1
+          className="recipe-title"
           style={{
             position: 'absolute',
             left: 24,
@@ -206,7 +207,7 @@ const SelectedRecipe = () => {
         >
           {detailedRecipe?.name || 'Loading recipe...'}
         </h1>
-        <div style={{ position: 'absolute', right: 24, bottom: 24, display: 'flex', gap: 8 }}>
+        <div className="recipe-tags" style={{ position: 'absolute', right: 24, bottom: 24, display: 'flex', gap: 8 }}>
           {detailedRecipe ? (
             <>
               <TagPill>{recipe?.cuisine}</TagPill>
@@ -493,7 +494,7 @@ const SelectedRecipe = () => {
                     <Leaf size={18} weight="duotone" />
                   </div>
                   <div className="card" style={{ borderTopLeftRadius: 0, borderTopRightRadius: 0, padding: 18 }}>
-                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
+                    <div className="nutrition-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
                       {Object.entries(recipe?.nutrition || {}).map(([k, v]) => (
                         <div key={k}>
                           <div className="number-text" style={{ fontSize: 28, fontWeight: 700 }}>
